@@ -1,0 +1,109 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À Propos",
+    "projects": "Projets",
+    "services": "Services",
+    "news": "Actualités",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Construisons Votre Avenir,",
+    "titleHighlight": "Un Foyer à la Fois",
+    "subtitle": "Sahtat Promotion réalise des projets immobiliers haut de gamme à travers l'Algérie, alliant design moderne et qualité durable.",
+    "cta": "Découvrir Nos Projets",
+    "ctaSecondary": "Contactez-Nous"
+  },
+  "values": {
+    "sectionTitle": "Pourquoi Nous Choisir",
+    "sectionSubtitle": "Notre engagement envers l'excellence nous distingue sur le marché immobilier algérien",
+    "trust": { "title": "Confiance", "desc": "Plus d'une décennie de partenariats fiables et de relations transparentes avec nos clients." },
+    "quality": { "title": "Qualité", "desc": "Des matériaux premium et un savoir-faire méticuleux dans chaque projet livré." },
+    "innovation": { "title": "Innovation", "desc": "Des designs architecturaux modernes alliant vie contemporaine et patrimoine algérien." },
+    "community": { "title": "Communauté", "desc": "Construire des quartiers prospères qui rassemblent familles et communautés." }
+  },
+  "featured": {
+    "sectionTitle": "Projets en Vedette",
+    "sectionSubtitle": "Explorez nos derniers développements résidentiels et commerciaux en Algérie",
+    "viewAll": "Voir Tous les Projets",
+    "status": { "upcoming": "À Venir", "inProgress": "En Cours", "delivered": "Livré" }
+  },
+  "testimonials": {
+    "sectionTitle": "Ce que Disent Nos Clients",
+    "sectionSubtitle": "Écoutez les familles qui ont fait de nos propriétés leur foyer"
+  },
+  "newsPreview": {
+    "sectionTitle": "Dernières Actualités",
+    "sectionSubtitle": "Restez informé de nos derniers projets et analyses du secteur",
+    "readMore": "Lire la Suite",
+    "viewAll": "Voir Tous les Articles"
+  },
+  "footer": {
+    "description": "Promoteur immobilier leader en Algérie, engagé à construire des propriétés résidentielles et commerciales haut de gamme.",
+    "quickLinks": "Liens Rapides",
+    "contactInfo": "Coordonnées",
+    "followUs": "Suivez-Nous",
+    "rights": "Tous droits réservés.",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation",
+    "address": "Alger, Algérie",
+    "phone": "+213 XX XX XX XX",
+    "email": "contact@sahtatpromotion.com"
+  },
+  "about": {
+    "title": "À Propos de Sahtat Promotion",
+    "subtitle": "Un héritage d'excellence dans le développement immobilier algérien",
+    "historyTitle": "Notre Histoire",
+    "historyText": "Fondée avec la vision de transformer le paysage immobilier algérien, Sahtat Promotion est passée d'un petit promoteur local à l'un des noms les plus fiables du secteur. Notre parcours est marqué par un engagement envers la qualité, l'innovation et le développement communautaire.",
+    "missionTitle": "Notre Mission",
+    "missionText": "Livrer des propriétés résidentielles et commerciales exceptionnelles qui dépassent les attentes, tout en contribuant au développement durable du paysage urbain algérien.",
+    "visionTitle": "Notre Vision",
+    "visionText": "Être le promoteur immobilier le plus fiable et innovant d'Algérie, établissant de nouvelles normes de qualité et de design dans la région.",
+    "teamTitle": "Notre Équipe",
+    "teamSubtitle": "Rencontrez les professionnels derrière Sahtat Promotion",
+    "certTitle": "Certifications & Partenariats",
+    "certSubtitle": "Reconnu pour l'excellence en construction et développement immobilier"
+  },
+  "projects": {
+    "title": "Nos Projets",
+    "subtitle": "Découvrez notre portefeuille de développements résidentiels et commerciaux à travers l'Algérie",
+    "filterAll": "Tous",
+    "filterCity": "Ville",
+    "filterType": "Type",
+    "filterStatus": "Statut",
+    "apartment": "Appartement",
+    "villa": "Villa",
+    "commercial": "Commercial",
+    "details": "Voir les Détails",
+    "features": "Caractéristiques",
+    "location": "Emplacement",
+    "description": "Description",
+    "gallery": "Galerie"
+  },
+  "services": {
+    "title": "Nos Services",
+    "subtitle": "Des solutions immobilières complètes du concept à la réalisation",
+    "construction": { "title": "Construction", "desc": "Services de construction de bout en bout avec des matériaux premium et un savoir-faire expert." },
+    "management": { "title": "Gestion de Projet", "desc": "Gestion de projet professionnelle garantissant une livraison dans les délais et le budget." },
+    "consulting": { "title": "Conseil Immobilier", "desc": "Orientation experte en investissement immobilier, analyse de marché et stratégie de développement." },
+    "afterSales": { "title": "Service Après-Vente", "desc": "Support dédié et services de maintenance pour les propriétaires." },
+    "interior": { "title": "Design d'Intérieur", "desc": "Solutions de design d'intérieur sur mesure reflétant la vie moderne algérienne." },
+    "legal": { "title": "Assistance Juridique", "desc": "Support juridique complet pour les transactions et la documentation immobilière." }
+  },
+  "news": {
+    "title": "Actualités & Analyses",
+    "subtitle": "Restez informé de nos projets et du marché immobilier algérien"
+  },
+  "contact": {
+    "title": "Contactez-Nous",
+    "subtitle": "Nous serions ravis de vous entendre. Contactez-nous pour toute demande, partenariat ou information sur les propriétés.",
+    "formName": "Nom Complet",
+    "formEmail": "Adresse Email",
+    "formPhone": "Numéro de Téléphone",
+    "formMessage": "Votre Message",
+    "formSubmit": "Envoyer le Message",
+    "formSuccess": "Message envoyé avec succès ! Nous vous répondrons bientôt.",
+    "whatsapp": "Discuter sur WhatsApp",
+    "location": "Notre Emplacement"
+  }
+}
