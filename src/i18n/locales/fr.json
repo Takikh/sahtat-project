@@ -17,16 +17,32 @@
   "values": {
     "sectionTitle": "Pourquoi Nous Choisir",
     "sectionSubtitle": "Notre engagement envers l'excellence nous distingue sur le marché immobilier algérien",
-    "trust": { "title": "Confiance", "desc": "Plus d'une décennie de partenariats fiables et de relations transparentes avec nos clients." },
-    "quality": { "title": "Qualité", "desc": "Des matériaux premium et un savoir-faire méticuleux dans chaque projet livré." },
-    "innovation": { "title": "Innovation", "desc": "Des designs architecturaux modernes alliant vie contemporaine et patrimoine algérien." },
-    "community": { "title": "Communauté", "desc": "Construire des quartiers prospères qui rassemblent familles et communautés." }
+    "trust": {
+      "title": "Confiance",
+      "desc": "Plus d'une décennie de partenariats fiables et de relations transparentes avec nos clients."
+    },
+    "quality": {
+      "title": "Qualité",
+      "desc": "Des matériaux premium et un savoir-faire méticuleux dans chaque projet livré."
+    },
+    "innovation": {
+      "title": "Innovation",
+      "desc": "Des designs architecturaux modernes alliant vie contemporaine et patrimoine algérien."
+    },
+    "community": {
+      "title": "Communauté",
+      "desc": "Construire des quartiers prospères qui rassemblent familles et communautés."
+    }
   },
   "featured": {
     "sectionTitle": "Projets en Vedette",
     "sectionSubtitle": "Explorez nos derniers développements résidentiels et commerciaux en Algérie",
     "viewAll": "Voir Tous les Projets",
-    "status": { "upcoming": "À Venir", "inProgress": "En Cours", "delivered": "Livré" }
+    "status": {
+      "upcoming": "À Venir",
+      "inProgress": "En Cours",
+      "delivered": "Livré"
+    }
   },
   "testimonials": {
     "sectionTitle": "Ce que Disent Nos Clients",
@@ -39,26 +55,26 @@
     "viewAll": "Voir Tous les Articles"
   },
   "footer": {
-    "description": "Promoteur immobilier leader en Algérie, engagé à construire des propriétés résidentielles et commerciales haut de gamme.",
+    "description": "Sahtat Promotion EURL - Promoteur immobilier leader à Médéa, Algérie, spécialisé dans les propriétés résidentielles et commerciales.",
     "quickLinks": "Liens Rapides",
     "contactInfo": "Coordonnées",
     "followUs": "Suivez-Nous",
     "rights": "Tous droits réservés.",
     "privacy": "Politique de Confidentialité",
     "terms": "Conditions d'Utilisation",
-    "address": "Alger, Algérie",
-    "phone": "+213 XX XX XX XX",
-    "email": "contact@sahtatpromotion.com"
+    "address": "1er étage, rue d'Alger (Bazar Fatoumi), Médéa, Algérie",
+    "phone": "+213 25 78 08 22",
+    "email": "contact@sahtat-promotion.com"
   },
   "about": {
     "title": "À Propos de Sahtat Promotion",
-    "subtitle": "Un héritage d'excellence dans le développement immobilier algérien",
+    "subtitle": "Excellence dans le développement immobilier à Médéa et au-delà",
     "historyTitle": "Notre Histoire",
-    "historyText": "Fondée avec la vision de transformer le paysage immobilier algérien, Sahtat Promotion est passée d'un petit promoteur local à l'un des noms les plus fiables du secteur. Notre parcours est marqué par un engagement envers la qualité, l'innovation et le développement communautaire.",
+    "historyText": "Sahtat Promotion EURL est une entreprise algérienne de promotion immobilière basée à Médéa. Nous sommes spécialisés dans la conception et la construction de programmes résidentiels modernes incluant résidences, duplex, villas et espaces commerciaux. Notre engagement envers la qualité et l'innovation a fait de nous un nom de confiance dans la région de Médéa.",
     "missionTitle": "Notre Mission",
-    "missionText": "Livrer des propriétés résidentielles et commerciales exceptionnelles qui dépassent les attentes, tout en contribuant au développement durable du paysage urbain algérien.",
+    "missionText": "Livrer des propriétés résidentielles et commerciales exceptionnelles à Médéa et ses environs, alliant design moderne et construction de qualité, tout en contribuant au développement de communautés prospères.",
     "visionTitle": "Notre Vision",
-    "visionText": "Être le promoteur immobilier le plus fiable et innovant d'Algérie, établissant de nouvelles normes de qualité et de design dans la région.",
+    "visionText": "Être le promoteur immobilier le plus fiable de la région de Médéa, reconnu pour la qualité de construction, le design moderne et la satisfaction client.",
     "teamTitle": "Notre Équipe",
     "teamSubtitle": "Rencontrez les professionnels derrière Sahtat Promotion",
     "certTitle": "Certifications & Partenariats",
@@ -83,12 +99,30 @@
   "services": {
     "title": "Nos Services",
     "subtitle": "Des solutions immobilières complètes du concept à la réalisation",
-    "construction": { "title": "Construction", "desc": "Services de construction de bout en bout avec des matériaux premium et un savoir-faire expert." },
-    "management": { "title": "Gestion de Projet", "desc": "Gestion de projet professionnelle garantissant une livraison dans les délais et le budget." },
-    "consulting": { "title": "Conseil Immobilier", "desc": "Orientation experte en investissement immobilier, analyse de marché et stratégie de développement." },
-    "afterSales": { "title": "Service Après-Vente", "desc": "Support dédié et services de maintenance pour les propriétaires." },
-    "interior": { "title": "Design d'Intérieur", "desc": "Solutions de design d'intérieur sur mesure reflétant la vie moderne algérienne." },
-    "legal": { "title": "Assistance Juridique", "desc": "Support juridique complet pour les transactions et la documentation immobilière." }
+    "construction": {
+      "title": "Construction",
+      "desc": "Services de construction de bout en bout avec des matériaux premium et un savoir-faire expert."
+    },
+    "management": {
+      "title": "Gestion de Projet",
+      "desc": "Gestion de projet professionnelle garantissant une livraison dans les délais et le budget."
+    },
+    "consulting": {
+      "title": "Conseil Immobilier",
+      "desc": "Orientation experte en investissement immobilier, analyse de marché et stratégie de développement."
+    },
+    "afterSales": {
+      "title": "Service Après-Vente",
+      "desc": "Support dédié et services de maintenance pour les propriétaires."
+    },
+    "interior": {
+      "title": "Design d'Intérieur",
+      "desc": "Solutions de design d'intérieur sur mesure reflétant la vie moderne algérienne."
+    },
+    "legal": {
+      "title": "Assistance Juridique",
+      "desc": "Support juridique complet pour les transactions et la documentation immobilière."
+    }
   },
   "news": {
     "title": "Actualités & Analyses",

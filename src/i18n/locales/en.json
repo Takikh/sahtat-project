@@ -17,16 +17,32 @@
   "values": {
     "sectionTitle": "Why Choose Us",
     "sectionSubtitle": "Our commitment to excellence sets us apart in the Algerian real estate market",
-    "trust": { "title": "Trust", "desc": "Over a decade of reliable partnerships and transparent dealings with our clients." },
-    "quality": { "title": "Quality", "desc": "Premium materials and meticulous craftsmanship in every project we deliver." },
-    "innovation": { "title": "Innovation", "desc": "Modern architectural designs that blend contemporary living with Algerian heritage." },
-    "community": { "title": "Community", "desc": "Building thriving neighborhoods that bring families and communities together." }
+    "trust": {
+      "title": "Trust",
+      "desc": "Over a decade of reliable partnerships and transparent dealings with our clients."
+    },
+    "quality": {
+      "title": "Quality",
+      "desc": "Premium materials and meticulous craftsmanship in every project we deliver."
+    },
+    "innovation": {
+      "title": "Innovation",
+      "desc": "Modern architectural designs that blend contemporary living with Algerian heritage."
+    },
+    "community": {
+      "title": "Community",
+      "desc": "Building thriving neighborhoods that bring families and communities together."
+    }
   },
   "featured": {
     "sectionTitle": "Featured Projects",
     "sectionSubtitle": "Explore our latest residential and commercial developments across Algeria",
     "viewAll": "View All Projects",
-    "status": { "upcoming": "Upcoming", "inProgress": "In Progress", "delivered": "Delivered" }
+    "status": {
+      "upcoming": "Upcoming",
+      "inProgress": "In Progress",
+      "delivered": "Delivered"
+    }
   },
   "testimonials": {
     "sectionTitle": "What Our Clients Say",
@@ -39,26 +55,26 @@
     "viewAll": "View All Articles"
   },
   "footer": {
-    "description": "Leading real estate developer in Algeria, committed to building premium residential and commercial properties.",
+    "description": "Sahtat Promotion EURL - Leading real estate developer in Médéa, Algeria, specializing in residential and commercial properties.",
     "quickLinks": "Quick Links",
     "contactInfo": "Contact Info",
     "followUs": "Follow Us",
     "rights": "All rights reserved.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "address": "Algiers, Algeria",
-    "phone": "+213 XX XX XX XX",
-    "email": "contact@sahtatpromotion.com"
+    "address": "1st Floor, Rue d'Alger (Bazar Fatoumi), Médéa, Algeria",
+    "phone": "+213 25 78 08 22",
+    "email": "contact@sahtat-promotion.com"
   },
   "about": {
     "title": "About Sahtat Promotion",
-    "subtitle": "A legacy of excellence in Algerian real estate development",
+    "subtitle": "Excellence in real estate development in Médéa and beyond",
     "historyTitle": "Our Story",
-    "historyText": "Founded with a vision to transform the Algerian real estate landscape, Sahtat Promotion has grown from a small local developer to one of the most trusted names in the industry. Our journey is marked by a commitment to quality, innovation, and community building.",
+    "historyText": "Sahtat Promotion EURL is an Algerian real estate promotion company based in Médéa. We specialize in designing and constructing modern residential programs including residences, duplexes, villas, and commercial spaces. Our commitment to quality and innovation has made us a trusted name in the Médéa region.",
     "missionTitle": "Our Mission",
-    "missionText": "To deliver exceptional residential and commercial properties that exceed expectations, while contributing to the sustainable development of Algeria's urban landscape.",
+    "missionText": "To deliver exceptional residential and commercial properties in Médéa and surrounding areas, combining modern design with quality construction, while contributing to the development of thriving communities.",
     "visionTitle": "Our Vision",
-    "visionText": "To be Algeria's most trusted and innovative real estate developer, setting new standards for quality and design in the region.",
+    "visionText": "To be the most trusted real estate developer in the Médéa region, known for quality construction, modern design, and customer satisfaction.",
     "teamTitle": "Our Team",
     "teamSubtitle": "Meet the professionals behind Sahtat Promotion",
     "certTitle": "Certifications & Partnerships",
@@ -83,12 +99,30 @@
   "services": {
     "title": "Our Services",
     "subtitle": "Comprehensive real estate solutions from concept to completion",
-    "construction": { "title": "Construction", "desc": "End-to-end construction services with premium materials and expert craftsmanship." },
-    "management": { "title": "Project Management", "desc": "Professional project management ensuring on-time, on-budget delivery." },
-    "consulting": { "title": "Real Estate Consulting", "desc": "Expert guidance on property investment, market analysis, and development strategy." },
-    "afterSales": { "title": "After-Sales Service", "desc": "Dedicated support and maintenance services for property owners." },
-    "interior": { "title": "Interior Design", "desc": "Custom interior design solutions that reflect modern Algerian living." },
-    "legal": { "title": "Legal Assistance", "desc": "Complete legal support for property transactions and documentation." }
+    "construction": {
+      "title": "Construction",
+      "desc": "End-to-end construction services with premium materials and expert craftsmanship."
+    },
+    "management": {
+      "title": "Project Management",
+      "desc": "Professional project management ensuring on-time, on-budget delivery."
+    },
+    "consulting": {
+      "title": "Real Estate Consulting",
+      "desc": "Expert guidance on property investment, market analysis, and development strategy."
+    },
+    "afterSales": {
+      "title": "After-Sales Service",
+      "desc": "Dedicated support and maintenance services for property owners."
+    },
+    "interior": {
+      "title": "Interior Design",
+      "desc": "Custom interior design solutions that reflect modern Algerian living."
+    },
+    "legal": {
+      "title": "Legal Assistance",
+      "desc": "Complete legal support for property transactions and documentation."
+    }
   },
   "news": {
     "title": "News & Insights",
