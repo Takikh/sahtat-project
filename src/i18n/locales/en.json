@@ -1,0 +1,109 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About Us",
+    "projects": "Projects",
+    "services": "Services",
+    "news": "News",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Building Your Future,",
+    "titleHighlight": "One Home at a Time",
+    "subtitle": "Sahtat Promotion delivers premium real estate projects across Algeria, blending modern design with lasting quality.",
+    "cta": "Discover Our Projects",
+    "ctaSecondary": "Contact Us"
+  },
+  "values": {
+    "sectionTitle": "Why Choose Us",
+    "sectionSubtitle": "Our commitment to excellence sets us apart in the Algerian real estate market",
+    "trust": { "title": "Trust", "desc": "Over a decade of reliable partnerships and transparent dealings with our clients." },
+    "quality": { "title": "Quality", "desc": "Premium materials and meticulous craftsmanship in every project we deliver." },
+    "innovation": { "title": "Innovation", "desc": "Modern architectural designs that blend contemporary living with Algerian heritage." },
+    "community": { "title": "Community", "desc": "Building thriving neighborhoods that bring families and communities together." }
+  },
+  "featured": {
+    "sectionTitle": "Featured Projects",
+    "sectionSubtitle": "Explore our latest residential and commercial developments across Algeria",
+    "viewAll": "View All Projects",
+    "status": { "upcoming": "Upcoming", "inProgress": "In Progress", "delivered": "Delivered" }
+  },
+  "testimonials": {
+    "sectionTitle": "What Our Clients Say",
+    "sectionSubtitle": "Hear from families who have made our properties their home"
+  },
+  "newsPreview": {
+    "sectionTitle": "Latest News",
+    "sectionSubtitle": "Stay updated with our latest projects and industry insights",
+    "readMore": "Read More",
+    "viewAll": "View All Articles"
+  },
+  "footer": {
+    "description": "Leading real estate developer in Algeria, committed to building premium residential and commercial properties.",
+    "quickLinks": "Quick Links",
+    "contactInfo": "Contact Info",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "address": "Algiers, Algeria",
+    "phone": "+213 XX XX XX XX",
+    "email": "contact@sahtatpromotion.com"
+  },
+  "about": {
+    "title": "About Sahtat Promotion",
+    "subtitle": "A legacy of excellence in Algerian real estate development",
+    "historyTitle": "Our Story",
+    "historyText": "Founded with a vision to transform the Algerian real estate landscape, Sahtat Promotion has grown from a small local developer to one of the most trusted names in the industry. Our journey is marked by a commitment to quality, innovation, and community building.",
+    "missionTitle": "Our Mission",
+    "missionText": "To deliver exceptional residential and commercial properties that exceed expectations, while contributing to the sustainable development of Algeria's urban landscape.",
+    "visionTitle": "Our Vision",
+    "visionText": "To be Algeria's most trusted and innovative real estate developer, setting new standards for quality and design in the region.",
+    "teamTitle": "Our Team",
+    "teamSubtitle": "Meet the professionals behind Sahtat Promotion",
+    "certTitle": "Certifications & Partnerships",
+    "certSubtitle": "Recognized for excellence in construction and real estate development"
+  },
+  "projects": {
+    "title": "Our Projects",
+    "subtitle": "Discover our portfolio of residential and commercial developments across Algeria",
+    "filterAll": "All",
+    "filterCity": "City",
+    "filterType": "Type",
+    "filterStatus": "Status",
+    "apartment": "Apartment",
+    "villa": "Villa",
+    "commercial": "Commercial",
+    "details": "View Details",
+    "features": "Features",
+    "location": "Location",
+    "description": "Description",
+    "gallery": "Gallery"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Comprehensive real estate solutions from concept to completion",
+    "construction": { "title": "Construction", "desc": "End-to-end construction services with premium materials and expert craftsmanship." },
+    "management": { "title": "Project Management", "desc": "Professional project management ensuring on-time, on-budget delivery." },
+    "consulting": { "title": "Real Estate Consulting", "desc": "Expert guidance on property investment, market analysis, and development strategy." },
+    "afterSales": { "title": "After-Sales Service", "desc": "Dedicated support and maintenance services for property owners." },
+    "interior": { "title": "Interior Design", "desc": "Custom interior design solutions that reflect modern Algerian living." },
+    "legal": { "title": "Legal Assistance", "desc": "Complete legal support for property transactions and documentation." }
+  },
+  "news": {
+    "title": "News & Insights",
+    "subtitle": "Stay informed about our projects and the Algerian real estate market"
+  },
+  "contact": {
+    "title": "Get In Touch",
+    "subtitle": "We'd love to hear from you. Reach out for inquiries, partnerships, or property information.",
+    "formName": "Full Name",
+    "formEmail": "Email Address",
+    "formPhone": "Phone Number",
+    "formMessage": "Your Message",
+    "formSubmit": "Send Message",
+    "formSuccess": "Message sent successfully! We'll get back to you soon.",
+    "whatsapp": "Chat on WhatsApp",
+    "location": "Our Location"
+  }
+}
