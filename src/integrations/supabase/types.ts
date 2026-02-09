@@ -14,16 +14,289 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      construction_progress: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          progress_percent: number | null
+          purchased_property_id: string
+          title: string
+          update_date: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          progress_percent?: number | null
+          purchased_property_id: string
+          title: string
+          update_date?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          progress_percent?: number | null
+          purchased_property_id?: string
+          title?: string
+          update_date?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "construction_progress_purchased_property_id_fkey"
+            columns: ["purchased_property_id"]
+            isOneToOne: false
+            referencedRelation: "purchased_properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_submissions: {
+        Row: {
+          email: string
+          id: string
+          is_read: boolean | null
+          message: string
+          name: string
+          phone: string | null
+          submitted_at: string
+        }
+        Insert: {
+          email: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          name: string
+          phone?: string | null
+          submitted_at?: string
+        }
+        Update: {
+          email?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          name?: string
+          phone?: string | null
+          submitted_at?: string
+        }
+        Relationships: []
+      }
+      news_articles: {
+        Row: {
+          content_ar: string | null
+          content_en: string | null
+          content_fr: string | null
+          created_at: string
+          excerpt_ar: string | null
+          excerpt_en: string | null
+          excerpt_fr: string | null
+          id: string
+          image_url: string | null
+          published_at: string
+          slug: string
+          title_ar: string | null
+          title_en: string
+          title_fr: string | null
+          updated_at: string
+        }
+        Insert: {
+          content_ar?: string | null
+          content_en?: string | null
+          content_fr?: string | null
+          created_at?: string
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          excerpt_fr?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string
+          slug: string
+          title_ar?: string | null
+          title_en: string
+          title_fr?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content_ar?: string | null
+          content_en?: string | null
+          content_fr?: string | null
+          created_at?: string
+          excerpt_ar?: string | null
+          excerpt_en?: string | null
+          excerpt_fr?: string | null
+          id?: string
+          image_url?: string | null
+          published_at?: string
+          slug?: string
+          title_ar?: string | null
+          title_en?: string
+          title_fr?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          city: string
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          description_fr: string | null
+          features: Json | null
+          id: string
+          image_url: string | null
+          location: string | null
+          name: string
+          slug: string
+          status: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          description_fr?: string | null
+          features?: Json | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          name: string
+          slug: string
+          status: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          description_fr?: string | null
+          features?: Json | null
+          id?: string
+          image_url?: string | null
+          location?: string | null
+          name?: string
+          slug?: string
+          status?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      purchased_properties: {
+        Row: {
+          created_at: string
+          id: string
+          progress_percent: number | null
+          project_id: string
+          purchase_date: string | null
+          status: string | null
+          unit_number: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          progress_percent?: number | null
+          project_id: string
+          purchase_date?: string | null
+          status?: string | null
+          unit_number?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          progress_percent?: number | null
+          project_id?: string
+          purchase_date?: string | null
+          status?: string | null
+          unit_number?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchased_properties_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "client"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +423,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "client"],
+    },
   },
 } as const
