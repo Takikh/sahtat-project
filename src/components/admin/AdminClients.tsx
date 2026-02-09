@@ -18,7 +18,6 @@ interface PurchasedRow {
   purchase_date: string | null;
   progress_percent: number | null;
   status: string | null;
-  profiles: { full_name: string | null; user_id: string } | null;
   projects: { name: string } | null;
 }
 
@@ -46,7 +45,7 @@ export function AdminClients() {
 
   const fetchData = async () => {
     const [purchRes, projRes, profRes] = await Promise.all([
-      supabase.from("purchased_properties").select("*, profiles(full_name, user_id), projects(name)").order("created_at", { ascending: false }),
+      supabase.from("purchased_properties").select("*, projects(name)").order("created_at", { ascending: false }),
       supabase.from("projects").select("id, name"),
       supabase.from("profiles").select("user_id, full_name"),
     ]);
@@ -152,7 +151,7 @@ export function AdminClients() {
           <div key={p.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
             <div className="flex-1">
               <div className="flex items-center gap-3">
-                <p className="font-semibold">{p.profiles?.full_name || "Unknown"}</p>
+                <p className="font-semibold">{profileOptions.find(pr => pr.user_id === p.user_id)?.full_name || "Unknown"}</p>
                 <Badge variant="outline">{p.status}</Badge>
               </div>
               <p className="text-sm text-muted-foreground">{p.projects?.name} {p.unit_number && `• Unit ${p.unit_number}`}</p>
