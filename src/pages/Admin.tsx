@@ -6,10 +6,11 @@ import { AdminProjects } from "@/components/admin/AdminProjects";
 import { AdminNews } from "@/components/admin/AdminNews";
 import { AdminContacts } from "@/components/admin/AdminContacts";
 import { AdminClients } from "@/components/admin/AdminClients";
+import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Building2, Newspaper, Mail, Users } from "lucide-react";
+import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3 } from "lucide-react";
 
 const Admin = () => {
   const { t } = useTranslation();
@@ -33,8 +34,11 @@ const Admin = () => {
 
       <section className="py-8">
         <div className="container">
-          <Tabs defaultValue="projects">
+          <Tabs defaultValue="analytics">
             <TabsList className="mb-6 w-full justify-start gap-2">
+              <TabsTrigger value="analytics" className="gap-2">
+                <BarChart3 className="h-4 w-4" /> Analytics
+              </TabsTrigger>
               <TabsTrigger value="projects" className="gap-2">
                 <Building2 className="h-4 w-4" /> Projects
               </TabsTrigger>
@@ -49,6 +53,7 @@ const Admin = () => {
               </TabsTrigger>
             </TabsList>
 
+            <TabsContent value="analytics"><AdminAnalytics /></TabsContent>
             <TabsContent value="projects"><AdminProjects /></TabsContent>
             <TabsContent value="news"><AdminNews /></TabsContent>
             <TabsContent value="contacts"><AdminContacts /></TabsContent>
