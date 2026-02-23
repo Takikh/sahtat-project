@@ -6,18 +6,33 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { MapPin, Phone, Mail, MessageCircle, Facebook, CheckCircle } from "lucide-react";
+import { MapPin, Phone, Mail, MessageCircle, Facebook, CheckCircle, Instagram } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    toast({ title: t("contact.formSuccess") });
+    setLoading(true);
+    const { error } = await supabase.from("contact_submissions").insert({
+      name: form.name,
+      email: form.email,
+      phone: form.phone || null,
+      message: form.message,
+    });
+    setLoading(false);
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+    } else {
+      setSubmitted(true);
+      toast({ title: t("contact.formSuccess") });
+    }
   };
 
   return (
@@ -48,22 +63,22 @@ const Contact = () => {
               <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-border bg-card p-8">
                 <div>
                   <Label htmlFor="name">{t("contact.formName")}</Label>
-                  <Input id="name" required className="mt-1.5" />
+                  <Input id="name" required className="mt-1.5" value={form.name} onChange={e => setForm({...form, name: e.target.value})} />
                 </div>
                 <div>
                   <Label htmlFor="email">{t("contact.formEmail")}</Label>
-                  <Input id="email" type="email" required className="mt-1.5" />
+                  <Input id="email" type="email" required className="mt-1.5" value={form.email} onChange={e => setForm({...form, email: e.target.value})} />
                 </div>
                 <div>
                   <Label htmlFor="phone">{t("contact.formPhone")}</Label>
-                  <Input id="phone" type="tel" className="mt-1.5" />
+                  <Input id="phone" type="tel" className="mt-1.5" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} />
                 </div>
                 <div>
                   <Label htmlFor="message">{t("contact.formMessage")}</Label>
-                  <Textarea id="message" required rows={5} className="mt-1.5" />
+                  <Textarea id="message" required rows={5} className="mt-1.5" value={form.message} onChange={e => setForm({...form, message: e.target.value})} />
                 </div>
-                <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
-                  {t("contact.formSubmit")}
+                <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
+                  {loading ? "Envoi en cours..." : t("contact.formSubmit")}
                 </Button>
               </form>
             )}
@@ -93,31 +108,40 @@ const Contact = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <a
-                href="https://wa.me/213XXXXXXXXX"
+                href="https://wa.me/213660840271"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700"
+                className="flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700"
               >
                 <MessageCircle className="h-5 w-5" />
-                {t("contact.whatsapp")}
+                WhatsApp
               </a>
               <a
                 href="https://www.facebook.com/SahtatPromotion/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
               >
                 <Facebook className="h-5 w-5" />
                 Facebook
               </a>
+              <a
+                href="https://www.instagram.com/sahtat_promotion_medea/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+              >
+                <Instagram className="h-5 w-5" />
+                @sahtat_promotion_medea
+              </a>
             </div>
 
-            {/* Map */}
+            {/* Map – Médéa city centre */}
             <div className="overflow-hidden rounded-xl border border-border">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d102239.59973796422!2d2.9912258!3d36.7525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128fb26977ea659f%3A0x4f0a9e23b3b3c4d1!2sAlgiers%2C%20Algeria!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12786.999999999998!2d2.7521!3d36.2676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128f9c0f3b3b3b3b%3A0x4a0a9e23b3b3c4d1!2sM%C3%A9d%C3%A9a%2C%20Alg%C3%A9rie!5e0!3m2!1sfr!2sdz!4v1700000000000!5m2!1sfr!2sdz"
                 width="100%"
                 height="300"
                 style={{ border: 0 }}

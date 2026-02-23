@@ -320,6 +320,48 @@ export type Database = {
           },
         ]
       }
+      reviews: {
+        Row: {
+          created_at: string
+          id: string
+          is_approved: boolean | null
+          rating: number | null
+          reviewer_name: string
+          reviewer_role_ar: string | null
+          reviewer_role_en: string | null
+          reviewer_role_fr: string | null
+          text_ar: string | null
+          text_en: string
+          text_fr: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          rating?: number | null
+          reviewer_name: string
+          reviewer_role_ar?: string | null
+          reviewer_role_en?: string | null
+          reviewer_role_fr?: string | null
+          text_ar?: string | null
+          text_en: string
+          text_fr?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_approved?: boolean | null
+          rating?: number | null
+          reviewer_name?: string
+          reviewer_role_ar?: string | null
+          reviewer_role_en?: string | null
+          reviewer_role_fr?: string | null
+          text_ar?: string | null
+          text_en?: string
+          text_fr?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

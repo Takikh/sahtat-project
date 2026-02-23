@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Facebook, Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
 
 export function Footer() {
   const { t } = useTranslation();
@@ -11,9 +11,7 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <h3 className="font-display text-xl font-bold">
-              Sahtat <span className="text-accent">Promotion</span>
-            </h3>
+            <img src="/logo.svg" alt="Sahtat Promotion" className="h-12 w-auto brightness-0 invert" />
             <p className="mt-3 text-sm opacity-80">{t("footer.description")}</p>
           </div>
 
@@ -57,15 +55,26 @@ export function Footer() {
             <h4 className="mb-4 font-display text-sm font-semibold uppercase tracking-wider">
               {t("footer.followUs")}
             </h4>
-            <a
-              href="https://www.facebook.com/SahtatPromotion/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg bg-accent/20 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/30"
-            >
-              <Facebook className="h-5 w-5" />
-              Facebook
-            </a>
+            <div className="flex flex-col gap-3">
+              <a
+                href="https://www.facebook.com/SahtatPromotion/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent/20 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/30"
+              >
+                <Facebook className="h-5 w-5" />
+                Facebook
+              </a>
+              <a
+                href="https://www.instagram.com/sahtat_promotion_medea/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-accent/20 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/30"
+              >
+                <Instagram className="h-5 w-5" />
+                @sahtat_promotion_medea
+              </a>
+            </div>
           </div>
         </div>
 

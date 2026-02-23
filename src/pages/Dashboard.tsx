@@ -167,15 +167,29 @@ const Dashboard = () => {
                     {/* Progress Updates */}
                     {progressUpdates[prop.id]?.length > 0 && (
                       <div className="mt-6">
-                        <h4 className="text-sm font-semibold">Recent Updates</h4>
-                        <div className="mt-3 space-y-3">
-                          {progressUpdates[prop.id].slice(0, 3).map((update) => (
-                            <div key={update.id} className="border-s-2 border-accent ps-3">
-                              <p className="text-sm font-medium">{update.title}</p>
-                              {update.description && (
-                                <p className="text-xs text-muted-foreground">{update.description}</p>
+                        <h4 className="text-sm font-semibold mb-3">📋 Mises à jour récentes / Recent Updates</h4>
+                        <div className="mt-3 space-y-4">
+                          {progressUpdates[prop.id].slice(0, 5).map((update) => (
+                            <div key={update.id} className="rounded-lg border border-border bg-background overflow-hidden">
+                              {(update as any).image_url && (
+                                <img
+                                  src={(update as any).image_url}
+                                  alt={update.title}
+                                  className="w-full h-40 object-cover"
+                                />
                               )}
-                              <p className="mt-1 text-xs text-muted-foreground">{update.update_date}</p>
+                              <div className="p-3 border-s-2 border-accent">
+                                <div className="flex items-center justify-between">
+                                  <p className="text-sm font-medium">{update.title}</p>
+                                  {update.progress_percent !== null && (
+                                    <span className="text-xs font-semibold text-accent">{update.progress_percent}%</span>
+                                  )}
+                                </div>
+                                {update.description && (
+                                  <p className="text-xs text-muted-foreground mt-0.5">{update.description}</p>
+                                )}
+                                <p className="mt-1 text-xs text-muted-foreground">{new Date(update.update_date).toLocaleDateString("fr-DZ")}</p>
+                              </div>
                             </div>
                           ))}
                         </div>

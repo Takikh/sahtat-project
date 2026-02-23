@@ -154,10 +154,16 @@ export function AdminClients() {
                 <p className="font-semibold">{profileOptions.find(pr => pr.user_id === p.user_id)?.full_name || "Unknown"}</p>
                 <Badge variant="outline">{p.status}</Badge>
               </div>
-              <p className="text-sm text-muted-foreground">{p.projects?.name} {p.unit_number && `• Unit ${p.unit_number}`}</p>
-              <Progress value={p.progress_percent || 0} className="mt-2 max-w-xs" />
+              <p className="text-sm text-muted-foreground">{p.projects?.name} {p.unit_number && `• Unité ${p.unit_number}`}</p>
+              <div className="flex items-center gap-2 mt-2">
+                <Progress value={p.progress_percent || 0} className="max-w-xs h-2" />
+                <span className="text-xs text-accent font-medium">{p.progress_percent || 0}%</span>
+              </div>
             </div>
             <div className="flex gap-2">
+              <Button variant="ghost" size="icon" onClick={() => { setForm({ user_id: p.user_id, project_id: p.project_id, unit_number: p.unit_number || "", purchase_date: p.purchase_date || "", progress_percent: String(p.progress_percent || 0), status: p.status || "pending" }); setEditId(p.id); setOpen(true); }}>
+                <Pencil className="h-4 w-4" />
+              </Button>
               <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)}>
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>

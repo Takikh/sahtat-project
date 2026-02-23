@@ -27,12 +27,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <span className="font-display text-lg font-bold text-primary-foreground">S</span>
-          </div>
-          <span className="font-display text-xl font-bold text-foreground">
-            Sahtat <span className="text-accent">Promotion</span>
-          </span>
+          <img src="/logo.svg" alt="Sahtat Promotion" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Nav */}
@@ -70,8 +65,8 @@ export function Navbar() {
               <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
-              <SheetTitle className="font-display text-lg">
-                Sahtat <span className="text-accent">Promotion</span>
+              <SheetTitle>
+                <img src="/logo.svg" alt="Sahtat Promotion" className="h-9 w-auto" />
               </SheetTitle>
               <nav className="mt-8 flex flex-col gap-2">
                 {navItems.map((item) => (

@@ -4,18 +4,18 @@ import { Layout } from "@/components/layout/Layout";
 import { Award, Target, Eye, Users } from "lucide-react";
 
 const team = [
-  { name: "Mohamed Sahtat", role: { en: "CEO & Founder", fr: "PDG & Fondateur", ar: "المدير العام والمؤسس" } },
-  { name: "Amina Boudjemaa", role: { en: "Director of Operations", fr: "Directrice des Opérations", ar: "مديرة العمليات" } },
-  { name: "Karim Belkacem", role: { en: "Chief Architect", fr: "Architecte en Chef", ar: "كبير المهندسين المعماريين" } },
-  { name: "Nadia Ferhat", role: { en: "Sales Director", fr: "Directrice Commerciale", ar: "مديرة المبيعات" } },
+  { name: "Direction Générale", role: { en: "Management", fr: "Direction", ar: "الإدارة العامة" } },
+  { name: "Bureau Technique", role: { en: "Technical Team", fr: "Équipe Technique", ar: "الفريق التقني" } },
+  { name: "Service Commercial", role: { en: "Sales Team", fr: "Équipe Commerciale", ar: "الفريق التجاري" } },
+  { name: "Service Client", role: { en: "Customer Service", fr: "Service Client", ar: "خدمة العملاء" } },
 ];
 
 const timeline = [
-  { year: "2012", event: { en: "Company Founded", fr: "Fondation de l'entreprise", ar: "تأسيس الشركة" } },
-  { year: "2015", event: { en: "First Major Project Delivered", fr: "Premier grand projet livré", ar: "تسليم أول مشروع كبير" } },
-  { year: "2018", event: { en: "Expansion to Oran & Constantine", fr: "Expansion vers Oran et Constantine", ar: "التوسع إلى وهران وقسنطينة" } },
-  { year: "2021", event: { en: "500+ Properties Delivered", fr: "Plus de 500 propriétés livrées", ar: "تسليم أكثر من 500 عقار" } },
-  { year: "2024", event: { en: "National Excellence Award", fr: "Prix d'excellence national", ar: "جائزة التميز الوطنية" } },
+  { year: "2015", event: { en: "Company Founded in Médéa", fr: "Fondation de l'entreprise à Médéa", ar: "تأسيس الشركة في المدية" } },
+  { year: "2017", event: { en: "First Residence Delivered – Bablakouas", fr: "Première résidence livrée – Bablakouas", ar: "تسليم أول إقامة – بابلاكواس" } },
+  { year: "2019", event: { en: "Résidence Amir – Clôturée", fr: "Résidence Amir – Clôturée", ar: "إقامة الأمير – منجزة" } },
+  { year: "2022", event: { en: "Commercial Spaces in Médéa Centre", fr: "Locaux commerciaux au centre de Médéa", ar: "محلات تجارية في وسط المدية" } },
+  { year: "2024", event: { en: "Résidence El-Quimmah – Launched in Béziouch", fr: "Résidence El-Quimmah – Lancée à Béziouch", ar: "إقامة القمة – انطلاقة في بزيوش" } },
 ];
 
 const About = () => {
