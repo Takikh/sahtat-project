@@ -2,21 +2,20 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY =
+// Public Supabase credentials (safe to embed in client-side code)
+const SUPABASE_URL =
+  import.meta.env.VITE_SUPABASE_URL ||
+  "https://nxbrcramrthbcrjisjpa.supabase.co";
+
+const SUPABASE_ANON_KEY =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY;
+  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im54YnJjcmFtcnRoYmNyamlzanBhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDkzMzcsImV4cCI6MjA4NzQyNTMzN30.riQ3Vb7bVKBvW9kiJgcoQ1-LQgwgSO3AoBqaNYkW_TI";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  throw new Error(
-    "Supabase env vars missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY)."
-  );
-}
-
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
     storage: localStorage,
     persistSession: true,
