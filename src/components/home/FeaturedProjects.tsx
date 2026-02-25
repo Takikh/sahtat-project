@@ -1,17 +1,43 @@
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { projects } from "@/data/projects";
+import { supabase } from "@/integrations/supabase/client";
+
+interface ProjectRow {
+  id: string;
+  name: string;
+  city: string;
+  status: string;
+  image_url: string | null;
+}
+
+const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 export function FeaturedProjects() {
   const { t } = useTranslation();
-  const featured = projects.slice(0, 4);
+  const [featured, setFeatured] = useState<ProjectRow[]>([]);
+
+  useEffect(() => {
+    const fetchFeatured = async () => {
+      const { data } = await supabase
+        .from("projects")
+        .select("id, name, city, status, image_url")
+        .order("created_at", { ascending: false })
+        .limit(4);
+
+      setFeatured((data as ProjectRow[]) || []);
+    };
+
+    fetchFeatured();
+  }, []);
 
   const statusColors: Record<string, string> = {
     upcoming: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    in_progress: "bg-accent/10 text-accent",
     inProgress: "bg-accent/10 text-accent",
     delivered: "bg-green-500/10 text-green-600 dark:text-green-400",
   };
@@ -39,12 +65,12 @@ export function FeaturedProjects() {
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={project.image}
+                    src={project.image_url || "/placeholder.svg"}
                     alt={project.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <Badge className={`absolute top-3 start-3 ${statusColors[project.status]}`}>
-                    {t(`featured.status.${project.status}`)}
+                  <Badge className={`absolute top-3 start-3 ${statusColors[project.status] || statusColors.inProgress}`}>
+                    {t(`featured.status.${normalizeStatus(project.status)}`)}
                   </Badge>
                 </div>
                 <div className="p-4">
