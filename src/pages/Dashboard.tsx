@@ -105,6 +105,7 @@ const Dashboard = () => {
               </Button>
             )}
             <Button
+              variant="secondary"
               onClick={signOut}
               className="bg-white text-primary font-semibold hover:bg-white/90"
             >

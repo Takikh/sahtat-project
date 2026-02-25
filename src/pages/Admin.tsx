@@ -36,29 +36,29 @@ const Admin = () => {
       <section className="py-8">
         <div className="container">
           <Tabs defaultValue="analytics">
-            <TabsList className="mb-6 flex-wrap h-auto gap-1 w-full justify-start">
-              <TabsTrigger value="analytics" className="gap-2">
+            <TabsList className="mb-6 h-auto w-full flex-wrap justify-start gap-1">
+              <TabsTrigger value="analytics" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <BarChart3 className="h-4 w-4" /> Analytiques
               </TabsTrigger>
-              <TabsTrigger value="projects" className="gap-2">
+              <TabsTrigger value="projects" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Building2 className="h-4 w-4" /> Projets
               </TabsTrigger>
-              <TabsTrigger value="progress" className="gap-2">
+              <TabsTrigger value="progress" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Construction className="h-4 w-4" /> Avancement
               </TabsTrigger>
-              <TabsTrigger value="clients" className="gap-2">
+              <TabsTrigger value="clients" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Users className="h-4 w-4" /> Propriétés Clients
               </TabsTrigger>
-              <TabsTrigger value="users" className="gap-2">
+              <TabsTrigger value="users" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <UserCog className="h-4 w-4" /> Utilisateurs
               </TabsTrigger>
-              <TabsTrigger value="news" className="gap-2">
+              <TabsTrigger value="news" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Newspaper className="h-4 w-4" /> Actualités
               </TabsTrigger>
-              <TabsTrigger value="reviews" className="gap-2">
+              <TabsTrigger value="reviews" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <MessageSquare className="h-4 w-4" /> Avis Clients
               </TabsTrigger>
-              <TabsTrigger value="contacts" className="gap-2">
+              <TabsTrigger value="contacts" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Mail className="h-4 w-4" /> Messages
               </TabsTrigger>
             </TabsList>
