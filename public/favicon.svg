@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Background -->
+  <rect width="64" height="64" rx="10" fill="#1a3a5c"/>
+  <!-- House / building icon -->
+  <polygon points="32,10 8,30 56,30" fill="#c9952a"/>
+  <rect x="14" y="30" width="36" height="24" fill="#c9952a"/>
+  <!-- Door -->
+  <rect x="26" y="40" width="12" height="14" rx="2" fill="#1a3a5c"/>
+  <!-- Windows -->
+  <rect x="16" y="33" width="8" height="7" rx="1" fill="#1a3a5c"/>
+  <rect x="40" y="33" width="8" height="7" rx="1" fill="#1a3a5c"/>
+</svg>
