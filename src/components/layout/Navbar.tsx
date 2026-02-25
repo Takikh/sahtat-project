@@ -27,7 +27,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Sahtat Promotion" className="h-10 w-auto" />
+          <img src="/logo.svg" alt="Sahtat Promotion" className="h-16 w-auto" />
         </Link>
 
         {/* Desktop Nav */}
@@ -66,7 +66,7 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="w-72">
               <SheetTitle>
-                <img src="/logo.svg" alt="Sahtat Promotion" className="h-9 w-auto" />
+                <img src="/logo.svg" alt="Sahtat Promotion" className="h-14 w-auto" />
               </SheetTitle>
               <nav className="mt-8 flex flex-col gap-2">
                 {navItems.map((item) => (
