@@ -24,7 +24,7 @@ const Admin = () => {
             <h1 className="font-display text-2xl font-bold">Tableau de Bord Admin</h1>
             <p className="mt-1 text-sm opacity-80">Gérez le contenu de votre site</p>
           </div>
-          <Button asChild variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+          <Button asChild className="bg-white text-primary font-semibold hover:bg-white/90">
             <Link to="/dashboard">
               <ArrowLeft className="me-2 h-4 w-4" />
               Mon Espace

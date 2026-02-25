@@ -97,7 +97,7 @@ const Dashboard = () => {
           </div>
           <div className="flex gap-2">
             {isAdmin && (
-              <Button asChild variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+              <Button asChild className="bg-white text-primary font-semibold hover:bg-white/90">
                 <Link to="/admin">
                   <Shield className="me-2 h-4 w-4" />
                   Admin Panel
@@ -105,9 +105,8 @@ const Dashboard = () => {
               </Button>
             )}
             <Button
-              variant="outline"
               onClick={signOut}
-              className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10"
+              className="bg-white text-primary font-semibold hover:bg-white/90"
             >
               <LogOut className="me-2 h-4 w-4" />
               Sign Out
