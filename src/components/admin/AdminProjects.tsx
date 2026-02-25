@@ -40,12 +40,25 @@ export function AdminProjects() {
   const [open, setOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const fetchProjects = async () => {
+  const fetchProjects = async (retryCount = 0) => {
     setLoading(true);
     const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
 
     if (error) {
-      toast({ title: "Failed to load projects", description: error.message, variant: "destructive" });
+      const isAbort = /abort/i.test(error.message || "");
+
+      // Supabase may occasionally abort an in-flight request during quick route/state changes.
+      // Retry once silently instead of showing a destructive error.
+      if (isAbort && retryCount < 1) {
+        setTimeout(() => {
+          fetchProjects(retryCount + 1);
+        }, 250);
+        return;
+      }
+
+      if (!isAbort) {
+        toast({ title: "Failed to load projects", description: error.message, variant: "destructive" });
+      }
       setProjects([]);
       setLoading(false);
       return;
