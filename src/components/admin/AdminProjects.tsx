@@ -34,14 +34,25 @@ const emptyForm = {
 export function AdminProjects() {
   const { toast } = useToast();
   const [projects, setProjects] = useState<ProjectRow[]>([]);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
 
   const fetchProjects = async () => {
-    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-    if (data) setProjects(data as any);
+    setLoading(true);
+    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+
+    if (error) {
+      toast({ title: "Failed to load projects", description: error.message, variant: "destructive" });
+      setProjects([]);
+      setLoading(false);
+      return;
+    }
+
+    setProjects((data as any) || []);
+    setLoading(false);
   };
 
   useEffect(() => { fetchProjects(); }, []);
@@ -214,6 +225,7 @@ export function AdminProjects() {
       </div>
 
       <div className="space-y-3">
+        {loading && <p className="text-center text-muted-foreground py-8">Loading projects...</p>}
         {projects.map((p) => (
           <div key={p.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
             <div className="flex items-center gap-4">
@@ -230,7 +242,7 @@ export function AdminProjects() {
             </div>
           </div>
         ))}
-        {projects.length === 0 && <p className="text-center text-muted-foreground py-8">No projects yet.</p>}
+        {!loading && projects.length === 0 && <p className="text-center text-muted-foreground py-8">No projects yet.</p>}
       </div>
     </div>
   );

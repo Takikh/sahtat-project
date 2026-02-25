@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
+import { projects as fallbackProjects } from "@/data/projects";
 
 interface ProjectRow {
   id: string;
@@ -18,6 +19,16 @@ interface ProjectRow {
   image_url: string | null;
 }
 
+const fallbackFeatured: ProjectRow[] = fallbackProjects.slice(0, 4).map((p) => ({
+  id: p.id,
+  slug: p.id,
+  name: p.name,
+  city: p.city,
+  type: p.type,
+  status: p.status,
+  image_url: p.image,
+}));
+
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 export function FeaturedProjects() {
@@ -26,13 +37,23 @@ export function FeaturedProjects() {
 
   useEffect(() => {
     const fetchFeatured = async () => {
-      const { data } = await supabase
-        .from("projects")
-        .select("id, slug, name, city, type, status, image_url")
-        .order("created_at", { ascending: false })
-        .limit(4);
+      try {
+        const { data, error } = await supabase
+          .from("projects")
+          .select("id, slug, name, city, type, status, image_url")
+          .order("created_at", { ascending: false })
+          .limit(4);
 
-      setFeatured((data as ProjectRow[]) || []);
+        if (error) {
+          setFeatured(fallbackFeatured);
+          return;
+        }
+
+        const rows = (data as ProjectRow[]) || [];
+        setFeatured(rows.length > 0 ? rows : fallbackFeatured);
+      } catch {
+        setFeatured(fallbackFeatured);
+      }
     };
 
     fetchFeatured();
