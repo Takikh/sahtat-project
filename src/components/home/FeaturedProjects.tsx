@@ -6,11 +6,14 @@ import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
 
 interface ProjectRow {
   id: string;
+  slug?: string;
   name: string;
   city: string;
+  type?: string;
   status: string;
   image_url: string | null;
 }
@@ -25,7 +28,7 @@ export function FeaturedProjects() {
     const fetchFeatured = async () => {
       const { data } = await supabase
         .from("projects")
-        .select("id, name, city, status, image_url")
+        .select("id, slug, name, city, type, status, image_url")
         .order("created_at", { ascending: false })
         .limit(4);
 
@@ -65,7 +68,7 @@ export function FeaturedProjects() {
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
-                    src={project.image_url || "/placeholder.svg"}
+                    src={resolveProjectImage(project)}
                     alt={project.name}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

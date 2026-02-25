@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
 
 const types = ["All", "apartment", "villa", "commercial"];
 const statuses = ["All", "upcoming", "inProgress", "delivered"];
@@ -20,6 +21,7 @@ const statusColors: Record<string, string> = {
 
 interface ProjectRow {
   id: string;
+  slug: string;
   name: string;
   city: string;
   type: string;
@@ -149,7 +151,7 @@ const Projects = () => {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
-                      src={project.image_url || "/placeholder.svg"}
+                      src={resolveProjectImage(project)}
                       alt={project.name}
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />

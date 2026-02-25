@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
 
 const statusColors: Record<string, string> = {
   upcoming: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -17,6 +18,7 @@ const statusColors: Record<string, string> = {
 
 interface ProjectRow {
   id: string;
+  slug: string;
   name: string;
   city: string;
   status: string;
@@ -92,7 +94,7 @@ const ProjectDetail = () => {
               animate={{ opacity: 1, x: 0 }}
               className="overflow-hidden rounded-xl"
             >
-              <img src={project.image_url || "/placeholder.svg"} alt={project.name} className="h-full w-full object-cover" />
+              <img src={resolveProjectImage(project)} alt={project.name} className="h-full w-full object-cover" />
             </motion.div>
 
             <motion.div
