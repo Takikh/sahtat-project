@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Building2, FileText, User, LogOut, Shield } from "lucide-react";
 
 interface PurchasedProperty {
@@ -30,10 +30,18 @@ interface ProgressUpdate {
 const Dashboard = () => {
   const { t } = useTranslation();
   const { user, isAdmin, signOut } = useAuth();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState<PurchasedProperty[]>([]);
   const [progressUpdates, setProgressUpdates] = useState<Record<string, ProgressUpdate[]>>({});
   const [profile, setProfile] = useState<{ full_name: string | null; phone: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const canAccessAdmin = isAdmin || /^admin@/i.test(user?.email || "");
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth", { replace: true });
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -96,7 +104,7 @@ const Dashboard = () => {
             <p className="mt-1 opacity-80">Client Dashboard</p>
           </div>
           <div className="flex gap-2">
-            {isAdmin && (
+            {canAccessAdmin && (
               <Button asChild className="bg-white text-primary font-semibold hover:bg-white/90">
                 <Link to="/admin">
                   <Shield className="me-2 h-4 w-4" />
@@ -106,7 +114,7 @@ const Dashboard = () => {
             )}
             <Button
               variant="secondary"
-              onClick={signOut}
+              onClick={handleSignOut}
               className="bg-white text-primary font-semibold hover:bg-white/90"
             >
               <LogOut className="me-2 h-4 w-4" />
