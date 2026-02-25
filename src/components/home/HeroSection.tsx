@@ -38,7 +38,7 @@ export function HeroSection() {
                 <ArrowRight className="ms-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
+            <Button asChild size="lg" className="bg-white text-primary font-semibold hover:bg-white/90">
               <Link to="/contact">{t("hero.ctaSecondary")}</Link>
             </Button>
           </div>

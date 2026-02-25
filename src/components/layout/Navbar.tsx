@@ -27,7 +27,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <img src="/logo.svg" alt="Sahtat Promotion" className="h-16 w-auto" />
+          <img src="/logo.svg" alt="Sahtat Promotion" className="h-20 w-auto" />
         </Link>
 
         {/* Desktop Nav */}
