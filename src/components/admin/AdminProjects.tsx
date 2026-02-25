@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 interface ProjectRow {
   id: string;
@@ -34,76 +34,16 @@ const emptyForm = {
 export function AdminProjects() {
   const { toast } = useToast();
   const [projects, setProjects] = useState<ProjectRow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(emptyForm);
   const [editId, setEditId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [uploadingImage, setUploadingImage] = useState(false);
 
-  const fetchProjects = async (retryCount = 0) => {
-    setLoading(true);
-    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-
-    if (error) {
-      const isAbort = /abort/i.test(error.message || "");
-
-      // Supabase may occasionally abort an in-flight request during quick route/state changes.
-      // Retry once silently instead of showing a destructive error.
-      if (isAbort && retryCount < 1) {
-        setTimeout(() => {
-          fetchProjects(retryCount + 1);
-        }, 250);
-        return;
-      }
-
-      if (!isAbort) {
-        toast({ title: "Failed to load projects", description: error.message, variant: "destructive" });
-      }
-      setProjects([]);
-      setLoading(false);
-      return;
-    }
-
-    setProjects((data as any) || []);
-    setLoading(false);
+  const fetchProjects = async () => {
+    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    if (data) setProjects(data as any);
   };
 
   useEffect(() => { fetchProjects(); }, []);
-
-  const handleImageUpload = async (file: File | null) => {
-    if (!file) return;
-
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      toast({ title: "Invalid file", description: "Please upload JPG, PNG, or WEBP.", variant: "destructive" });
-      return;
-    }
-
-    setUploadingImage(true);
-
-    const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-    const filePath = `projects/${Date.now()}-${safeName}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("project-images")
-      .upload(filePath, file, { upsert: true });
-
-    if (uploadError) {
-      setUploadingImage(false);
-      toast({
-        title: "Upload failed",
-        description: `${uploadError.message}. Make sure bucket 'project-images' exists and is public.`,
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const { data } = supabase.storage.from("project-images").getPublicUrl(filePath);
-
-    setForm((prev) => ({ ...prev, image_url: data.publicUrl }));
-    setUploadingImage(false);
-    toast({ title: "Image uploaded", description: "Image URL has been filled automatically." });
-  };
 
   const handleSave = async () => {
     const payload = {
@@ -201,31 +141,7 @@ export function AdminProjects() {
                   </Select>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Image URL</Label>
-                <Input value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} placeholder="https://..." />
-                <div className="flex flex-wrap items-center gap-3">
-                  <Label
-                    htmlFor="project-image-upload"
-                    className="inline-flex cursor-pointer items-center rounded-md border border-input bg-background px-3 py-2 text-sm font-medium hover:bg-accent/10"
-                  >
-                    {uploadingImage ? <Loader2 className="me-2 h-4 w-4 animate-spin" /> : <Upload className="me-2 h-4 w-4" />}
-                    {uploadingImage ? "Uploading..." : "Upload from computer"}
-                  </Label>
-                  <Input
-                    id="project-image-upload"
-                    type="file"
-                    accept="image/png,image/jpeg,image/jpg,image/webp"
-                    className="hidden"
-                    onChange={(e) => handleImageUpload(e.target.files?.[0] || null)}
-                    disabled={uploadingImage}
-                  />
-                  <p className="text-xs text-muted-foreground">Bucket: project-images</p>
-                </div>
-                {form.image_url && (
-                  <img src={form.image_url} alt="Preview" className="h-32 w-full rounded-md object-cover border border-border" />
-                )}
-              </div>
+              <div><Label>Image URL</Label><Input value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} /></div>
               <div><Label>Location</Label><Input value={form.location} onChange={e => setForm({...form, location: e.target.value})} /></div>
               <div><Label>Features (comma separated)</Label><Input value={form.features} onChange={e => setForm({...form, features: e.target.value})} /></div>
               <div><Label>Description (EN)</Label><Textarea value={form.description_en} onChange={e => setForm({...form, description_en: e.target.value})} /></div>
@@ -238,7 +154,6 @@ export function AdminProjects() {
       </div>
 
       <div className="space-y-3">
-        {loading && <p className="text-center text-muted-foreground py-8">Loading projects...</p>}
         {projects.map((p) => (
           <div key={p.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
             <div className="flex items-center gap-4">
@@ -255,7 +170,7 @@ export function AdminProjects() {
             </div>
           </div>
         ))}
-        {!loading && projects.length === 0 && <p className="text-center text-muted-foreground py-8">No projects yet.</p>}
+        {projects.length === 0 && <p className="text-center text-muted-foreground py-8">No projects yet.</p>}
       </div>
     </div>
   );

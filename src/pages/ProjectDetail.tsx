@@ -8,7 +8,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
-import { projects as fallbackProjects } from "@/data/projects";
 
 const statusColors: Record<string, string> = {
   upcoming: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -31,20 +30,6 @@ interface ProjectRow {
   location: string | null;
 }
 
-const fallbackRows: ProjectRow[] = fallbackProjects.map((p) => ({
-  id: p.id,
-  slug: p.id,
-  name: p.name,
-  city: p.city,
-  status: p.status,
-  image_url: p.image,
-  description_en: p.description.en,
-  description_fr: p.description.fr,
-  description_ar: p.description.ar,
-  features: p.features,
-  location: p.location,
-}));
-
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 const ProjectDetail = () => {
@@ -58,26 +43,14 @@ const ProjectDetail = () => {
     if (!id) return;
 
     const fetchProject = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("projects")
-          .select("*")
-          .eq("id", id)
-          .maybeSingle();
+      const { data } = await supabase
+        .from("projects")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
 
-        if (!error && data) {
-          setProject(data as ProjectRow);
-          return;
-        }
-
-        const fallback = fallbackRows.find((p) => p.id === id || p.slug === id) || null;
-        setProject(fallback);
-      } catch {
-        const fallback = fallbackRows.find((p) => p.id === id || p.slug === id) || null;
-        setProject(fallback);
-      } finally {
-        setLoading(false);
-      }
+      setProject((data as ProjectRow | null) || null);
+      setLoading(false);
     };
 
     fetchProject();

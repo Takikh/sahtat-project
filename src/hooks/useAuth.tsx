@@ -39,24 +39,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        setLoading(false);
-
         if (session?.user) {
-          checkAdminRole(session.user.id, session.user.email);
+          await checkAdminRole(session.user.id, session.user.email);
         } else {
           setIsAdmin(false);
         }
+        setLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      setLoading(false);
-
       if (session?.user) {
         checkAdminRole(session.user.id, session.user.email);
       }
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
