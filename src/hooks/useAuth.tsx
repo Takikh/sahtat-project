@@ -96,6 +96,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    if (error?.message === "Invalid login credentials") {
+      return {
+        error: new Error(
+          "Invalid login credentials. Check email/password and ensure this site uses the same Supabase project where the user was created.",
+        ),
+      };
+    }
     return { error: error as Error | null };
   };
 
