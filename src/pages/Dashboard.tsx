@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Building2, LogOut, Shield } from "lucide-react";
 
 interface PurchasedProperty {
@@ -39,6 +39,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
 
   const canAccessAdmin = isAdmin;
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const handleSignOut = async () => {
     await signOut();

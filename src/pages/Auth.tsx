@@ -12,12 +12,12 @@ import { Loader2 } from "lucide-react";
 
 const Auth = () => {
   const { t } = useTranslation();
-  const { user, signIn } = useAuth();
+  const { user, isAdmin, signIn } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ email: "", password: "" });
 
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to={isAdmin ? "/admin" : "/dashboard"} replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

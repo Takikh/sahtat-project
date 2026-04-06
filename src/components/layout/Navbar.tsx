@@ -21,7 +21,7 @@ export function Navbar() {
   const { t } = useTranslation();
   const location = useLocation();
   const [open, setOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
@@ -51,7 +51,7 @@ export function Navbar() {
 
           {user ? (
             <Button asChild variant="ghost" size="icon" title={t("common.dashboard")}>
-              <Link to="/dashboard"><LayoutDashboard className="h-5 w-5" /></Link>
+              <Link to={isAdmin ? "/admin" : "/dashboard"}><LayoutDashboard className="h-5 w-5" /></Link>
             </Button>
           ) : (
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
@@ -82,7 +82,7 @@ export function Navbar() {
                   </Link>
                 ))}
                 <Link
-                  to={user ? "/dashboard" : "/auth"}
+                  to={user ? (isAdmin ? "/admin" : "/dashboard") : "/auth"}
                   onClick={() => setOpen(false)}
                   className="rounded-md px-4 py-3 text-sm font-medium text-accent hover:bg-accent/10"
                 >
