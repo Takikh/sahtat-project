@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
+import { useToast } from "@/hooks/use-toast";
 
 const types = ["All", "apartment", "villa", "commercial"];
 const statuses = ["All", "upcoming", "inProgress", "delivered"];
@@ -39,6 +40,7 @@ const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgr
 
 const Projects = () => {
   const { t, i18n } = useTranslation();
+  const { toast } = useToast();
   const lang = (i18n.language as "en" | "fr" | "ar") || "en";
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,10 +50,21 @@ const Projects = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("projects")
         .select("*")
         .order("created_at", { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Projects unavailable",
+          description: "Database query failed. Check Supabase migrations and Vercel environment variables.",
+          variant: "destructive",
+        });
+        setProjects([]);
+        setLoading(false);
+        return;
+      }
 
       setProjects((data as ProjectRow[]) || []);
       setLoading(false);

@@ -131,8 +131,29 @@ const Contact = () => {
     setOfferLoading(false);
 
     if (error) {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
-      return;
+      const fallbackMessage = [
+        "[LAND OFFER]",
+        `Ville: ${offer.city.trim()}`,
+        offer.district.trim() ? `Zone: ${offer.district.trim()}` : null,
+        offer.areaM2 ? `Superficie: ${offer.areaM2} m²` : null,
+        offer.askingPrice ? `Prix demandé: ${offer.askingPrice} DZD` : null,
+        offer.ownershipType.trim() ? `Type propriété: ${offer.ownershipType.trim()}` : null,
+        offer.description.trim() ? `Notes: ${offer.description.trim()}` : null,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const { error: fallbackError } = await supabase.from("contact_submissions").insert({
+        name: offer.fullName.trim(),
+        email: offer.email.trim() || "no-email@land-offer.local",
+        phone: offer.phone.trim(),
+        message: fallbackMessage,
+      });
+
+      if (fallbackError) {
+        toast({ title: "Erreur", description: error.message, variant: "destructive" });
+        return;
+      }
     }
 
     setOfferSubmitted(true);
