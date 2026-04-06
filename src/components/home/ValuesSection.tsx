@@ -13,7 +13,7 @@ export function ValuesSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="bg-secondary py-20">
+    <section className="bg-secondary py-16 sm:py-20">
       <div className="container">
         <div className="text-center">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("values.sectionTitle")}</h2>
@@ -28,7 +28,7 @@ export function ValuesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-xl bg-card p-6 text-center shadow-sm transition-shadow hover:shadow-md"
+              className="h-full rounded-xl bg-card p-6 text-center shadow-sm transition-shadow hover:shadow-md"
             >
               <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-xl bg-accent/10">
                 <value.icon className="h-7 w-7 text-accent" />

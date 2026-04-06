@@ -139,5 +139,39 @@
     "formSuccess": "تم إرسال الرسالة بنجاح! سنعود إليك قريباً.",
     "whatsapp": "تحدث عبر واتساب",
     "location": "موقعنا"
+  },
+  "common": {
+    "signIn": "تسجيل الدخول",
+    "dashboard": "لوحة التحكم",
+    "loading": "جارٍ التحميل...",
+    "cancel": "إلغاء",
+    "delete": "حذف"
+  },
+  "auth": {
+    "signInTitle": "تسجيل الدخول",
+    "createAccountTitle": "إنشاء حساب",
+    "welcomeBack": "مرحباً بعودتك إلى سحتات بروموسيون",
+    "joinNow": "انضم إلى سحتات بروموسيون اليوم",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "submitSignIn": "تسجيل الدخول",
+    "submitCreateAccount": "إنشاء حساب",
+    "noAccount": "ليس لديك حساب؟ أنشئ حساباً",
+    "alreadyAccount": "لديك حساب بالفعل؟ سجّل الدخول",
+    "errorTitle": "خطأ",
+    "successTitle": "نجاح",
+    "verifyEmail": "يرجى التحقق من بريدك الإلكتروني لتأكيد الحساب."
+  },
+  "dashboard": {
+    "title": "مساحة العميل",
+    "adminPanel": "لوحة الإدارة",
+    "signOut": "تسجيل الخروج",
+    "noPropertiesTitle": "لا توجد عقارات حالياً",
+    "noPropertiesText": "بعد شراء العقار، ستتمكن من متابعة التقدم هنا.",
+    "browseProjects": "تصفح المشاريع",
+    "constructionProgress": "تقدم البناء",
+    "recentUpdates": "آخر التحديثات",
+    "unit": "وحدة"
   }
 }

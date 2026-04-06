@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import { Layout } from "@/components/layout/Layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AdminProjects } from "@/components/admin/AdminProjects";
@@ -14,8 +13,6 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare } from "lucide-react";
 
 const Admin = () => {
-  const { t } = useTranslation();
-
   return (
     <Layout>
       <section className="bg-primary py-8 text-primary-foreground">

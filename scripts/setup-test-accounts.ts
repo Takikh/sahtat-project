@@ -5,10 +5,15 @@
  * Run with: npx tsx scripts/setup-test-accounts.ts
  */
 
+import "dotenv/config";
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = 'https://qceaqlzljkxqxhqqqcdx.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFjZWFxbHpsamt4cXhocXFxY2R4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA2NDk0NjgsImV4cCI6MjA4NjIyNTQ2OH0.ng5UCsEVy-mVy02Wa_PUBKA_ePZ4Z_xpCkcMzc5Hso4';
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in environment.");
+}
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -96,8 +101,9 @@ async function main() {
         console.log(`  Access: http://localhost:8080/${account.role === 'admin' ? 'admin' : 'dashboard'}\n`);
     });
 
+    const projectId = SUPABASE_URL.replace("https://", "").replace(".supabase.co", "");
     console.log('⚠️  IMPORTANT: Admin role must be assigned manually via Supabase Dashboard');
-    console.log('   Go to: https://supabase.com/dashboard/project/qceaqlzljkxqxhqqqcdx');
+    console.log(`   Go to: https://supabase.com/dashboard/project/${projectId}`);
     console.log('   Navigate to: SQL Editor');
     console.log('   Run the SQL query shown above for the admin account\n');
 }

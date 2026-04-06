@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Award, Target, Eye, Users } from "lucide-react";
+import { Award, Target, Eye } from "lucide-react";
 
 const team = [
   { name: "Direction Générale", role: { en: "Management", fr: "Direction", ar: "الإدارة العامة" } },

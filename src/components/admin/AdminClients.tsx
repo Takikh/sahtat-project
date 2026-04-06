@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Users } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 interface PurchasedRow {
   id: string;
@@ -49,7 +50,7 @@ export function AdminClients() {
       supabase.from("projects").select("id, name"),
       supabase.from("profiles").select("user_id, full_name"),
     ]);
-    if (purchRes.data) setPurchases(purchRes.data as any);
+    if (purchRes.data) setPurchases(purchRes.data as PurchasedRow[]);
     if (projRes.data) setProjectOptions(projRes.data);
     if (profRes.data) setProfileOptions(profRes.data);
   };
@@ -164,9 +165,25 @@ export function AdminClients() {
               <Button variant="ghost" size="icon" onClick={() => { setForm({ user_id: p.user_id, project_id: p.project_id, unit_number: p.unit_number || "", purchase_date: p.purchase_date || "", progress_percent: String(p.progress_percent || 0), status: p.status || "pending" }); setEditId(p.id); setOpen(true); }}>
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => handleDelete(p.id)}>
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Remove assignment?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will unlink this client from the property assignment.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => handleDelete(p.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         ))}

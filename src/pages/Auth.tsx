@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Navigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -27,14 +27,14 @@ const Auth = () => {
     if (isLogin) {
       const { error } = await signIn(form.email, form.password);
       if (error) {
-        toast({ title: "Error", description: error.message, variant: "destructive" });
+        toast({ title: t("auth.errorTitle"), description: error.message, variant: "destructive" });
       }
     } else {
       const { error } = await signUp(form.email, form.password, form.fullName);
       if (error) {
-        toast({ title: "Error", description: error.message, variant: "destructive" });
+        toast({ title: t("auth.errorTitle"), description: error.message, variant: "destructive" });
       } else {
-        toast({ title: "Success", description: "Please check your email to verify your account." });
+        toast({ title: t("auth.successTitle"), description: t("auth.verifyEmail") });
       }
     }
     setLoading(false);
@@ -50,17 +50,17 @@ const Auth = () => {
         >
           <div className="text-center">
             <h1 className="font-display text-2xl font-bold">
-              {isLogin ? "Sign In" : "Create Account"}
+              {isLogin ? t("auth.signInTitle") : t("auth.createAccountTitle")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {isLogin ? "Welcome back to Sahtat Promotion" : "Join Sahtat Promotion today"}
+              {isLogin ? t("auth.welcomeBack") : t("auth.joinNow")}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             {!isLogin && (
               <div>
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="fullName">{t("auth.fullName")}</Label>
                 <Input
                   id="fullName"
                   value={form.fullName}
@@ -71,7 +71,7 @@ const Auth = () => {
               </div>
             )}
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("auth.email")}</Label>
               <Input
                 id="email"
                 type="email"
@@ -82,7 +82,7 @@ const Auth = () => {
               />
             </div>
             <div>
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("auth.password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -99,7 +99,7 @@ const Auth = () => {
               disabled={loading}
             >
               {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-              {isLogin ? "Sign In" : "Create Account"}
+              {isLogin ? t("auth.submitSignIn") : t("auth.submitCreateAccount")}
             </Button>
           </form>
 
@@ -109,7 +109,7 @@ const Auth = () => {
               onClick={() => setIsLogin(!isLogin)}
               className="text-sm text-accent hover:underline"
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              {isLogin ? t("auth.noAccount") : t("auth.alreadyAccount")}
             </button>
           </div>
         </motion.div>

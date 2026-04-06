@@ -19,8 +19,6 @@ export function LanguageSwitcher() {
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = lng;
   };
 
   const currentLang = languages.find((l) => l.code === i18n.language) || languages[0];

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Copy, Users, Mail, Phone, Shield, User, Trash2, Eye, EyeOff } from "lucide-react";
+import { Plus, Copy, Users, Phone, Shield, User, Eye, EyeOff } from "lucide-react";
 
 interface UserRow {
   user_id: string;
@@ -22,6 +22,8 @@ export function AdminUsers() {
   const { toast } = useToast();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [roles, setRoles] = useState<Record<string, string>>({});
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"all" | "admin" | "client">("all");
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -70,45 +72,32 @@ export function AdminUsers() {
 
     setCreating(true);
     try {
-      // Create user via signUp
-      const { data, error } = await supabase.auth.signUp({
-        email: newUser.email,
-        password: newUser.password,
-        options: {
-          data: { full_name: newUser.fullName },
+      const { data, error } = await supabase.functions.invoke("admin-create-user", {
+        body: {
+          email: newUser.email,
+          password: newUser.password,
+          fullName: newUser.fullName,
+          phone: newUser.phone || null,
+          role: newUser.role,
         },
       });
 
       if (error) throw error;
-      if (!data.user) throw new Error("User creation failed.");
-
-      // Update profile with phone if provided
-      if (newUser.phone) {
-        await supabase
-          .from("profiles")
-          .update({ phone: newUser.phone })
-          .eq("user_id", data.user.id);
-      }
-
-      // Handle role assignment – if admin role needed, update user_roles
-      if (newUser.role === "admin") {
-        await supabase
-          .from("user_roles")
-          .upsert({ user_id: data.user.id, role: "admin" });
-      }
+      if (!data?.userId) throw new Error("User creation failed.");
 
       setCreatedCredentials({ email: newUser.email, password: newUser.password });
       toast({
-        title: "✅ Client account created",
+        title: "✅ Account created",
         description: `Account for ${newUser.fullName} created. Share credentials with the client.`,
       });
       setNewUser({ email: "", password: "", fullName: "", phone: "", role: "client" });
       fetchUsers();
-    } catch (err: any) {
-      if (err.message?.includes("already registered")) {
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Failed to create account.";
+      if (message.includes("already registered")) {
         toast({ title: "Error", description: "This email is already registered.", variant: "destructive" });
       } else {
-        toast({ title: "Error", description: err.message || "Failed to create account.", variant: "destructive" });
+        toast({ title: "Error", description: message, variant: "destructive" });
       }
     }
     setCreating(false);
@@ -131,6 +120,23 @@ export function AdminUsers() {
     navigator.clipboard.writeText(text);
     toast({ title: "Copied to clipboard" });
   };
+
+  const filteredUsers = useMemo(() => {
+    const q = search.trim().toLowerCase();
+
+    return users.filter((u) => {
+      const role = roles[u.user_id] || "client";
+      const matchesRole = roleFilter === "all" || role === roleFilter;
+
+      const matchesSearch =
+        !q ||
+        (u.full_name || "").toLowerCase().includes(q) ||
+        (u.phone || "").toLowerCase().includes(q) ||
+        role.toLowerCase().includes(q);
+
+      return matchesRole && matchesSearch;
+    });
+  }, [users, roles, search, roleFilter]);
 
   return (
     <div>
@@ -262,11 +268,25 @@ export function AdminUsers() {
         </Dialog>
       </div>
 
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search users by name, phone or role..."
+          className="sm:max-w-sm"
+        />
+        <div className="flex items-center gap-2">
+          <Button variant={roleFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("all")}>All</Button>
+          <Button variant={roleFilter === "client" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("client")}>Clients</Button>
+          <Button variant={roleFilter === "admin" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("admin")}>Admins</Button>
+        </div>
+      </div>
+
       {loading ? (
         <p className="text-center text-muted-foreground py-8">Loading users...</p>
       ) : (
         <div className="space-y-3">
-          {users.map((u) => {
+          {filteredUsers.map((u) => {
             const role = roles[u.user_id] || "client";
             return (
               <div key={u.user_id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
@@ -310,8 +330,8 @@ export function AdminUsers() {
               </div>
             );
           })}
-          {users.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">No users yet.</p>
+          {filteredUsers.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">No users found for this filter.</p>
           )}
         </div>
       )}

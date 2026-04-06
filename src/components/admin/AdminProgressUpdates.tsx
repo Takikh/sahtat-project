@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, ImageIcon, ChevronDown, ChevronUp, Construction } from "lucide-react";
@@ -67,11 +68,12 @@ export function AdminProgressUpdates() {
       .order("created_at", { ascending: false });
 
     if (propRes.data) {
-      setProperties(propRes.data as any);
+      const propertyRows = propRes.data as unknown as PropertyRow[];
+      setProperties(propertyRows);
       // Fetch all progress updates
       const progressMap: Record<string, ProgressRow[]> = {};
       await Promise.all(
-        propRes.data.map(async (p: any) => {
+        propertyRows.map(async (p) => {
           const { data } = await supabase
             .from("construction_progress")
             .select("*")
@@ -303,14 +305,27 @@ export function AdminProgressUpdates() {
                                   <span className="text-xs text-muted-foreground">{update.update_date}</span>
                                 </div>
                               </div>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="shrink-0 h-7 w-7"
-                                onClick={() => handleDeleteUpdate(update.id)}
-                              >
-                                <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button variant="ghost" size="icon" className="shrink-0 h-7 w-7">
+                                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete progress update?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This progress entry will be permanently removed.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDeleteUpdate(update.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </div>
                         </div>

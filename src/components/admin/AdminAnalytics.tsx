@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, TrendingUp, Building2, Users } from "lucide-react";
 
@@ -20,6 +21,16 @@ interface ProjectInterest {
   views: number;
 }
 
+interface PageViewRow {
+  created_at: string;
+  page_path: string;
+  visitor_id: string | null;
+}
+
+interface ProjectViewRow {
+  projects: { name: string } | { name: string }[] | null;
+}
+
 const COLORS = ["hsl(var(--accent))", "hsl(var(--primary))", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#ec4899"];
 
 export function AdminAnalytics() {
@@ -30,11 +41,7 @@ export function AdminAnalytics() {
   const [totals, setTotals] = useState({ views: 0, uniqueVisitors: 0, projectViews: 0, contacts: 0 });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAnalytics();
-  }, [range]);
-
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true);
     const since = new Date();
     since.setDate(since.getDate() - parseInt(range));
@@ -46,8 +53,8 @@ export function AdminAnalytics() {
       supabase.from("contact_submissions").select("id").gte("submitted_at", sinceStr),
     ]);
 
-    const pageViews = (pageViewsRes.data || []) as any[];
-    const projectViews = (projectViewsRes.data || []) as any[];
+    const pageViews = (pageViewsRes.data || []) as PageViewRow[];
+    const projectViews = (projectViewsRes.data || []) as ProjectViewRow[];
     const contacts = contactsRes.data || [];
 
     // Daily views line chart
@@ -75,8 +82,10 @@ export function AdminAnalytics() {
 
     // Project interest pie chart
     const projMap: Record<string, number> = {};
-    projectViews.forEach((v: any) => {
-      const name = v.projects?.name || "Unknown";
+    projectViews.forEach((v) => {
+      const name = Array.isArray(v.projects)
+        ? (v.projects[0]?.name ?? "Unknown")
+        : (v.projects?.name ?? "Unknown");
       projMap[name] = (projMap[name] || 0) + 1;
     });
     const projArr = Object.entries(projMap)
@@ -94,7 +103,11 @@ export function AdminAnalytics() {
     });
 
     setLoading(false);
-  };
+  }, [range]);
+
+  useEffect(() => {
+    fetchAnalytics();
+  }, [fetchAnalytics]);
 
   const statCards = [
     { label: "Total Page Views", value: totals.views, icon: Eye, color: "text-accent" },
@@ -104,7 +117,48 @@ export function AdminAnalytics() {
   ];
 
   if (loading) {
-    return <div className="py-12 text-center text-muted-foreground">Loading analytics...</div>;
+    return (
+      <div className="space-y-6">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-5">
+                <Skeleton className="h-5 w-24" />
+                <Skeleton className="mt-3 h-8 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Daily Page Views</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-[300px] w-full" />
+          </CardContent>
+        </Card>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Top Pages</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-[300px] w-full" />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Project Interest</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Skeleton className="h-[300px] w-full" />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   return (

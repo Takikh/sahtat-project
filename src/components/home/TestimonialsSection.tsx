@@ -82,7 +82,7 @@ export function TestimonialsSection() {
   };
 
   return (
-    <section className="py-20">
+    <section className="py-16 sm:py-20">
       <div className="container">
         <div className="text-center">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("testimonials.sectionTitle")}</h2>
@@ -97,7 +97,7 @@ export function TestimonialsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.15 }}
-              className="rounded-xl border border-border bg-card p-6"
+              className="flex h-full flex-col rounded-xl border border-border bg-card p-6"
             >
               <div className="flex items-center justify-between">
                 <Quote className="h-8 w-8 text-accent/40" />

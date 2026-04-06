@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
+import { trackProjectView } from "@/hooks/usePageTracking";
 
 const statusColors: Record<string, string> = {
   upcoming: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -40,9 +41,32 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!project?.id) return;
+    trackProjectView(project.id);
+  }, [project?.id]);
+
+  useEffect(() => {
     if (!id) return;
 
     const fetchProject = async () => {
+      const bySlug = await supabase
+        .from("projects")
+        .select("*")
+        .eq("slug", id)
+        .maybeSingle();
+
+      if (bySlug.error) {
+        setProject(null);
+        setLoading(false);
+        return;
+      }
+
+      if (bySlug.data) {
+        setProject(bySlug.data as ProjectRow);
+        setLoading(false);
+        return;
+      }
+
       const { data } = await supabase
         .from("projects")
         .select("*")

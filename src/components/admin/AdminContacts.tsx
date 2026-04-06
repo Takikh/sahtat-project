@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Trash2, Mail, Eye } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Trash2, Eye } from "lucide-react";
 
 interface ContactRow {
   id: string;
@@ -16,13 +18,15 @@ interface ContactRow {
 
 export function AdminContacts() {
   const [contacts, setContacts] = useState<ContactRow[]>([]);
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "unread" | "read">("all");
 
   const fetchContacts = async () => {
     const { data } = await supabase
       .from("contact_submissions")
       .select("*")
       .order("submitted_at", { ascending: false });
-    if (data) setContacts(data as any);
+    if (data) setContacts(data as ContactRow[]);
   };
 
   useEffect(() => { fetchContacts(); }, []);
@@ -38,6 +42,23 @@ export function AdminContacts() {
   };
 
   const unreadCount = contacts.filter(c => !c.is_read).length;
+  const readCount = contacts.length - unreadCount;
+
+  const normalizedQuery = search.trim().toLowerCase();
+  const filteredContacts = contacts.filter((c) => {
+    const matchesSearch =
+      !normalizedQuery ||
+      c.name.toLowerCase().includes(normalizedQuery) ||
+      c.email.toLowerCase().includes(normalizedQuery) ||
+      c.message.toLowerCase().includes(normalizedQuery) ||
+      (c.phone || "").toLowerCase().includes(normalizedQuery);
+
+    if (!matchesSearch) return false;
+
+    if (statusFilter === "unread") return !c.is_read;
+    if (statusFilter === "read") return !!c.is_read;
+    return true;
+  });
 
   return (
     <div>
@@ -46,8 +67,28 @@ export function AdminContacts() {
         {unreadCount > 0 && <Badge className="ms-2 bg-accent text-accent-foreground">{unreadCount} new</Badge>}
       </h2>
 
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search by name, email, phone or message..."
+          className="sm:max-w-sm"
+        />
+        <div className="flex flex-wrap gap-2">
+          <Button variant={statusFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("all")}>
+            All ({contacts.length})
+          </Button>
+          <Button variant={statusFilter === "unread" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("unread")}>
+            Unread ({unreadCount})
+          </Button>
+          <Button variant={statusFilter === "read" ? "default" : "outline"} size="sm" onClick={() => setStatusFilter("read")}>
+            Read ({readCount})
+          </Button>
+        </div>
+      </div>
+
       <div className="space-y-3">
-        {contacts.map((c) => (
+        {filteredContacts.map((c) => (
           <div
             key={c.id}
             className={`rounded-lg border bg-card p-4 ${!c.is_read ? "border-accent" : "border-border"}`}
@@ -65,14 +106,30 @@ export function AdminContacts() {
                     <Eye className="h-4 w-4" />
                   </Button>
                 )}
-                <Button variant="ghost" size="icon" onClick={() => handleDelete(c.id)}>
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon"><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete message?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This message will be permanently removed.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </div>
           </div>
         ))}
-        {contacts.length === 0 && <p className="text-center text-muted-foreground py-8">No submissions yet.</p>}
+        {filteredContacts.length === 0 && <p className="text-center text-muted-foreground py-8">No submissions found for this filter.</p>}
       </div>
     </div>
   );

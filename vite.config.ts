@@ -17,4 +17,18 @@ export default defineConfig(() => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom", "react-router-dom"],
+          supabase: ["@supabase/supabase-js"],
+          i18n: ["i18next", "react-i18next", "i18next-browser-languagedetector"],
+          motion: ["framer-motion"],
+          icons: ["lucide-react"],
+          charts: ["recharts"],
+        },
+      },
+    },
+  },
 }));

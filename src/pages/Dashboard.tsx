@@ -7,8 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Link, useNavigate } from "react-router-dom";
-import { Building2, FileText, User, LogOut, Shield } from "lucide-react";
+import { Building2, LogOut, Shield } from "lucide-react";
 
 interface PurchasedProperty {
   id: string;
@@ -23,6 +24,7 @@ interface ProgressUpdate {
   id: string;
   title: string;
   description: string | null;
+  image_url: string | null;
   progress_percent: number | null;
   update_date: string;
 }
@@ -36,7 +38,7 @@ const Dashboard = () => {
   const [profile, setProfile] = useState<{ full_name: string | null; phone: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const canAccessAdmin = isAdmin || /^admin@/i.test(user?.email || "");
+  const canAccessAdmin = isAdmin;
 
   const handleSignOut = async () => {
     await signOut();
@@ -60,9 +62,10 @@ const Dashboard = () => {
       ]);
 
       if (propRes.data) {
-        setProperties(propRes.data as any);
+        const propertiesData = propRes.data as PurchasedProperty[];
+        setProperties(propertiesData);
         // Fetch progress for each property
-        const progressPromises = propRes.data.map((p: any) =>
+        const progressPromises = propertiesData.map((p) =>
           supabase
             .from("construction_progress")
             .select("*")
@@ -71,8 +74,8 @@ const Dashboard = () => {
         );
         const progressResults = await Promise.all(progressPromises);
         const progressMap: Record<string, ProgressUpdate[]> = {};
-        propRes.data.forEach((p: any, i: number) => {
-          progressMap[p.id] = (progressResults[i].data as any) || [];
+        propertiesData.forEach((p, i) => {
+          progressMap[p.id] = (progressResults[i].data as ProgressUpdate[]) || [];
         });
         setProgressUpdates(progressMap);
       }
@@ -101,14 +104,14 @@ const Dashboard = () => {
             >
               Welcome, {profile?.full_name || user?.email}
             </motion.h1>
-            <p className="mt-1 opacity-80">Client Dashboard</p>
+            <p className="mt-1 opacity-80">{t("dashboard.title")}</p>
           </div>
           <div className="flex gap-2">
             {canAccessAdmin && (
               <Button asChild className="bg-white text-primary font-semibold hover:bg-white/90">
                 <Link to="/admin">
                   <Shield className="me-2 h-4 w-4" />
-                  Admin Panel
+                  {t("dashboard.adminPanel")}
                 </Link>
               </Button>
             )}
@@ -118,7 +121,7 @@ const Dashboard = () => {
               className="bg-white text-primary font-semibold hover:bg-white/90"
             >
               <LogOut className="me-2 h-4 w-4" />
-              Sign Out
+              {t("dashboard.signOut")}
             </Button>
           </div>
         </div>
@@ -127,16 +130,36 @@ const Dashboard = () => {
       <section className="py-12">
         <div className="container">
           {loading ? (
-            <div className="text-center text-muted-foreground">Loading...</div>
+            <div className="grid gap-6 lg:grid-cols-2">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <div key={i} className="rounded-xl border border-border bg-card p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="space-y-2">
+                      <Skeleton className="h-6 w-44" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                    <Skeleton className="h-6 w-20" />
+                  </div>
+                  <div className="mt-6 space-y-2">
+                    <Skeleton className="h-4 w-36" />
+                    <Skeleton className="h-2.5 w-full" />
+                  </div>
+                  <div className="mt-6 space-y-3">
+                    <Skeleton className="h-20 w-full" />
+                    <Skeleton className="h-20 w-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : properties.length === 0 ? (
             <div className="rounded-xl border border-border bg-card p-12 text-center">
               <Building2 className="mx-auto h-12 w-12 text-muted-foreground/40" />
-              <h2 className="mt-4 font-display text-xl font-semibold">No Properties Yet</h2>
+              <h2 className="mt-4 font-display text-xl font-semibold">{t("dashboard.noPropertiesTitle")}</h2>
               <p className="mt-2 text-sm text-muted-foreground">
-                Once you purchase a property, you'll be able to track its progress here.
+                {t("dashboard.noPropertiesText")}
               </p>
               <Button asChild className="mt-6 bg-accent text-accent-foreground">
-                <Link to="/projects">Browse Projects</Link>
+                <Link to="/projects">{t("dashboard.browseProjects")}</Link>
               </Button>
             </div>
           ) : (
@@ -156,7 +179,7 @@ const Dashboard = () => {
                         </h3>
                         <p className="text-sm text-muted-foreground">{prop.projects?.city}</p>
                         {prop.unit_number && (
-                          <p className="mt-1 text-sm text-muted-foreground">Unit: {prop.unit_number}</p>
+                          <p className="mt-1 text-sm text-muted-foreground">{t("dashboard.unit")}: {prop.unit_number}</p>
                         )}
                       </div>
                       <Badge className={statusColors[prop.status || "pending"]}>
@@ -166,7 +189,7 @@ const Dashboard = () => {
 
                     <div className="mt-4">
                       <div className="flex items-center justify-between text-sm">
-                        <span>Construction Progress</span>
+                        <span>{t("dashboard.constructionProgress")}</span>
                         <span className="font-semibold">{prop.progress_percent || 0}%</span>
                       </div>
                       <Progress value={prop.progress_percent || 0} className="mt-2" />
@@ -175,13 +198,13 @@ const Dashboard = () => {
                     {/* Progress Updates */}
                     {progressUpdates[prop.id]?.length > 0 && (
                       <div className="mt-6">
-                        <h4 className="text-sm font-semibold mb-3">📋 Mises à jour récentes / Recent Updates</h4>
+                        <h4 className="text-sm font-semibold mb-3">📋 {t("dashboard.recentUpdates")}</h4>
                         <div className="mt-3 space-y-4">
                           {progressUpdates[prop.id].slice(0, 5).map((update) => (
                             <div key={update.id} className="rounded-lg border border-border bg-background overflow-hidden">
-                              {(update as any).image_url && (
+                              {update.image_url && (
                                 <img
-                                  src={(update as any).image_url}
+                                  src={update.image_url}
                                   alt={update.title}
                                   className="w-full h-40 object-cover"
                                 />

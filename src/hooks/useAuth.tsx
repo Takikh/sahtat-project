@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const checkAdminRole = async (userId: string, userEmail?: string | null) => {
+  const checkAdminRole = async (userId: string) => {
     const { data } = await supabase
       .from("user_roles")
       .select("role")
@@ -28,10 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .eq("role", "admin")
       .maybeSingle();
 
-    // Fallback: keep dashboard/admin access for designated admin account
-    // even if user_roles row was not inserted yet in Supabase.
-    const emailLooksAdmin = !!userEmail && /^admin@/i.test(userEmail);
-    setIsAdmin(!!data || emailLooksAdmin);
+    setIsAdmin(!!data);
   };
 
   useEffect(() => {
@@ -40,7 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          await checkAdminRole(session.user.id, session.user.email);
+          await checkAdminRole(session.user.id);
         } else {
           setIsAdmin(false);
         }
@@ -52,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id, session.user.email);
+        checkAdminRole(session.user.id);
       }
       setLoading(false);
     });

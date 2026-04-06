@@ -6,6 +6,7 @@ import { MapPin } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
 
@@ -86,7 +87,7 @@ const Projects = () => {
         </div>
       </section>
 
-      <section className="py-12">
+      <section className="py-12 sm:py-16">
         <div className="container">
           {/* Filters */}
           <div className="flex flex-wrap gap-3 rounded-xl bg-secondary p-4">
@@ -103,7 +104,7 @@ const Projects = () => {
                 </Button>
               ))}
             </div>
-            <div className="h-8 w-px bg-border" />
+            <div className="hidden h-8 w-px bg-border md:block" />
             <div className="flex flex-wrap gap-2">
               {types.map((type) => (
                 <Button
@@ -117,7 +118,7 @@ const Projects = () => {
                 </Button>
               ))}
             </div>
-            <div className="h-8 w-px bg-border" />
+            <div className="hidden h-8 w-px bg-border md:block" />
             <div className="flex flex-wrap gap-2">
               {statuses.map((s) => (
                 <Button
@@ -135,7 +136,19 @@ const Projects = () => {
 
           {/* Grid */}
           {loading ? (
-            <div className="py-20 text-center text-muted-foreground">Loading projects...</div>
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
+                  <Skeleton className="aspect-[4/3] w-full" />
+                  <div className="space-y-3 p-5">
+                    <Skeleton className="h-6 w-3/4" />
+                    <Skeleton className="h-4 w-1/2" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-5/6" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : (
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filtered.map((project, i) => (
@@ -144,10 +157,11 @@ const Projects = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
+                className="h-full"
               >
                 <Link
-                  to={`/projects/${project.id}`}
-                  className="group block overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
+                  to={`/projects/${project.slug || project.id}`}
+                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
@@ -159,7 +173,7 @@ const Projects = () => {
                       {t(`featured.status.${normalizeStatus(project.status)}`)}
                     </Badge>
                   </div>
-                  <div className="p-5">
+                  <div className="flex flex-1 flex-col p-5">
                     <h3 className="font-display text-lg font-semibold">{project.name}</h3>
                     <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
                       <MapPin className="h-3.5 w-3.5" />
@@ -168,7 +182,7 @@ const Projects = () => {
                     <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
                       {(lang === "fr" ? project.description_fr : lang === "ar" ? project.description_ar : project.description_en) || project.description_en}
                     </p>
-                    <div className="mt-3 flex flex-wrap gap-1">
+                    <div className="mt-4 flex flex-wrap gap-1">
                       {(project.features || []).slice(0, 3).map((f) => (
                         <span key={f} className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground">
                           {f}

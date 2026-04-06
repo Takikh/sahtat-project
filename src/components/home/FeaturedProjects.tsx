@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
 
@@ -21,8 +22,10 @@ interface ProjectRow {
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 export function FeaturedProjects() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.dir() === "rtl";
   const [featured, setFeatured] = useState<ProjectRow[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -33,6 +36,7 @@ export function FeaturedProjects() {
         .limit(4);
 
       setFeatured((data as ProjectRow[]) || []);
+      setLoading(false);
     };
 
     fetchFeatured();
@@ -46,7 +50,7 @@ export function FeaturedProjects() {
   };
 
   return (
-    <section className="py-20">
+    <section className="py-16 sm:py-20">
       <div className="container">
         <div className="text-center">
           <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("featured.sectionTitle")}</h2>
@@ -54,17 +58,28 @@ export function FeaturedProjects() {
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((project, i) => (
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
+                  <Skeleton className="aspect-[4/3] w-full" />
+                  <div className="space-y-3 p-4">
+                    <Skeleton className="h-5 w-4/5" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </div>
+              ))
+            : featured.map((project, i) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
+              className="h-full"
             >
               <Link
-                to={`/projects/${project.id}`}
-                className="group block overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
+                to={`/projects/${project.slug || project.id}`}
+                className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
               >
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <img
@@ -76,7 +91,7 @@ export function FeaturedProjects() {
                     {t(`featured.status.${normalizeStatus(project.status)}`)}
                   </Badge>
                 </div>
-                <div className="p-4">
+                <div className="flex flex-1 flex-col p-4">
                   <h3 className="font-display text-lg font-semibold">{project.name}</h3>
                   <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
                     <MapPin className="h-3.5 w-3.5" />
@@ -92,7 +107,7 @@ export function FeaturedProjects() {
           <Button asChild variant="outline" size="lg">
             <Link to="/projects">
               {t("featured.viewAll")}
-              <ArrowRight className="ms-2 h-4 w-4" />
+              <ArrowRight className={`ms-2 h-4 w-4 ${isRtl ? "rotate-180" : ""}`} />
             </Link>
           </Button>
         </div>

@@ -139,5 +139,39 @@
     "formSuccess": "Message sent successfully! We'll get back to you soon.",
     "whatsapp": "Chat on WhatsApp",
     "location": "Our Location"
+  },
+  "common": {
+    "signIn": "Sign In",
+    "dashboard": "Dashboard",
+    "loading": "Loading...",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "auth": {
+    "signInTitle": "Sign In",
+    "createAccountTitle": "Create Account",
+    "welcomeBack": "Welcome back to Sahtat Promotion",
+    "joinNow": "Join Sahtat Promotion today",
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "submitSignIn": "Sign In",
+    "submitCreateAccount": "Create Account",
+    "noAccount": "Don't have an account? Sign up",
+    "alreadyAccount": "Already have an account? Sign in",
+    "errorTitle": "Error",
+    "successTitle": "Success",
+    "verifyEmail": "Please check your email to verify your account."
+  },
+  "dashboard": {
+    "title": "Client Dashboard",
+    "adminPanel": "Admin Panel",
+    "signOut": "Sign Out",
+    "noPropertiesTitle": "No Properties Yet",
+    "noPropertiesText": "Once you purchase a property, you'll be able to track its progress here.",
+    "browseProjects": "Browse Projects",
+    "constructionProgress": "Construction Progress",
+    "recentUpdates": "Recent Updates",
+    "unit": "Unit"
   }
 }

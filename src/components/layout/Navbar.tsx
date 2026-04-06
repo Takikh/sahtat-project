@@ -50,12 +50,12 @@ export function Navbar() {
           <ThemeToggle />
 
           {user ? (
-            <Button asChild variant="ghost" size="icon" title="Dashboard">
+            <Button asChild variant="ghost" size="icon" title={t("common.dashboard")}>
               <Link to="/dashboard"><LayoutDashboard className="h-5 w-5" /></Link>
             </Button>
           ) : (
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
-              <Link to="/auth"><LogIn className="me-2 h-4 w-4" />Sign In</Link>
+              <Link to="/auth"><LogIn className="me-2 h-4 w-4" />{t("common.signIn")}</Link>
             </Button>
           )}
 
@@ -86,7 +86,7 @@ export function Navbar() {
                   onClick={() => setOpen(false)}
                   className="rounded-md px-4 py-3 text-sm font-medium text-accent hover:bg-accent/10"
                 >
-                  {user ? "Dashboard" : "Sign In"}
+                  {user ? t("common.dashboard") : t("common.signIn")}
                 </Link>
               </nav>
             </SheetContent>
