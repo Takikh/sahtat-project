@@ -15,21 +15,36 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
     throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in environment.");
 }
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const supabaseUrl = SUPABASE_URL;
+const supabaseAnonKey = SUPABASE_ANON_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface TestAccount {
     email: string;
     password: string;
     fullName: string;
-    role: 'admin' | 'client';
+    role: 'super_admin' | 'admin' | 'secretary' | 'client';
 }
 
 const testAccounts: TestAccount[] = [
+    {
+        email: 'owner@sahtat-promotion.com',
+        password: 'Owner123!',
+        fullName: 'Owner Sahtat',
+        role: 'super_admin',
+    },
     {
         email: 'admin@sahtat-promotion.com',
         password: 'Admin123!',
         fullName: 'Admin Sahtat',
         role: 'admin',
+    },
+    {
+        email: 'secretary@sahtat-promotion.com',
+        password: 'Secretary123!',
+        fullName: 'Secretary Sahtat',
+        role: 'secretary',
     },
     {
         email: 'client@test.com',
@@ -68,12 +83,12 @@ async function createTestAccount(account: TestAccount) {
 
         console.log(`✅ User created with ID: ${authData.user.id}`);
 
-        // If admin role, we need to add it manually via SQL
-        if (account.role === 'admin') {
-            console.log(`⚠️  Admin role needs to be assigned manually via Supabase Dashboard`);
+        // Staff roles must be assigned manually via SQL
+        if (account.role === 'admin' || account.role === 'secretary' || account.role === 'super_admin') {
+            console.log(`⚠️  Staff role needs to be assigned manually via Supabase Dashboard`);
             console.log(`   Run this SQL query in Supabase SQL Editor:`);
             console.log(`   INSERT INTO public.user_roles (user_id, role)`);
-            console.log(`   VALUES ('${authData.user.id}', 'admin');`);
+            console.log(`   VALUES ('${authData.user.id}', '${account.role}');`);
         }
 
         console.log(`✅ ${account.role} account created successfully!`);
@@ -98,11 +113,11 @@ async function main() {
         console.log(`${account.role.toUpperCase()}:`);
         console.log(`  Email: ${account.email}`);
         console.log(`  Password: ${account.password}`);
-        console.log(`  Access: http://localhost:8080/${account.role === 'admin' ? 'admin' : 'dashboard'}\n`);
+        console.log(`  Access: http://localhost:8080/${account.role === 'client' ? 'dashboard' : 'admin'}\n`);
     });
 
-    const projectId = SUPABASE_URL.replace("https://", "").replace(".supabase.co", "");
-    console.log('⚠️  IMPORTANT: Admin role must be assigned manually via Supabase Dashboard');
+    const projectId = supabaseUrl.replace("https://", "").replace(".supabase.co", "");
+    console.log('⚠️  IMPORTANT: Staff roles (super_admin/admin/secretary) must be assigned manually via Supabase Dashboard');
     console.log(`   Go to: https://supabase.com/dashboard/project/${projectId}`);
     console.log('   Navigate to: SQL Editor');
     console.log('   Run the SQL query shown above for the admin account\n');

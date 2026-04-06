@@ -12,11 +12,10 @@ import { Loader2 } from "lucide-react";
 
 const Auth = () => {
   const { t } = useTranslation();
-  const { user, signIn, signUp } = useAuth();
+  const { user, signIn } = useAuth();
   const { toast } = useToast();
-  const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "", fullName: "" });
+  const [form, setForm] = useState({ email: "", password: "" });
 
   if (user) return <Navigate to="/dashboard" replace />;
 
@@ -24,18 +23,9 @@ const Auth = () => {
     e.preventDefault();
     setLoading(true);
 
-    if (isLogin) {
-      const { error } = await signIn(form.email, form.password);
-      if (error) {
-        toast({ title: t("auth.errorTitle"), description: error.message, variant: "destructive" });
-      }
-    } else {
-      const { error } = await signUp(form.email, form.password, form.fullName);
-      if (error) {
-        toast({ title: t("auth.errorTitle"), description: error.message, variant: "destructive" });
-      } else {
-        toast({ title: t("auth.successTitle"), description: t("auth.verifyEmail") });
-      }
+    const { error } = await signIn(form.email, form.password);
+    if (error) {
+      toast({ title: t("auth.errorTitle"), description: error.message, variant: "destructive" });
     }
     setLoading(false);
   };
@@ -50,26 +40,14 @@ const Auth = () => {
         >
           <div className="text-center">
             <h1 className="font-display text-2xl font-bold">
-              {isLogin ? t("auth.signInTitle") : t("auth.createAccountTitle")}
+              {t("auth.signInTitle")}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              {isLogin ? t("auth.welcomeBack") : t("auth.joinNow")}
+              {t("auth.welcomeBack")}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-            {!isLogin && (
-              <div>
-                <Label htmlFor="fullName">{t("auth.fullName")}</Label>
-                <Input
-                  id="fullName"
-                  value={form.fullName}
-                  onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                  required={!isLogin}
-                  className="mt-1.5"
-                />
-              </div>
-            )}
             <div>
               <Label htmlFor="email">{t("auth.email")}</Label>
               <Input
@@ -99,19 +77,9 @@ const Auth = () => {
               disabled={loading}
             >
               {loading && <Loader2 className="me-2 h-4 w-4 animate-spin" />}
-              {isLogin ? t("auth.submitSignIn") : t("auth.submitCreateAccount")}
+              {t("auth.submitSignIn")}
             </Button>
           </form>
-
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-accent hover:underline"
-            >
-              {isLogin ? t("auth.noAccount") : t("auth.alreadyAccount")}
-            </button>
-          </div>
         </motion.div>
       </section>
     </Layout>

@@ -6,7 +6,10 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
+  role: string | null;
   isAdmin: boolean;
+  isSecretary: boolean;
+  isSuperAdmin: boolean;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
@@ -18,17 +21,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isSecretary, setIsSecretary] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
-  const checkAdminRole = async (userId: string) => {
+  const checkRole = async (userId: string) => {
     const { data } = await supabase
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
+      .returns<Array<{ role: string }>>();
 
-    setIsAdmin(!!data);
+    const roles = (data || []).map((r) => r.role);
+
+    const nextRole = roles.includes("super_admin")
+      ? "super_admin"
+      : roles.includes("admin")
+        ? "admin"
+        : roles.includes("secretary")
+          ? "secretary"
+          : roles.includes("client")
+            ? "client"
+            : null;
+
+    const staff = roles.some((r) => r === "admin" || r === "secretary" || r === "super_admin");
+
+    setRole(nextRole);
+    setIsAdmin(staff);
+    setIsSecretary(roles.includes("secretary"));
+    setIsSuperAdmin(roles.includes("super_admin"));
   };
 
   useEffect(() => {
@@ -37,9 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          await checkAdminRole(session.user.id);
+          await checkRole(session.user.id);
         } else {
+          setRole(null);
           setIsAdmin(false);
+          setIsSecretary(false);
+          setIsSuperAdmin(false);
         }
         setLoading(false);
       }
@@ -49,7 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
-        checkAdminRole(session.user.id);
+        checkRole(session.user.id);
       }
       setLoading(false);
     });
@@ -78,11 +103,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut({ scope: "global" });
     setSession(null);
     setUser(null);
+    setRole(null);
     setIsAdmin(false);
+    setIsSecretary(false);
+    setIsSuperAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, signUp, signIn, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, role, isAdmin, isSecretary, isSuperAdmin, signUp, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );

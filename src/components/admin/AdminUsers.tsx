@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Plus, Copy, Users, Phone, Shield, User, Eye, EyeOff } from "lucide-react";
 
 interface UserRow {
@@ -20,10 +21,11 @@ interface UserRow {
 
 export function AdminUsers() {
   const { toast } = useToast();
+  const { isSuperAdmin } = useAuth();
   const [users, setUsers] = useState<UserRow[]>([]);
   const [roles, setRoles] = useState<Record<string, string>>({});
   const [search, setSearch] = useState("");
-  const [roleFilter, setRoleFilter] = useState<"all" | "admin" | "client">("all");
+  const [roleFilter, setRoleFilter] = useState<"all" | "super_admin" | "admin" | "secretary" | "client">("all");
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -106,7 +108,7 @@ export function AdminUsers() {
   const handleRoleChange = async (userId: string, newRole: string) => {
     const { error } = await supabase
       .from("user_roles")
-      .upsert({ user_id: userId, role: newRole as "admin" | "client" });
+      .upsert({ user_id: userId, role: newRole as never });
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
@@ -148,12 +150,12 @@ export function AdminUsers() {
         <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) setCreatedCredentials(null); }}>
           <DialogTrigger asChild>
             <Button className="bg-accent text-accent-foreground">
-              <Plus className="me-2 h-4 w-4" /> Create Client Account
+              <Plus className="me-2 h-4 w-4" /> Create Account
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Create New Client Account</DialogTitle>
+              <DialogTitle>Create New Account</DialogTitle>
             </DialogHeader>
 
             {createdCredentials ? (
@@ -251,7 +253,9 @@ export function AdminUsers() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="client">Client</SelectItem>
+                      <SelectItem value="secretary">Secretary</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
+                      {isSuperAdmin && <SelectItem value="super_admin">Super Admin</SelectItem>}
                     </SelectContent>
                   </Select>
                 </div>
@@ -278,7 +282,11 @@ export function AdminUsers() {
         <div className="flex items-center gap-2">
           <Button variant={roleFilter === "all" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("all")}>All</Button>
           <Button variant={roleFilter === "client" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("client")}>Clients</Button>
+          <Button variant={roleFilter === "secretary" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("secretary")}>Secretaries</Button>
           <Button variant={roleFilter === "admin" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("admin")}>Admins</Button>
+          {isSuperAdmin && (
+            <Button variant={roleFilter === "super_admin" ? "default" : "outline"} size="sm" onClick={() => setRoleFilter("super_admin")}>Super Admins</Button>
+          )}
         </div>
       </div>
 
@@ -320,7 +328,9 @@ export function AdminUsers() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="client">Client</SelectItem>
+                      <SelectItem value="secretary">Secretary</SelectItem>
                       <SelectItem value="admin">Admin</SelectItem>
+                      {isSuperAdmin && <SelectItem value="super_admin">Super Admin</SelectItem>}
                     </SelectContent>
                   </Select>
                   <Badge variant={role === "admin" ? "default" : "secondary"} className="text-xs">

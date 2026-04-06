@@ -16,6 +16,12 @@ type ContactErrors = {
   message?: string;
 };
 
+type LandOfferErrors = {
+  fullName?: string;
+  phone?: string;
+  city?: string;
+};
+
 const trustStats = [
   { label: "Projets livrés", value: "10+", icon: Building2 },
   { label: "Réponse moyenne", value: "< 24h", icon: Clock3 },
@@ -29,6 +35,20 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [errors, setErrors] = useState<ContactErrors>({});
+  const [offerSubmitted, setOfferSubmitted] = useState(false);
+  const [offerLoading, setOfferLoading] = useState(false);
+  const [offerErrors, setOfferErrors] = useState<LandOfferErrors>({});
+  const [offer, setOffer] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+    city: "",
+    district: "",
+    areaM2: "",
+    askingPrice: "",
+    ownershipType: "",
+    description: "",
+  });
 
   const validate = () => {
     const nextErrors: ContactErrors = {};
@@ -73,6 +93,64 @@ const Contact = () => {
     }
   };
 
+  const validateOffer = () => {
+    const nextErrors: LandOfferErrors = {};
+
+    if (!offer.fullName.trim() || offer.fullName.trim().length < 2) {
+      nextErrors.fullName = "Veuillez entrer un nom valide.";
+    }
+
+    if (!offer.phone.trim() || offer.phone.trim().length < 8) {
+      nextErrors.phone = "Veuillez entrer un numéro de téléphone valide.";
+    }
+
+    if (!offer.city.trim()) {
+      nextErrors.city = "Veuillez indiquer la ville.";
+    }
+
+    setOfferErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleOfferSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateOffer()) return;
+
+    setOfferLoading(true);
+    const { error } = await supabase.from("land_offers" as never).insert({
+      full_name: offer.fullName.trim(),
+      phone: offer.phone.trim(),
+      email: offer.email.trim() || null,
+      city: offer.city.trim(),
+      district: offer.district.trim() || null,
+      area_m2: offer.areaM2 ? Number(offer.areaM2) : null,
+      asking_price: offer.askingPrice ? Number(offer.askingPrice) : null,
+      ownership_type: offer.ownershipType.trim() || null,
+      description: offer.description.trim() || null,
+    } as never);
+    setOfferLoading(false);
+
+    if (error) {
+      toast({ title: "Erreur", description: error.message, variant: "destructive" });
+      return;
+    }
+
+    setOfferSubmitted(true);
+    setOfferErrors({});
+    setOffer({
+      fullName: "",
+      phone: "",
+      email: "",
+      city: "",
+      district: "",
+      areaM2: "",
+      askingPrice: "",
+      ownershipType: "",
+      description: "",
+    });
+    toast({ title: "Proposition envoyée", description: "Nous vous contacterons après étude du terrain." });
+  };
+
   return (
     <Layout>
       <section className="bg-primary py-20 text-primary-foreground">
@@ -88,7 +166,7 @@ const Contact = () => {
         </div>
       </section>
 
-      <section className="py-16 pb-28 sm:py-20 md:pb-20">
+      <section className="py-16 pb-14 sm:py-20">
         <div className="container grid gap-12 lg:grid-cols-2">
           {/* Form */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
@@ -246,6 +324,129 @@ const Contact = () => {
               />
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="pb-28 md:pb-20">
+        <div className="container">
+          <div className="mb-5">
+            <h2 className="font-display text-2xl font-bold">Vous avez un terrain à vendre ?</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Soumettez les informations du terrain. Notre équipe étudie votre proposition et vous recontacte.
+            </p>
+          </div>
+
+          {offerSubmitted ? (
+            <div className="rounded-xl border border-border bg-card p-6">
+              <p className="font-semibold">Merci, votre proposition de terrain a bien été reçue.</p>
+              <p className="mt-1 text-sm text-muted-foreground">Nous reviendrons vers vous dès qu&apos;un chargé d&apos;affaires examine le dossier.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleOfferSubmit} className="rounded-xl border border-border bg-card p-6" noValidate>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <Label htmlFor="offer-full-name">Nom complet *</Label>
+                  <Input
+                    id="offer-full-name"
+                    className="mt-1.5"
+                    value={offer.fullName}
+                    onChange={(e) => setOffer({ ...offer, fullName: e.target.value })}
+                    aria-invalid={!!offerErrors.fullName}
+                  />
+                  {offerErrors.fullName && <p className="mt-1 text-xs text-destructive">{offerErrors.fullName}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="offer-phone">Téléphone *</Label>
+                  <Input
+                    id="offer-phone"
+                    className="mt-1.5"
+                    value={offer.phone}
+                    onChange={(e) => setOffer({ ...offer, phone: e.target.value })}
+                    aria-invalid={!!offerErrors.phone}
+                  />
+                  {offerErrors.phone && <p className="mt-1 text-xs text-destructive">{offerErrors.phone}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="offer-email">Email</Label>
+                  <Input
+                    id="offer-email"
+                    type="email"
+                    className="mt-1.5"
+                    value={offer.email}
+                    onChange={(e) => setOffer({ ...offer, email: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="offer-city">Ville *</Label>
+                  <Input
+                    id="offer-city"
+                    className="mt-1.5"
+                    value={offer.city}
+                    onChange={(e) => setOffer({ ...offer, city: e.target.value })}
+                    aria-invalid={!!offerErrors.city}
+                  />
+                  {offerErrors.city && <p className="mt-1 text-xs text-destructive">{offerErrors.city}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="offer-district">Quartier / Zone</Label>
+                  <Input
+                    id="offer-district"
+                    className="mt-1.5"
+                    value={offer.district}
+                    onChange={(e) => setOffer({ ...offer, district: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="offer-area">Superficie (m²)</Label>
+                  <Input
+                    id="offer-area"
+                    type="number"
+                    min={0}
+                    className="mt-1.5"
+                    value={offer.areaM2}
+                    onChange={(e) => setOffer({ ...offer, areaM2: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="offer-price">Prix demandé (DZD)</Label>
+                  <Input
+                    id="offer-price"
+                    type="number"
+                    min={0}
+                    className="mt-1.5"
+                    value={offer.askingPrice}
+                    onChange={(e) => setOffer({ ...offer, askingPrice: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="offer-owner">Type de propriété</Label>
+                  <Input
+                    id="offer-owner"
+                    className="mt-1.5"
+                    placeholder="Acte, indivision, etc."
+                    value={offer.ownershipType}
+                    onChange={(e) => setOffer({ ...offer, ownershipType: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <Label htmlFor="offer-description">Informations complémentaires</Label>
+                <Textarea
+                  id="offer-description"
+                  className="mt-1.5"
+                  rows={4}
+                  value={offer.description}
+                  onChange={(e) => setOffer({ ...offer, description: e.target.value })}
+                  placeholder="Accès, documents disponibles, contraintes urbanisme, etc."
+                />
+              </div>
+
+              <Button type="submit" className="mt-5" disabled={offerLoading}>
+                {offerLoading ? "Envoi..." : "Envoyer la proposition"}
+              </Button>
+            </form>
+          )}
         </div>
       </section>
 

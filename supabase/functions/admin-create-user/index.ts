@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-type Role = "admin" | "client";
+type Role = "admin" | "client" | "secretary" | "super_admin";
 
 type CreateUserBody = {
   email?: string;
@@ -61,14 +61,15 @@ Deno.serve(async (req) => {
       });
     }
 
-    const { data: roleRow, error: roleError } = await adminClient
+    const { data: roleRows, error: roleError } = await adminClient
       .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
+      .eq("user_id", user.id);
 
-    if (roleError || !roleRow) {
+    const callerRoles = (roleRows || []).map((r) => r.role);
+    const callerIsAdmin = callerRoles.includes("admin") || callerRoles.includes("super_admin");
+
+    if (roleError || !callerIsAdmin) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         status: 403,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -80,7 +81,21 @@ Deno.serve(async (req) => {
     const password = body.password ?? "";
     const fullName = body.fullName?.trim();
     const phone = body.phone?.trim() || null;
-    const role: Role = body.role === "admin" ? "admin" : "client";
+    const role: Role =
+      body.role === "super_admin"
+        ? "super_admin"
+        : body.role === "secretary"
+          ? "secretary"
+          : body.role === "admin"
+            ? "admin"
+            : "client";
+
+    if (role === "super_admin" && !callerRoles.includes("super_admin")) {
+      return new Response(JSON.stringify({ error: "Only super admin can create super admin accounts" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     if (!email || !fullName || password.length < 6) {
       return new Response(JSON.stringify({ error: "Invalid payload" }), {
@@ -109,8 +124,8 @@ Deno.serve(async (req) => {
       await adminClient.from("profiles").update({ phone }).eq("user_id", newUserId);
     }
 
-    if (role === "admin") {
-      await adminClient.from("user_roles").upsert({ user_id: newUserId, role: "admin" });
+    if (role !== "client") {
+      await adminClient.from("user_roles").upsert({ user_id: newUserId, role });
     }
 
     return new Response(JSON.stringify({ userId: newUserId }), {
