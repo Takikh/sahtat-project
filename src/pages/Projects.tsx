@@ -58,7 +58,7 @@ const Projects = () => {
       if (error) {
         toast({
           title: "Projects unavailable",
-          description: "Database query failed. Check Supabase migrations and Vercel environment variables.",
+          description: `Database query failed: ${error.message}`,
           variant: "destructive",
         });
         setProjects([]);
@@ -66,7 +66,15 @@ const Projects = () => {
         return;
       }
 
-      setProjects((data as ProjectRow[]) || []);
+      const rows = (data as ProjectRow[]) || [];
+      if (rows.length === 0) {
+        toast({
+          title: "No projects found",
+          description: "Projects table is empty in this Supabase project. Run the seed migration.",
+        });
+      }
+
+      setProjects(rows);
       setLoading(false);
     };
 
