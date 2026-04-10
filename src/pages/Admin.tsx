@@ -9,12 +9,15 @@ import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminProgressUpdates } from "@/components/admin/AdminProgressUpdates";
 import { AdminReviews } from "@/components/admin/AdminReviews";
 import { AdminLandOffers } from "@/components/admin/AdminLandOffers";
+import { AdminFaqs } from "@/components/admin/AdminFaqs";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned } from "lucide-react";
+import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const Admin = () => {
+  const { t } = useTranslation();
   const { isSecretary, isSuperAdmin } = useAuth();
 
   const canManageContent = isSecretary || isSuperAdmin;
@@ -25,13 +28,13 @@ const Admin = () => {
       <section className="bg-primary py-8 text-primary-foreground">
         <div className="container flex items-center justify-between">
           <div>
-            <h1 className="font-display text-2xl font-bold">Tableau de Bord Admin</h1>
-            <p className="mt-1 text-sm opacity-80">Gérez le contenu de votre site</p>
+            <h1 className="font-display text-2xl font-bold">{t("admin.title", "Admin Dashboard")}</h1>
+            <p className="mt-1 text-sm opacity-80">{t("admin.subtitle", "Manage your website content and client operations")}</p>
           </div>
           <Button asChild className="bg-white text-primary font-semibold hover:bg-white/90">
             <Link to="/dashboard">
               <ArrowLeft className="me-2 h-4 w-4" />
-              Mon Espace
+              {t("admin.backToDashboard", "My Space")}
             </Link>
           </Button>
         </div>
@@ -43,41 +46,44 @@ const Admin = () => {
             <TabsList className="mb-6 h-auto w-full flex-wrap justify-start gap-1">
               {canManageCore && (
                 <TabsTrigger value="analytics" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <BarChart3 className="h-4 w-4" /> Analytiques
+                  <BarChart3 className="h-4 w-4" /> {t("admin.tabs.analytics", "Analytics")}
                 </TabsTrigger>
               )}
               {canManageCore && (
                 <TabsTrigger value="projects" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <Building2 className="h-4 w-4" /> Projets
+                  <Building2 className="h-4 w-4" /> {t("admin.tabs.projects", "Projects")}
                 </TabsTrigger>
               )}
               <TabsTrigger value="progress" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                <Construction className="h-4 w-4" /> Avancement
+                <Construction className="h-4 w-4" /> {t("admin.tabs.progress", "Progress")}
               </TabsTrigger>
               {canManageCore && (
                 <TabsTrigger value="clients" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <Users className="h-4 w-4" /> Propriétés Clients
+                  <Users className="h-4 w-4" /> {t("admin.tabs.clients", "Client Properties")}
                 </TabsTrigger>
               )}
               {isSuperAdmin && (
                 <TabsTrigger value="users" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <UserCog className="h-4 w-4" /> Utilisateurs
+                  <UserCog className="h-4 w-4" /> {t("admin.tabs.users", "Users")}
                 </TabsTrigger>
               )}
               <TabsTrigger value="news" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                <Newspaper className="h-4 w-4" /> Actualités
+                <Newspaper className="h-4 w-4" /> {t("admin.tabs.news", "News")}
               </TabsTrigger>
               <TabsTrigger value="reviews" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                <MessageSquare className="h-4 w-4" /> Avis Clients
+                <MessageSquare className="h-4 w-4" /> {t("admin.tabs.reviews", "Reviews")}
+              </TabsTrigger>
+              <TabsTrigger value="faqs" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                <CircleHelp className="h-4 w-4" /> {t("admin.tabs.faqs", "FAQs")}
               </TabsTrigger>
               {canManageCore && (
                 <TabsTrigger value="contacts" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <Mail className="h-4 w-4" /> Messages
+                  <Mail className="h-4 w-4" /> {t("admin.tabs.messages", "Messages")}
                 </TabsTrigger>
               )}
               {canManageCore && (
                 <TabsTrigger value="land-offers" className="gap-2 font-semibold text-foreground/80 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
-                  <MapPinned className="h-4 w-4" /> Terrains
+                  <MapPinned className="h-4 w-4" /> {t("admin.tabs.landOffers", "Land Offers")}
                 </TabsTrigger>
               )}
             </TabsList>
@@ -89,6 +95,7 @@ const Admin = () => {
             {isSuperAdmin && <TabsContent value="users"><AdminUsers /></TabsContent>}
             <TabsContent value="news"><AdminNews /></TabsContent>
             <TabsContent value="reviews"><AdminReviews /></TabsContent>
+            <TabsContent value="faqs"><AdminFaqs /></TabsContent>
             {canManageCore && <TabsContent value="contacts"><AdminContacts /></TabsContent>}
             {canManageCore && <TabsContent value="land-offers"><AdminLandOffers /></TabsContent>}
           </Tabs>

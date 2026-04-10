@@ -15,6 +15,12 @@ export type NewsRow = {
   content_ar: string | null;
   image_url: string | null;
   published_at: string;
+  seo_title_en: string | null;
+  seo_title_fr: string | null;
+  seo_title_ar: string | null;
+  seo_description_en: string | null;
+  seo_description_fr: string | null;
+  seo_description_ar: string | null;
 };
 
 export function useNewsList(limit?: number) {
@@ -29,7 +35,7 @@ export function useNewsList(limit?: number) {
 
       let query = supabase
         .from("news_articles")
-        .select("id, slug, title_en, title_fr, title_ar, excerpt_en, excerpt_fr, excerpt_ar, content_en, content_fr, content_ar, image_url, published_at")
+        .select("id, slug, title_en, title_fr, title_ar, excerpt_en, excerpt_fr, excerpt_ar, content_en, content_fr, content_ar, image_url, published_at, seo_title_en, seo_title_fr, seo_title_ar, seo_description_en, seo_description_fr, seo_description_ar")
         .order("published_at", { ascending: false });
 
       if (limit) {
@@ -70,7 +76,7 @@ export function useNewsArticle(slugOrId: string | undefined) {
       setLoading(true);
       setError(null);
 
-      const selectColumns = "id, slug, title_en, title_fr, title_ar, excerpt_en, excerpt_fr, excerpt_ar, content_en, content_fr, content_ar, image_url, published_at";
+      const selectColumns = "id, slug, title_en, title_fr, title_ar, excerpt_en, excerpt_fr, excerpt_ar, content_en, content_fr, content_ar, image_url, published_at, seo_title_en, seo_title_fr, seo_title_ar, seo_description_en, seo_description_fr, seo_description_ar";
 
       const bySlug = await supabase
         .from("news_articles")

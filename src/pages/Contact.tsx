@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { MapPin, Phone, Mail, MessageCircle, Facebook, CheckCircle, Instagram, Clock3, ShieldCheck, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { useSeo } from "@/hooks/useSeo";
 
 type ContactErrors = {
   name?: string;
@@ -21,12 +23,6 @@ type LandOfferErrors = {
   phone?: string;
   city?: string;
 };
-
-const trustStats = [
-  { label: "Projets livrés", value: "10+", icon: Building2 },
-  { label: "Réponse moyenne", value: "< 24h", icon: Clock3 },
-  { label: "Accompagnement", value: "100%", icon: ShieldCheck },
-];
 
 const Contact = () => {
   const { t } = useTranslation();
@@ -50,20 +46,33 @@ const Contact = () => {
     description: "",
   });
 
+  const trustStats = [
+    { label: t("contact.trustDelivered", "Delivered projects"), value: "10+", icon: Building2 },
+    { label: t("contact.trustResponse", "Average response"), value: "< 24h", icon: Clock3 },
+    { label: t("contact.trustSupport", "Support"), value: "100%", icon: ShieldCheck },
+  ];
+
+  useSeo({
+    title: `${t("contact.title")} | Sahtat Promotion`,
+    description: t("contact.subtitle"),
+    canonicalPath: "/contact",
+    type: "website",
+  });
+
   const validate = () => {
     const nextErrors: ContactErrors = {};
 
     if (!form.name.trim() || form.name.trim().length < 2) {
-      nextErrors.name = "Veuillez entrer un nom valide (2 caractères minimum).";
+      nextErrors.name = t("contact.errors.name", "Please enter a valid name (minimum 2 characters).");
     }
 
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim());
     if (!emailOk) {
-      nextErrors.email = "Veuillez entrer une adresse email valide.";
+      nextErrors.email = t("contact.errors.email", "Please enter a valid email address.");
     }
 
     if (!form.message.trim() || form.message.trim().length < 10) {
-      nextErrors.message = "Votre message doit contenir au moins 10 caractères.";
+      nextErrors.message = t("contact.errors.message", "Your message should contain at least 10 characters.");
     }
 
     setErrors(nextErrors);
@@ -84,28 +93,29 @@ const Contact = () => {
     setLoading(false);
 
     if (error) {
-      toast({ title: "Erreur", description: error.message, variant: "destructive" });
-    } else {
-      setSubmitted(true);
-      setForm({ name: "", email: "", phone: "", message: "" });
-      setErrors({});
-      toast({ title: t("contact.formSuccess") });
+      toast({ title: t("common.error", "Error"), description: error.message, variant: "destructive" });
+      return;
     }
+
+    setSubmitted(true);
+    setForm({ name: "", email: "", phone: "", message: "" });
+    setErrors({});
+    toast({ title: t("contact.formSuccess") });
   };
 
   const validateOffer = () => {
     const nextErrors: LandOfferErrors = {};
 
     if (!offer.fullName.trim() || offer.fullName.trim().length < 2) {
-      nextErrors.fullName = "Veuillez entrer un nom valide.";
+      nextErrors.fullName = t("contact.offer.errors.fullName", "Please enter a valid full name.");
     }
 
     if (!offer.phone.trim() || offer.phone.trim().length < 8) {
-      nextErrors.phone = "Veuillez entrer un numéro de téléphone valide.";
+      nextErrors.phone = t("contact.offer.errors.phone", "Please enter a valid phone number.");
     }
 
     if (!offer.city.trim()) {
-      nextErrors.city = "Veuillez indiquer la ville.";
+      nextErrors.city = t("contact.offer.errors.city", "Please provide the city.");
     }
 
     setOfferErrors(nextErrors);
@@ -133,11 +143,11 @@ const Contact = () => {
     if (error) {
       const fallbackMessage = [
         "[LAND OFFER]",
-        `Ville: ${offer.city.trim()}`,
-        offer.district.trim() ? `Zone: ${offer.district.trim()}` : null,
-        offer.areaM2 ? `Superficie: ${offer.areaM2} m²` : null,
-        offer.askingPrice ? `Prix demandé: ${offer.askingPrice} DZD` : null,
-        offer.ownershipType.trim() ? `Type propriété: ${offer.ownershipType.trim()}` : null,
+        `City: ${offer.city.trim()}`,
+        offer.district.trim() ? `District: ${offer.district.trim()}` : null,
+        offer.areaM2 ? `Area: ${offer.areaM2} m2` : null,
+        offer.askingPrice ? `Price: ${offer.askingPrice} DZD` : null,
+        offer.ownershipType.trim() ? `Ownership: ${offer.ownershipType.trim()}` : null,
         offer.description.trim() ? `Notes: ${offer.description.trim()}` : null,
       ]
         .filter(Boolean)
@@ -151,7 +161,7 @@ const Contact = () => {
       });
 
       if (fallbackError) {
-        toast({ title: "Erreur", description: error.message, variant: "destructive" });
+        toast({ title: t("common.error", "Error"), description: error.message, variant: "destructive" });
         return;
       }
     }
@@ -169,7 +179,10 @@ const Contact = () => {
       ownershipType: "",
       description: "",
     });
-    toast({ title: "Proposition envoyée", description: "Nous vous contacterons après étude du terrain." });
+    toast({
+      title: t("contact.offer.successTitle", "Offer submitted"),
+      description: t("contact.offer.successDescription", "Our team will review your offer and contact you."),
+    });
   };
 
   return (
@@ -189,12 +202,12 @@ const Contact = () => {
 
       <section className="py-16 pb-14 sm:py-20">
         <div className="container grid gap-12 lg:grid-cols-2">
-          {/* Form */}
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
             {submitted ? (
               <div className="flex flex-col items-center justify-center rounded-xl border border-border bg-card p-12 text-center">
                 <CheckCircle className="h-16 w-16 text-green-500" />
                 <p className="mt-4 font-display text-xl font-semibold">{t("contact.formSuccess")}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{t("contact.formAfterSubmit", "Our team reviews your request and contacts you with next steps.")}</p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5 rounded-xl border border-border bg-card p-8" noValidate>
@@ -206,9 +219,9 @@ const Contact = () => {
                     autoComplete="name"
                     aria-invalid={!!errors.name}
                     className="mt-1.5"
-                    placeholder="Nom complet"
+                    placeholder={t("contact.placeholders.name", "Full name")}
                     value={form.name}
-                    onChange={e => setForm({ ...form, name: e.target.value })}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
                   />
                   {errors.name && <p className="mt-1.5 text-xs text-destructive">{errors.name}</p>}
                 </div>
@@ -221,9 +234,9 @@ const Contact = () => {
                     autoComplete="email"
                     aria-invalid={!!errors.email}
                     className="mt-1.5"
-                    placeholder="exemple@email.com"
+                    placeholder={t("contact.placeholders.email", "example@email.com")}
                     value={form.email}
-                    onChange={e => setForm({ ...form, email: e.target.value })}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
                   />
                   {errors.email && <p className="mt-1.5 text-xs text-destructive">{errors.email}</p>}
                 </div>
@@ -234,9 +247,9 @@ const Contact = () => {
                     type="tel"
                     autoComplete="tel"
                     className="mt-1.5"
-                    placeholder="0660 84 02 71"
+                    placeholder={t("contact.placeholders.phone", "Phone number")}
                     value={form.phone}
-                    onChange={e => setForm({ ...form, phone: e.target.value })}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   />
                 </div>
                 <div>
@@ -247,20 +260,22 @@ const Contact = () => {
                     rows={5}
                     aria-invalid={!!errors.message}
                     className="mt-1.5"
-                    placeholder="Décrivez votre besoin..."
+                    placeholder={t("contact.placeholders.message", "Describe your need...")}
                     value={form.message}
-                    onChange={e => setForm({ ...form, message: e.target.value })}
+                    onChange={(e) => setForm({ ...form, message: e.target.value })}
                   />
                   {errors.message && <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>}
                 </div>
+                <div className="rounded-lg border border-accent/30 bg-accent/10 p-3 text-xs text-muted-foreground">
+                  {t("contact.microcopy", "Average response time: less than one business day. Your details are used only to process your request.")}
+                </div>
                 <Button type="submit" size="lg" className="w-full bg-accent text-accent-foreground hover:bg-accent/90" disabled={loading}>
-                  {loading ? "Envoi en cours..." : t("contact.formSubmit")}
+                  {loading ? t("contact.sending", "Sending...") : t("contact.formSubmit")}
                 </Button>
               </form>
             )}
           </motion.div>
 
-          {/* Info & Map */}
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
             <div className="grid gap-3 sm:grid-cols-3">
               {trustStats.map((stat) => (
@@ -294,10 +309,8 @@ const Contact = () => {
               </div>
 
               <div className="rounded-lg border border-accent/30 bg-accent/10 p-3">
-                <p className="text-sm font-medium text-foreground">Réponse rapide garantie</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Notre équipe commerciale vous répond en général en moins de 24h ouvrées.
-                </p>
+                <p className="text-sm font-medium text-foreground">{t("contact.quickResponseTitle", "Fast response guaranteed")}</p>
+                <p className="mt-1 text-xs text-muted-foreground">{t("contact.quickResponseText", "Our commercial team usually replies in less than one business day.")}</p>
               </div>
             </div>
 
@@ -324,14 +337,13 @@ const Contact = () => {
                 href="https://www.instagram.com/sahtat_promotion_medea/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-pink-600 to-orange-500 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 <Instagram className="h-5 w-5" />
                 @sahtat_promotion_medea
               </a>
             </div>
 
-            {/* Map – Médéa city centre */}
             <div className="overflow-hidden rounded-xl border border-border">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12786.999999999998!2d2.7521!3d36.2676!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x128f9c0f3b3b3b3b%3A0x4a0a9e23b3b3c4d1!2sM%C3%A9d%C3%A9a%2C%20Alg%C3%A9rie!5e0!3m2!1sfr!2sdz!4v1700000000000!5m2!1sfr!2sdz"
@@ -348,128 +360,87 @@ const Contact = () => {
         </div>
       </section>
 
-      <section className="pb-28 md:pb-20">
+      <section className="pb-20">
         <div className="container">
           <div className="mb-5">
-            <h2 className="font-display text-2xl font-bold">Vous avez un terrain à vendre ?</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Soumettez les informations du terrain. Notre équipe étudie votre proposition et vous recontacte.
-            </p>
+            <h2 className="font-display text-2xl font-bold">{t("contact.offer.title", "Do you have land for sale?")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("contact.offer.subtitle", "Submit your land details. Our team reviews your offer and contacts you with next steps.")}</p>
           </div>
 
           {offerSubmitted ? (
             <div className="rounded-xl border border-border bg-card p-6">
-              <p className="font-semibold">Merci, votre proposition de terrain a bien été reçue.</p>
-              <p className="mt-1 text-sm text-muted-foreground">Nous reviendrons vers vous dès qu&apos;un chargé d&apos;affaires examine le dossier.</p>
+              <p className="font-semibold">{t("contact.offer.thanksTitle", "Thank you, your land offer has been received.")}</p>
+              <p className="mt-1 text-sm text-muted-foreground">{t("contact.offer.thanksSubtitle", "A business manager will review your file and contact you.")}</p>
             </div>
           ) : (
             <form onSubmit={handleOfferSubmit} className="rounded-xl border border-border bg-card p-6" noValidate>
               <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <Label htmlFor="offer-full-name">Nom complet *</Label>
-                  <Input
-                    id="offer-full-name"
-                    className="mt-1.5"
-                    value={offer.fullName}
-                    onChange={(e) => setOffer({ ...offer, fullName: e.target.value })}
-                    aria-invalid={!!offerErrors.fullName}
-                  />
+                  <Label htmlFor="offer-full-name">{t("contact.offer.fullName", "Full name")} *</Label>
+                  <Input id="offer-full-name" className="mt-1.5" value={offer.fullName} onChange={(e) => setOffer({ ...offer, fullName: e.target.value })} aria-invalid={!!offerErrors.fullName} />
                   {offerErrors.fullName && <p className="mt-1 text-xs text-destructive">{offerErrors.fullName}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="offer-phone">Téléphone *</Label>
-                  <Input
-                    id="offer-phone"
-                    className="mt-1.5"
-                    value={offer.phone}
-                    onChange={(e) => setOffer({ ...offer, phone: e.target.value })}
-                    aria-invalid={!!offerErrors.phone}
-                  />
+                  <Label htmlFor="offer-phone">{t("contact.offer.phone", "Phone")} *</Label>
+                  <Input id="offer-phone" className="mt-1.5" value={offer.phone} onChange={(e) => setOffer({ ...offer, phone: e.target.value })} aria-invalid={!!offerErrors.phone} />
                   {offerErrors.phone && <p className="mt-1 text-xs text-destructive">{offerErrors.phone}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="offer-email">Email</Label>
-                  <Input
-                    id="offer-email"
-                    type="email"
-                    className="mt-1.5"
-                    value={offer.email}
-                    onChange={(e) => setOffer({ ...offer, email: e.target.value })}
-                  />
+                  <Label htmlFor="offer-email">{t("contact.offer.email", "Email")}</Label>
+                  <Input id="offer-email" type="email" className="mt-1.5" value={offer.email} onChange={(e) => setOffer({ ...offer, email: e.target.value })} />
                 </div>
                 <div>
-                  <Label htmlFor="offer-city">Ville *</Label>
-                  <Input
-                    id="offer-city"
-                    className="mt-1.5"
-                    value={offer.city}
-                    onChange={(e) => setOffer({ ...offer, city: e.target.value })}
-                    aria-invalid={!!offerErrors.city}
-                  />
+                  <Label htmlFor="offer-city">{t("contact.offer.city", "City")} *</Label>
+                  <Input id="offer-city" className="mt-1.5" value={offer.city} onChange={(e) => setOffer({ ...offer, city: e.target.value })} aria-invalid={!!offerErrors.city} />
                   {offerErrors.city && <p className="mt-1 text-xs text-destructive">{offerErrors.city}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="offer-district">Quartier / Zone</Label>
-                  <Input
-                    id="offer-district"
-                    className="mt-1.5"
-                    value={offer.district}
-                    onChange={(e) => setOffer({ ...offer, district: e.target.value })}
-                  />
+                  <Label htmlFor="offer-district">{t("contact.offer.district", "District / Area")}</Label>
+                  <Input id="offer-district" className="mt-1.5" value={offer.district} onChange={(e) => setOffer({ ...offer, district: e.target.value })} />
                 </div>
                 <div>
-                  <Label htmlFor="offer-area">Superficie (m²)</Label>
-                  <Input
-                    id="offer-area"
-                    type="number"
-                    min={0}
-                    className="mt-1.5"
-                    value={offer.areaM2}
-                    onChange={(e) => setOffer({ ...offer, areaM2: e.target.value })}
-                  />
+                  <Label htmlFor="offer-area">{t("contact.offer.area", "Area (m2)")}</Label>
+                  <Input id="offer-area" type="number" min={0} className="mt-1.5" value={offer.areaM2} onChange={(e) => setOffer({ ...offer, areaM2: e.target.value })} />
                 </div>
                 <div>
-                  <Label htmlFor="offer-price">Prix demandé (DZD)</Label>
-                  <Input
-                    id="offer-price"
-                    type="number"
-                    min={0}
-                    className="mt-1.5"
-                    value={offer.askingPrice}
-                    onChange={(e) => setOffer({ ...offer, askingPrice: e.target.value })}
-                  />
+                  <Label htmlFor="offer-price">{t("contact.offer.price", "Asking price (DZD)")}</Label>
+                  <Input id="offer-price" type="number" min={0} className="mt-1.5" value={offer.askingPrice} onChange={(e) => setOffer({ ...offer, askingPrice: e.target.value })} />
                 </div>
                 <div>
-                  <Label htmlFor="offer-owner">Type de propriété</Label>
-                  <Input
-                    id="offer-owner"
-                    className="mt-1.5"
-                    placeholder="Acte, indivision, etc."
-                    value={offer.ownershipType}
-                    onChange={(e) => setOffer({ ...offer, ownershipType: e.target.value })}
-                  />
+                  <Label htmlFor="offer-owner">{t("contact.offer.ownership", "Ownership type")}</Label>
+                  <Input id="offer-owner" className="mt-1.5" placeholder={t("contact.offer.ownershipPlaceholder", "Title deed, shared, etc.")} value={offer.ownershipType} onChange={(e) => setOffer({ ...offer, ownershipType: e.target.value })} />
                 </div>
               </div>
 
               <div className="mt-4">
-                <Label htmlFor="offer-description">Informations complémentaires</Label>
+                <Label htmlFor="offer-description">{t("contact.offer.description", "Additional information")}</Label>
                 <Textarea
                   id="offer-description"
                   className="mt-1.5"
                   rows={4}
                   value={offer.description}
                   onChange={(e) => setOffer({ ...offer, description: e.target.value })}
-                  placeholder="Accès, documents disponibles, contraintes urbanisme, etc."
+                  placeholder={t("contact.offer.descriptionPlaceholder", "Access, available documents, urban constraints, etc.")}
                 />
               </div>
 
+              <div className="mt-4 rounded-lg border border-accent/30 bg-accent/10 p-3 text-xs text-muted-foreground">
+                {t("contact.offer.microcopy", "After submission, we check legal and location potential, then contact you for follow-up.")}
+              </div>
+
               <Button type="submit" className="mt-5" disabled={offerLoading}>
-                {offerLoading ? "Envoi..." : "Envoyer la proposition"}
+                {offerLoading ? t("contact.sending", "Sending...") : t("contact.offer.submit", "Submit land offer")}
               </Button>
             </form>
           )}
         </div>
       </section>
+
+      <FaqSection
+        page="contact"
+        title={t("contact.faqTitle", "Contact FAQ")}
+        subtitle={t("contact.faqSubtitle", "Response times, document handling, and what happens after your submission.")}
+      />
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden">
         <div className="container grid grid-cols-2 gap-2">
@@ -478,7 +449,7 @@ const Contact = () => {
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-card px-3 py-2.5 text-sm font-medium"
           >
             <Phone className="h-4 w-4" />
-            Appeler
+            {t("contact.call", "Call")}
           </a>
           <a
             href="https://wa.me/213660840271"

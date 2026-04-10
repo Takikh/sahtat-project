@@ -30,7 +30,7 @@ interface ProgressUpdate {
 }
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, isAdmin, signOut } = useAuth();
   const navigate = useNavigate();
   const [properties, setProperties] = useState<PurchasedProperty[]>([]);
@@ -96,6 +96,8 @@ const Dashboard = () => {
     pending: "bg-blue-500/10 text-blue-600",
   };
 
+  const locale = i18n.language === "fr" ? "fr-DZ" : i18n.language === "ar" ? "ar-DZ" : "en-US";
+
   return (
     <Layout>
       <section className="bg-primary py-12 text-primary-foreground">
@@ -106,7 +108,7 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               className="font-display text-3xl font-bold"
             >
-              Welcome, {profile?.full_name || user?.email}
+              {t("dashboard.welcome", { name: profile?.full_name || user?.email || "" })}
             </motion.h1>
             <p className="mt-1 opacity-80">{t("dashboard.title")}</p>
           </div>
@@ -179,7 +181,7 @@ const Dashboard = () => {
                     <div className="flex items-start justify-between">
                       <div>
                         <h3 className="font-display text-lg font-semibold">
-                          {prop.projects?.name || "Property"}
+                          {prop.projects?.name || t("dashboard.propertyFallback", "Property")}
                         </h3>
                         <p className="text-sm text-muted-foreground">{prop.projects?.city}</p>
                         {prop.unit_number && (
@@ -187,7 +189,7 @@ const Dashboard = () => {
                         )}
                       </div>
                       <Badge className={statusColors[prop.status || "pending"]}>
-                        {prop.status?.replace("_", " ")}
+                        {t(`dashboard.status.${prop.status || "pending"}`, { defaultValue: (prop.status || "pending").replace("_", " ") })}
                       </Badge>
                     </div>
 
@@ -202,7 +204,7 @@ const Dashboard = () => {
                     {/* Progress Updates */}
                     {progressUpdates[prop.id]?.length > 0 && (
                       <div className="mt-6">
-                        <h4 className="text-sm font-semibold mb-3">📋 {t("dashboard.recentUpdates")}</h4>
+                        <h4 className="mb-3 text-sm font-semibold">{t("dashboard.recentUpdates")}</h4>
                         <div className="mt-3 space-y-4">
                           {progressUpdates[prop.id].slice(0, 5).map((update) => (
                             <div key={update.id} className="rounded-lg border border-border bg-background overflow-hidden">
@@ -223,7 +225,7 @@ const Dashboard = () => {
                                 {update.description && (
                                   <p className="text-xs text-muted-foreground mt-0.5">{update.description}</p>
                                 )}
-                                <p className="mt-1 text-xs text-muted-foreground">{new Date(update.update_date).toLocaleDateString("fr-DZ")}</p>
+                                <p className="mt-1 text-xs text-muted-foreground">{new Date(update.update_date).toLocaleDateString(locale)}</p>
                               </div>
                             </div>
                           ))}

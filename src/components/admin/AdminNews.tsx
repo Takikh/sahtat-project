@@ -16,16 +16,27 @@ interface NewsRow {
   title_fr: string | null;
   title_ar: string | null;
   excerpt_en: string | null;
+  excerpt_fr: string | null;
+  excerpt_ar: string | null;
   content_en: string | null;
   content_fr: string | null;
   content_ar: string | null;
   image_url: string | null;
   published_at: string;
+  seo_title_en: string | null;
+  seo_title_fr: string | null;
+  seo_title_ar: string | null;
+  seo_description_en: string | null;
+  seo_description_fr: string | null;
+  seo_description_ar: string | null;
 }
 
 const emptyForm = {
   slug: "", title_en: "", title_fr: "", title_ar: "",
-  excerpt_en: "", content_en: "", content_fr: "", content_ar: "",
+  excerpt_en: "", excerpt_fr: "", excerpt_ar: "",
+  content_en: "", content_fr: "", content_ar: "",
+  seo_title_en: "", seo_title_fr: "", seo_title_ar: "",
+  seo_description_en: "", seo_description_fr: "", seo_description_ar: "",
   image_url: "", published_at: new Date().toISOString().split("T")[0],
 };
 
@@ -50,9 +61,17 @@ export function AdminNews() {
       title_fr: form.title_fr || null,
       title_ar: form.title_ar || null,
       excerpt_en: form.excerpt_en || null,
+      excerpt_fr: form.excerpt_fr || null,
+      excerpt_ar: form.excerpt_ar || null,
       content_en: form.content_en || null,
       content_fr: form.content_fr || null,
       content_ar: form.content_ar || null,
+      seo_title_en: form.seo_title_en || null,
+      seo_title_fr: form.seo_title_fr || null,
+      seo_title_ar: form.seo_title_ar || null,
+      seo_description_en: form.seo_description_en || null,
+      seo_description_fr: form.seo_description_fr || null,
+      seo_description_ar: form.seo_description_ar || null,
       image_url: form.image_url || null,
       published_at: form.published_at,
     };
@@ -79,8 +98,11 @@ export function AdminNews() {
     setForm({
       slug: a.slug, title_en: a.title_en, title_fr: a.title_fr || "",
       title_ar: a.title_ar || "", excerpt_en: a.excerpt_en || "",
+      excerpt_fr: a.excerpt_fr || "", excerpt_ar: a.excerpt_ar || "",
       content_en: a.content_en || "", content_fr: a.content_fr || "",
       content_ar: a.content_ar || "", image_url: a.image_url || "",
+      seo_title_en: a.seo_title_en || "", seo_title_fr: a.seo_title_fr || "", seo_title_ar: a.seo_title_ar || "",
+      seo_description_en: a.seo_description_en || "", seo_description_fr: a.seo_description_fr || "", seo_description_ar: a.seo_description_ar || "",
       published_at: a.published_at,
     });
     setEditId(a.id);
@@ -112,9 +134,19 @@ export function AdminNews() {
                 <div><Label>Title (AR)</Label><Input value={form.title_ar} onChange={e => setForm({...form, title_ar: e.target.value})} dir="rtl" /></div>
               </div>
               <div><Label>Excerpt (EN)</Label><Textarea value={form.excerpt_en} onChange={e => setForm({...form, excerpt_en: e.target.value})} rows={2} /></div>
+              <div><Label>Excerpt (FR)</Label><Textarea value={form.excerpt_fr} onChange={e => setForm({...form, excerpt_fr: e.target.value})} rows={2} /></div>
+              <div><Label>Excerpt (AR)</Label><Textarea value={form.excerpt_ar} onChange={e => setForm({...form, excerpt_ar: e.target.value})} rows={2} dir="rtl" /></div>
               <div><Label>Content (EN)</Label><Textarea value={form.content_en} onChange={e => setForm({...form, content_en: e.target.value})} rows={4} /></div>
               <div><Label>Content (FR)</Label><Textarea value={form.content_fr} onChange={e => setForm({...form, content_fr: e.target.value})} rows={4} /></div>
               <div><Label>Content (AR)</Label><Textarea value={form.content_ar} onChange={e => setForm({...form, content_ar: e.target.value})} rows={4} dir="rtl" /></div>
+
+              <div><Label>SEO title (EN)</Label><Input value={form.seo_title_en} onChange={e => setForm({...form, seo_title_en: e.target.value})} /></div>
+              <div><Label>SEO title (FR)</Label><Input value={form.seo_title_fr} onChange={e => setForm({...form, seo_title_fr: e.target.value})} /></div>
+              <div><Label>SEO title (AR)</Label><Input value={form.seo_title_ar} onChange={e => setForm({...form, seo_title_ar: e.target.value})} dir="rtl" /></div>
+              <div><Label>SEO description (EN)</Label><Textarea value={form.seo_description_en} onChange={e => setForm({...form, seo_description_en: e.target.value})} rows={2} /></div>
+              <div><Label>SEO description (FR)</Label><Textarea value={form.seo_description_fr} onChange={e => setForm({...form, seo_description_fr: e.target.value})} rows={2} /></div>
+              <div><Label>SEO description (AR)</Label><Textarea value={form.seo_description_ar} onChange={e => setForm({...form, seo_description_ar: e.target.value})} rows={2} dir="rtl" /></div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Image URL</Label><Input value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} /></div>
                 <div><Label>Published Date</Label><Input type="date" value={form.published_at} onChange={e => setForm({...form, published_at: e.target.value})} /></div>

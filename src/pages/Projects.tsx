@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
+import { Check, MapPin, Scale, Wallet, CalendarDays, Layers } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
 import { useToast } from "@/hooks/use-toast";
+import { ProjectCityMap } from "@/components/projects/ProjectCityMap";
+import { ProjectCompareDialog } from "@/components/projects/ProjectCompareDialog";
+import { FaqSection } from "@/components/shared/FaqSection";
+import { formatAreaRange, formatPriceRange, pickLocalized, toStringArray } from "@/lib/projectContent";
+import { useSeo } from "@/hooks/useSeo";
 
 const types = ["All", "apartment", "villa", "commercial"];
 const statuses = ["All", "upcoming", "inProgress", "delivered"];
@@ -32,8 +37,17 @@ interface ProjectRow {
   description_en: string | null;
   description_fr: string | null;
   description_ar: string | null;
-  features: string[] | null;
+  features: unknown;
   location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  price_min_dzd: number | null;
+  price_max_dzd: number | null;
+  area_min_m2: number | null;
+  area_max_m2: number | null;
+  units_left: number | null;
+  total_units: number | null;
+  delivery_date: string | null;
 }
 
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
@@ -42,11 +56,20 @@ const Projects = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
   const lang = (i18n.language as "en" | "fr" | "ar") || "en";
+  const locale = lang === "fr" ? "fr-DZ" : lang === "ar" ? "ar-DZ" : "en-US";
   const [projects, setProjects] = useState<ProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [cityFilter, setCityFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+
+  useSeo({
+    title: `${t("projects.title")} | Sahtat Promotion`,
+    description: t("projects.subtitle"),
+    canonicalPath: "/projects",
+    type: "website",
+  });
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -70,7 +93,7 @@ const Projects = () => {
       if (rows.length === 0) {
         toast({
           title: "No projects found",
-          description: "Projects table is empty in this Supabase project. Run the seed migration.",
+          description: "Projects table is empty in this Supabase project. Run the latest migration and seed data.",
         });
       }
 
@@ -86,12 +109,42 @@ const Projects = () => {
     return ["All", ...uniqueCities];
   }, [projects]);
 
-  const filtered = projects.filter((p) => {
-    if (cityFilter !== "All" && p.city !== cityFilter) return false;
-    if (typeFilter !== "All" && p.type !== typeFilter) return false;
-    if (statusFilter !== "All" && normalizeStatus(p.status) !== statusFilter) return false;
+  const filtered = projects.filter((project) => {
+    if (cityFilter !== "All" && project.city !== cityFilter) return false;
+    if (typeFilter !== "All" && project.type !== typeFilter) return false;
+    if (statusFilter !== "All" && normalizeStatus(project.status) !== statusFilter) return false;
     return true;
   });
+
+  const compareSelection = projects
+    .filter((project) => compareIds.includes(project.id))
+    .map((project) => ({
+      id: project.id,
+      name: project.name,
+      location: project.location,
+      city: project.city,
+      status: normalizeStatus(project.status),
+      price_min_dzd: project.price_min_dzd,
+      price_max_dzd: project.price_max_dzd,
+      area_min_m2: project.area_min_m2,
+      area_max_m2: project.area_max_m2,
+      units_left: project.units_left,
+      delivery_date: project.delivery_date,
+    }));
+
+  const toggleCompare = (projectId: string) => {
+    setCompareIds((prev) => {
+      if (prev.includes(projectId)) return prev.filter((id) => id !== projectId);
+      if (prev.length >= 3) {
+        toast({
+          title: "Comparison limit reached",
+          description: "You can compare up to 3 projects at the same time.",
+        });
+        return prev;
+      }
+      return [...prev, projectId];
+    });
+  };
 
   return (
     <Layout>
@@ -109,8 +162,25 @@ const Projects = () => {
       </section>
 
       <section className="py-12 sm:py-16">
-        <div className="container">
-          {/* Filters */}
+        <div className="container space-y-6">
+          <div className="rounded-xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold">{t("projects.mapBrowseTitle", "Map browse by city")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t("projects.mapBrowseSubtitle", "Select a city pin to instantly filter projects and compare local availability.")}</p>
+            <div className="mt-4">
+              <ProjectCityMap
+                projects={projects.map((project) => ({
+                  id: project.id,
+                  city: project.city,
+                  latitude: project.latitude,
+                  longitude: project.longitude,
+                  name: project.name,
+                }))}
+                selectedCity={cityFilter}
+                onSelectCity={setCityFilter}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-3 rounded-xl bg-secondary p-4">
             <div className="flex flex-wrap gap-2">
               {cities.map((city) => (
@@ -141,23 +211,27 @@ const Projects = () => {
             </div>
             <div className="hidden h-8 w-px bg-border md:block" />
             <div className="flex flex-wrap gap-2">
-              {statuses.map((s) => (
+              {statuses.map((status) => (
                 <Button
-                  key={s}
-                  variant={statusFilter === s ? "default" : "ghost"}
+                  key={status}
+                  variant={statusFilter === status ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setStatusFilter(s)}
-                  className={statusFilter === s ? "bg-accent text-accent-foreground" : ""}
+                  onClick={() => setStatusFilter(status)}
+                  className={statusFilter === status ? "bg-accent text-accent-foreground" : ""}
                 >
-                  {s === "All" ? t("projects.filterAll") : t(`featured.status.${s}`)}
+                  {status === "All" ? t("projects.filterAll") : t(`featured.status.${status}`)}
                 </Button>
               ))}
             </div>
           </div>
 
-          {/* Grid */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-muted-foreground">{filtered.length} {t("projects.results", "projects found")}</p>
+            <ProjectCompareDialog selected={compareSelection} locale={locale} onClear={() => setCompareIds([])} />
+          </div>
+
           {loading ? (
-            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="overflow-hidden rounded-xl border border-border bg-card">
                   <Skeleton className="aspect-[4/3] w-full" />
@@ -170,60 +244,96 @@ const Projects = () => {
                 </div>
               ))}
             </div>
+          ) : filtered.length === 0 ? (
+            <div className="rounded-xl border border-border bg-card p-8 text-center">
+              <p className="font-semibold">{t("projects.emptyTitle", "No projects match your filters")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("projects.emptySubtitle", "Try adjusting your city, type, or status filters to see available projects.")}</p>
+              <div className="mt-5 flex flex-wrap justify-center gap-2">
+                <Button variant="outline" onClick={() => { setCityFilter("All"); setTypeFilter("All"); setStatusFilter("All"); }}>
+                  {t("projects.resetFilters", "Reset filters")}
+                </Button>
+                <Button variant="outline" onClick={() => setStatusFilter("delivered")}>{t("projects.showDelivered", "Show delivered")}</Button>
+                <Button variant="outline" onClick={() => setStatusFilter("inProgress")}>{t("projects.showInProgress", "Show in progress")}</Button>
+              </div>
+            </div>
           ) : (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((project, i) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="h-full"
-              >
-                <Link
-                  to={`/projects/${project.slug || project.id}`}
-                  className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
-                >
-                  <div className="relative aspect-[4/3] overflow-hidden">
-                    <img
-                      src={resolveProjectImage(project)}
-                      alt={project.name}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <Badge className={`absolute top-3 start-3 ${statusColors[project.status] || statusColors.inProgress}`}>
-                      {t(`featured.status.${normalizeStatus(project.status)}`)}
-                    </Badge>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="font-display text-lg font-semibold">{project.name}</h3>
-                    <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {project.location || project.city}
-                    </p>
-                    <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-                      {(lang === "fr" ? project.description_fr : lang === "ar" ? project.description_ar : project.description_en) || project.description_en}
-                    </p>
-                    <div className="mt-4 flex flex-wrap gap-1">
-                      {(project.features || []).slice(0, 3).map((f) => (
-                        <span key={f} className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground">
-                          {f}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-          )}
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((project, i) => {
+                const selected = compareIds.includes(project.id);
+                const description = pickLocalized(lang, project.description_en, project.description_fr, project.description_ar);
 
-          {filtered.length === 0 && (
-            <div className="py-20 text-center text-muted-foreground">
-              No projects found matching your criteria.
+                return (
+                  <motion.div
+                    key={project.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    className="relative h-full"
+                  >
+                    <Button
+                      type="button"
+                      variant={selected ? "default" : "secondary"}
+                      size="sm"
+                      className="absolute end-3 top-3 z-20"
+                      onClick={() => toggleCompare(project.id)}
+                    >
+                      {selected ? <Check className="me-1 h-4 w-4" /> : null}
+                      {selected ? t("projects.selected", "Selected") : t("projects.compare", "Compare")}
+                    </Button>
+
+                    <Link
+                      to={`/projects/${project.slug || project.id}`}
+                      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card transition-shadow hover:shadow-lg"
+                    >
+                      <div className="relative aspect-[4/3] overflow-hidden">
+                        <img
+                          src={resolveProjectImage(project)}
+                          alt={project.name}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <Badge className={`absolute start-3 top-3 ${statusColors[project.status] || statusColors.inProgress}`}>
+                          {t(`featured.status.${normalizeStatus(project.status)}`)}
+                        </Badge>
+                      </div>
+
+                      <div className="flex flex-1 flex-col p-5">
+                        <h3 className="font-display text-lg font-semibold">{project.name}</h3>
+                        <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
+                          <MapPin className="h-3.5 w-3.5" />
+                          {project.location || project.city}
+                        </p>
+
+                        <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{description}</p>
+
+                        <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-muted-foreground">
+                          <div className="inline-flex items-center gap-1"><Wallet className="h-3.5 w-3.5" />{formatPriceRange(project.price_min_dzd, project.price_max_dzd, locale) || "N/A"}</div>
+                          <div className="inline-flex items-center gap-1"><Scale className="h-3.5 w-3.5" />{formatAreaRange(project.area_min_m2, project.area_max_m2, locale) || "N/A"}</div>
+                          <div className="inline-flex items-center gap-1"><Layers className="h-3.5 w-3.5" />{project.units_left !== null ? `${project.units_left} left` : "N/A"}</div>
+                          <div className="inline-flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" />{project.delivery_date || "N/A"}</div>
+                        </div>
+
+                        <div className="mt-4 flex flex-wrap gap-1">
+                          {toStringArray(project.features as never).slice(0, 3).map((feature) => (
+                            <span key={feature} className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground">
+                              {feature}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
           )}
         </div>
       </section>
+
+      <FaqSection
+        page="projects"
+        title={t("projects.faqTitle", "Projects FAQ")}
+        subtitle={t("projects.faqSubtitle", "Payment plans, booking documents, handover process, and more.")}
+      />
     </Layout>
   );
 };

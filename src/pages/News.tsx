@@ -5,12 +5,21 @@ import { Calendar, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useNewsList, type NewsRow } from "@/hooks/useNews";
+import { useSeo } from "@/hooks/useSeo";
 
 const News = () => {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language as "en" | "fr" | "ar") || "en";
+  const locale = lang === "fr" ? "fr-DZ" : lang === "ar" ? "ar-DZ" : "en-US";
   const isRtl = i18n.dir() === "rtl";
   const { articles, loading, error } = useNewsList();
+
+  useSeo({
+    title: `${t("news.title")} | Sahtat Promotion`,
+    description: t("news.subtitle"),
+    canonicalPath: "/news",
+    type: "website",
+  });
 
   const getTitle = (article: NewsRow) => {
     if (lang === "fr") return article.title_fr || article.title_en;
@@ -22,6 +31,16 @@ const News = () => {
     if (lang === "fr") return article.excerpt_fr || article.excerpt_en || "";
     if (lang === "ar") return article.excerpt_ar || article.excerpt_en || "";
     return article.excerpt_en || "";
+  };
+
+  const getPublishedDate = (article: NewsRow) => {
+    const parsed = new Date(article.published_at);
+    if (Number.isNaN(parsed.getTime())) return article.published_at;
+    return new Intl.DateTimeFormat(locale, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(parsed);
   };
 
   return (
@@ -81,7 +100,7 @@ const News = () => {
                   <div className="flex flex-1 flex-col p-6">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
                       <Calendar className="h-3.5 w-3.5" />
-                      {article.published_at}
+                      {getPublishedDate(article)}
                     </div>
                     <h2 className="mt-3 font-display text-lg font-semibold line-clamp-2">
                       {getTitle(article)}

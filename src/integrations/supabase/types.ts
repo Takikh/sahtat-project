@@ -85,6 +85,57 @@ export type Database = {
         }
         Relationships: []
       }
+      land_offers: {
+        Row: {
+          area_m2: number | null
+          asking_price: number | null
+          city: string
+          description: string | null
+          district: string | null
+          email: string | null
+          full_name: string
+          id: string
+          is_read: boolean
+          ownership_type: string | null
+          phone: string
+          status: string
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          area_m2?: number | null
+          asking_price?: number | null
+          city: string
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          full_name: string
+          id?: string
+          is_read?: boolean
+          ownership_type?: string | null
+          phone: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Update: {
+          area_m2?: number | null
+          asking_price?: number | null
+          city?: string
+          description?: string | null
+          district?: string | null
+          email?: string | null
+          full_name?: string
+          id?: string
+          is_read?: boolean
+          ownership_type?: string | null
+          phone?: string
+          status?: string
+          submitted_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       news_articles: {
         Row: {
           content_ar: string | null
@@ -97,6 +148,12 @@ export type Database = {
           id: string
           image_url: string | null
           published_at: string
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_description_fr: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
+          seo_title_fr: string | null
           slug: string
           title_ar: string | null
           title_en: string
@@ -114,6 +171,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           published_at?: string
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
+          seo_title_fr?: string | null
           slug: string
           title_ar?: string | null
           title_en: string
@@ -131,6 +194,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           published_at?: string
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
+          seo_title_fr?: string | null
           slug?: string
           title_ar?: string | null
           title_en?: string
@@ -227,52 +296,163 @@ export type Database = {
       }
       projects: {
         Row: {
+          area_max_m2: number | null
+          area_min_m2: number | null
           city: string
+          construction_timeline: Json
           created_at: string
+          delivery_date: string | null
           description_ar: string | null
           description_en: string | null
           description_fr: string | null
           features: Json | null
+          floor_plan_urls: Json
+          for_whom_ar: string | null
+          for_whom_en: string | null
+          for_whom_fr: string | null
+          gallery_urls: Json
+          guarantee_ar: string | null
+          guarantee_en: string | null
+          guarantee_fr: string | null
           id: string
           image_url: string | null
+          included_ar: string | null
+          included_en: string | null
+          included_fr: string | null
+          latitude: number | null
           location: string | null
+          longitude: number | null
           name: string
+          payment_plan_ar: string | null
+          payment_plan_en: string | null
+          payment_plan_fr: string | null
+          price_max_dzd: number | null
+          price_min_dzd: number | null
+          seo_description_ar: string | null
+          seo_description_en: string | null
+          seo_description_fr: string | null
+          seo_title_ar: string | null
+          seo_title_en: string | null
+          seo_title_fr: string | null
+          short_video_url: string | null
           slug: string
           status: string
+          total_units: number | null
           type: string
+          units_left: number | null
           updated_at: string
+          what_ar: string | null
+          what_en: string | null
+          what_fr: string | null
+          why_now_ar: string | null
+          why_now_en: string | null
+          why_now_fr: string | null
         }
         Insert: {
+          area_max_m2?: number | null
+          area_min_m2?: number | null
           city: string
+          construction_timeline?: Json
           created_at?: string
+          delivery_date?: string | null
           description_ar?: string | null
           description_en?: string | null
           description_fr?: string | null
           features?: Json | null
+          floor_plan_urls?: Json
+          for_whom_ar?: string | null
+          for_whom_en?: string | null
+          for_whom_fr?: string | null
+          gallery_urls?: Json
+          guarantee_ar?: string | null
+          guarantee_en?: string | null
+          guarantee_fr?: string | null
           id?: string
           image_url?: string | null
+          included_ar?: string | null
+          included_en?: string | null
+          included_fr?: string | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           name: string
+          payment_plan_ar?: string | null
+          payment_plan_en?: string | null
+          payment_plan_fr?: string | null
+          price_max_dzd?: number | null
+          price_min_dzd?: number | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
+          seo_title_fr?: string | null
+          short_video_url?: string | null
           slug: string
           status: string
+          total_units?: number | null
           type: string
+          units_left?: number | null
           updated_at?: string
+          what_ar?: string | null
+          what_en?: string | null
+          what_fr?: string | null
+          why_now_ar?: string | null
+          why_now_en?: string | null
+          why_now_fr?: string | null
         }
         Update: {
+          area_max_m2?: number | null
+          area_min_m2?: number | null
           city?: string
+          construction_timeline?: Json
           created_at?: string
+          delivery_date?: string | null
           description_ar?: string | null
           description_en?: string | null
           description_fr?: string | null
           features?: Json | null
+          floor_plan_urls?: Json
+          for_whom_ar?: string | null
+          for_whom_en?: string | null
+          for_whom_fr?: string | null
+          gallery_urls?: Json
+          guarantee_ar?: string | null
+          guarantee_en?: string | null
+          guarantee_fr?: string | null
           id?: string
           image_url?: string | null
+          included_ar?: string | null
+          included_en?: string | null
+          included_fr?: string | null
+          latitude?: number | null
           location?: string | null
+          longitude?: number | null
           name?: string
+          payment_plan_ar?: string | null
+          payment_plan_en?: string | null
+          payment_plan_fr?: string | null
+          price_max_dzd?: number | null
+          price_min_dzd?: number | null
+          seo_description_ar?: string | null
+          seo_description_en?: string | null
+          seo_description_fr?: string | null
+          seo_title_ar?: string | null
+          seo_title_en?: string | null
+          seo_title_fr?: string | null
+          short_video_url?: string | null
           slug?: string
           status?: string
+          total_units?: number | null
           type?: string
+          units_left?: number | null
           updated_at?: string
+          what_ar?: string | null
+          what_en?: string | null
+          what_fr?: string | null
+          why_now_ar?: string | null
+          why_now_en?: string | null
+          why_now_fr?: string | null
         }
         Relationships: []
       }
@@ -362,6 +542,51 @@ export type Database = {
         }
         Relationships: []
       }
+      site_faqs: {
+        Row: {
+          answer_ar: string | null
+          answer_en: string
+          answer_fr: string | null
+          created_at: string
+          id: string
+          is_active: boolean
+          page: string
+          question_ar: string | null
+          question_en: string
+          question_fr: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          answer_ar?: string | null
+          answer_en: string
+          answer_fr?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          page: string
+          question_ar?: string | null
+          question_en: string
+          question_fr?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          answer_ar?: string | null
+          answer_en?: string
+          answer_fr?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          page?: string
+          question_ar?: string | null
+          question_en?: string
+          question_fr?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -385,16 +610,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
+      handle_new_user: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
+      has_any_role: {
         Args: {
-          _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
+          _roles: Database["public"]["Enums"]["app_role"][]
         }
         Returns: boolean
       }
+      has_role: {
+        Args: {
+          _user_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+        }
+        Returns: boolean
+      }
+      update_updated_at_column: {
+        Args: Record<PropertyKey, never>
+        Returns: unknown
+      }
     }
     Enums: {
-      app_role: "admin" | "client"
+      app_role: "admin" | "client" | "secretary" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -522,7 +762,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "client"],
+      app_role: ["admin", "client", "secretary", "super_admin"],
     },
   },
 } as const

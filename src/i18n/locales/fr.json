@@ -94,7 +94,37 @@
     "features": "Caractéristiques",
     "location": "Emplacement",
     "description": "Description",
-    "gallery": "Galerie"
+    "gallery": "Galerie",
+    "mapBrowseTitle": "Parcourir la carte par ville",
+    "mapBrowseSubtitle": "Sélectionnez une ville pour filtrer instantanément les projets et comparer les disponibilités.",
+    "results": "projets trouvés",
+    "emptyTitle": "Aucun projet ne correspond à vos filtres",
+    "emptySubtitle": "Essayez d'ajuster la ville, le type ou le statut.",
+    "resetFilters": "Réinitialiser les filtres",
+    "showDelivered": "Afficher les projets livrés",
+    "showInProgress": "Afficher les projets en cours",
+    "compare": "Comparer",
+    "selected": "Sélectionné",
+    "compareClear": "Effacer la sélection",
+    "compareMetric": "Critère",
+    "comparePriceRange": "Fourchette de prix",
+    "compareAreaRange": "Fourchette de surface",
+    "compareUnitsLeft": "Unités restantes",
+    "compareDeliveryDate": "Date de livraison",
+    "floorPlans": "Plans d'étage",
+    "timeline": "Chronologie du chantier",
+    "video": "Vidéo du projet",
+    "watchVideo": "Voir la vidéo",
+    "paymentPlan": "Plan de paiement",
+    "deliveryGuarantee": "Garantie de livraison",
+    "bookVisit": "Réserver une visite",
+    "structuredWhat": "Quoi",
+    "structuredWhere": "Où",
+    "structuredForWhom": "Pour qui",
+    "structuredWhyNow": "Pourquoi maintenant",
+    "structuredIncluded": "Ce qui est inclus",
+    "faqTitle": "FAQ Projets",
+    "faqSubtitle": "Plan de paiement, documents, remise des clés et plus."
   },
   "services": {
     "title": "Nos Services",
@@ -138,14 +168,63 @@
     "formSubmit": "Envoyer le Message",
     "formSuccess": "Message envoyé avec succès ! Nous vous répondrons bientôt.",
     "whatsapp": "Discuter sur WhatsApp",
-    "location": "Notre Emplacement"
+    "location": "Notre Emplacement",
+    "sending": "Envoi...",
+    "formAfterSubmit": "Notre équipe analyse votre demande puis vous contacte avec les prochaines étapes.",
+    "trustDelivered": "Projets livrés",
+    "trustResponse": "Réponse moyenne",
+    "trustSupport": "Accompagnement",
+    "quickResponseTitle": "Réponse rapide garantie",
+    "quickResponseText": "Notre équipe commerciale répond en général en moins d'un jour ouvré.",
+    "microcopy": "Délai moyen de réponse : moins d'un jour ouvré. Vos données sont utilisées uniquement pour traiter votre demande.",
+    "call": "Appeler",
+    "faqTitle": "FAQ Contact",
+    "faqSubtitle": "Délais de réponse, traitement des documents et étapes après votre envoi.",
+    "placeholders": {
+      "name": "Nom complet",
+      "email": "exemple@email.com",
+      "phone": "Numéro de téléphone",
+      "message": "Décrivez votre besoin..."
+    },
+    "errors": {
+      "name": "Veuillez entrer un nom valide (2 caractères minimum).",
+      "email": "Veuillez entrer une adresse email valide.",
+      "message": "Votre message doit contenir au moins 10 caractères."
+    },
+    "offer": {
+      "title": "Vous avez un terrain à vendre ?",
+      "subtitle": "Soumettez les informations du terrain. Notre équipe étudie votre proposition et vous recontacte.",
+      "fullName": "Nom complet",
+      "phone": "Téléphone",
+      "email": "Email",
+      "city": "Ville",
+      "district": "Quartier / Zone",
+      "area": "Superficie (m2)",
+      "price": "Prix demandé (DZD)",
+      "ownership": "Type de propriété",
+      "ownershipPlaceholder": "Acte, indivision, etc.",
+      "description": "Informations complémentaires",
+      "descriptionPlaceholder": "Accès, documents disponibles, contraintes urbanisme, etc.",
+      "submit": "Envoyer la proposition",
+      "microcopy": "Après envoi, nous vérifions les aspects juridiques et le potentiel du site puis nous vous contactons.",
+      "thanksTitle": "Merci, votre proposition de terrain a bien été reçue.",
+      "thanksSubtitle": "Un chargé d'affaires examinera votre dossier et vous recontactera.",
+      "successTitle": "Proposition envoyée",
+      "successDescription": "Notre équipe analysera votre offre et vous recontactera.",
+      "errors": {
+        "fullName": "Veuillez entrer un nom valide.",
+        "phone": "Veuillez entrer un numéro de téléphone valide.",
+        "city": "Veuillez indiquer la ville."
+      }
+    }
   },
   "common": {
     "signIn": "Se connecter",
     "dashboard": "Tableau de bord",
     "loading": "Chargement...",
     "cancel": "Annuler",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "error": "Erreur"
   },
   "auth": {
     "signInTitle": "Se connecter",
@@ -167,11 +246,45 @@
     "title": "Espace client",
     "adminPanel": "Panneau Admin",
     "signOut": "Se déconnecter",
+    "welcome": "Bienvenue, {{name}}",
     "noPropertiesTitle": "Aucune propriété pour le moment",
     "noPropertiesText": "Une fois votre achat effectué, vous pourrez suivre l'avancement ici.",
     "browseProjects": "Voir les projets",
     "constructionProgress": "Avancement des travaux",
     "recentUpdates": "Mises à jour récentes",
-    "unit": "Unité"
+    "unit": "Unité",
+    "propertyFallback": "Bien",
+    "status": {
+      "in_progress": "En cours",
+      "completed": "Terminé",
+      "pending": "En attente"
+    }
+  },
+  "admin": {
+    "title": "Tableau de bord admin",
+    "subtitle": "Gérez le contenu du site et les opérations clients",
+    "backToDashboard": "Mon Espace",
+    "tabs": {
+      "analytics": "Analytiques",
+      "projects": "Projets",
+      "progress": "Avancement",
+      "clients": "Propriétés Clients",
+      "users": "Utilisateurs",
+      "news": "Actualités",
+      "reviews": "Avis",
+      "faqs": "FAQ",
+      "messages": "Messages",
+      "landOffers": "Terrains"
+    }
+  },
+  "legal": {
+    "privacyIntro": "Comment Sahtat Promotion traite les informations des contacts et clients.",
+    "privacyPoint1": "Nous collectons uniquement les données nécessaires pour répondre à vos demandes et assurer le suivi.",
+    "privacyPoint2": "Vos informations ne sont pas revendues. L'accès est limité au personnel autorisé.",
+    "privacyPoint3": "Vous pouvez demander la correction ou la suppression de vos données en contactant notre équipe.",
+    "termsIntro": "Conditions d'utilisation du site Sahtat Promotion et des formulaires.",
+    "termsPoint1": "Les informations publiées sur ce site sont indicatives et peuvent évoluer selon l'avancement des projets.",
+    "termsPoint2": "Disponibilités, prix et délais restent indicatifs jusqu'à validation contractuelle.",
+    "termsPoint3": "En envoyant un formulaire, vous confirmez l'exactitude des informations fournies."
   }
 }

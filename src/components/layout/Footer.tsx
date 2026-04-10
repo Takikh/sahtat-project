@@ -81,8 +81,8 @@ export function Footer() {
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/10 pt-8 text-xs opacity-60 sm:flex-row">
           <p>© {new Date().getFullYear()} Sahtat Promotion. {t("footer.rights")}</p>
           <div className="flex gap-4">
-            <span>{t("footer.privacy")}</span>
-            <span>{t("footer.terms")}</span>
+            <Link to="/privacy" className="hover:text-accent transition-colors">{t("footer.privacy")}</Link>
+            <Link to="/terms" className="hover:text-accent transition-colors">{t("footer.terms")}</Link>
           </div>
         </div>
       </div>

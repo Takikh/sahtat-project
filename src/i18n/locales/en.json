@@ -94,7 +94,37 @@
     "features": "Features",
     "location": "Location",
     "description": "Description",
-    "gallery": "Gallery"
+    "gallery": "Gallery",
+    "mapBrowseTitle": "Map browse by city",
+    "mapBrowseSubtitle": "Select a city pin to instantly filter projects and compare local availability.",
+    "results": "projects found",
+    "emptyTitle": "No projects match your filters",
+    "emptySubtitle": "Try adjusting your city, type, or status filters to see available projects.",
+    "resetFilters": "Reset filters",
+    "showDelivered": "Show delivered",
+    "showInProgress": "Show in progress",
+    "compare": "Compare",
+    "selected": "Selected",
+    "compareClear": "Clear selection",
+    "compareMetric": "Metric",
+    "comparePriceRange": "Price range",
+    "compareAreaRange": "Area range",
+    "compareUnitsLeft": "Units left",
+    "compareDeliveryDate": "Delivery date",
+    "floorPlans": "Floor plans",
+    "timeline": "Construction timeline",
+    "video": "Project video",
+    "watchVideo": "Watch video",
+    "paymentPlan": "Payment plan",
+    "deliveryGuarantee": "Delivery guarantee",
+    "bookVisit": "Book a visit",
+    "structuredWhat": "What",
+    "structuredWhere": "Where",
+    "structuredForWhom": "For whom",
+    "structuredWhyNow": "Why now",
+    "structuredIncluded": "What is included",
+    "faqTitle": "Projects FAQ",
+    "faqSubtitle": "Payment plans, booking documents, handover process, and more."
   },
   "services": {
     "title": "Our Services",
@@ -138,14 +168,63 @@
     "formSubmit": "Send Message",
     "formSuccess": "Message sent successfully! We'll get back to you soon.",
     "whatsapp": "Chat on WhatsApp",
-    "location": "Our Location"
+    "location": "Our Location",
+    "sending": "Sending...",
+    "formAfterSubmit": "Our team reviews your request and contacts you with next steps.",
+    "trustDelivered": "Delivered projects",
+    "trustResponse": "Average response",
+    "trustSupport": "Support",
+    "quickResponseTitle": "Fast response guaranteed",
+    "quickResponseText": "Our commercial team usually replies in less than one business day.",
+    "microcopy": "Average response time: less than one business day. Your details are used only to process your request.",
+    "call": "Call",
+    "faqTitle": "Contact FAQ",
+    "faqSubtitle": "Response times, document handling, and what happens after your submission.",
+    "placeholders": {
+      "name": "Full name",
+      "email": "example@email.com",
+      "phone": "Phone number",
+      "message": "Describe your need..."
+    },
+    "errors": {
+      "name": "Please enter a valid name (minimum 2 characters).",
+      "email": "Please enter a valid email address.",
+      "message": "Your message should contain at least 10 characters."
+    },
+    "offer": {
+      "title": "Do you have land for sale?",
+      "subtitle": "Submit your land details. Our team reviews your offer and contacts you with next steps.",
+      "fullName": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "city": "City",
+      "district": "District / Area",
+      "area": "Area (m2)",
+      "price": "Asking price (DZD)",
+      "ownership": "Ownership type",
+      "ownershipPlaceholder": "Title deed, shared, etc.",
+      "description": "Additional information",
+      "descriptionPlaceholder": "Access, available documents, urban constraints, etc.",
+      "submit": "Submit land offer",
+      "microcopy": "After submission, we check legal and location potential, then contact you for follow-up.",
+      "thanksTitle": "Thank you, your land offer has been received.",
+      "thanksSubtitle": "A business manager will review your file and contact you.",
+      "successTitle": "Offer submitted",
+      "successDescription": "Our team will review your offer and contact you.",
+      "errors": {
+        "fullName": "Please enter a valid full name.",
+        "phone": "Please enter a valid phone number.",
+        "city": "Please provide the city."
+      }
+    }
   },
   "common": {
     "signIn": "Sign In",
     "dashboard": "Dashboard",
     "loading": "Loading...",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "error": "Error"
   },
   "auth": {
     "signInTitle": "Sign In",
@@ -167,11 +246,45 @@
     "title": "Client Dashboard",
     "adminPanel": "Admin Panel",
     "signOut": "Sign Out",
+    "welcome": "Welcome, {{name}}",
     "noPropertiesTitle": "No Properties Yet",
     "noPropertiesText": "Once you purchase a property, you'll be able to track its progress here.",
     "browseProjects": "Browse Projects",
     "constructionProgress": "Construction Progress",
     "recentUpdates": "Recent Updates",
-    "unit": "Unit"
+    "unit": "Unit",
+    "propertyFallback": "Property",
+    "status": {
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "pending": "Pending"
+    }
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage your website content and client operations",
+    "backToDashboard": "My Space",
+    "tabs": {
+      "analytics": "Analytics",
+      "projects": "Projects",
+      "progress": "Progress",
+      "clients": "Client Properties",
+      "users": "Users",
+      "news": "News",
+      "reviews": "Reviews",
+      "faqs": "FAQs",
+      "messages": "Messages",
+      "landOffers": "Land Offers"
+    }
+  },
+  "legal": {
+    "privacyIntro": "How Sahtat Promotion processes contact and customer information.",
+    "privacyPoint1": "We collect only the data needed to answer your requests and manage project follow-up.",
+    "privacyPoint2": "Your information is not sold to third parties. Access is limited to authorized staff.",
+    "privacyPoint3": "You can request correction or deletion of your data by contacting our team.",
+    "termsIntro": "Conditions for using the Sahtat Promotion website and submitting requests.",
+    "termsPoint1": "The information provided on this website is for guidance and may evolve with project progress.",
+    "termsPoint2": "Availability, prices, and timelines are indicative until confirmed by formal agreement.",
+    "termsPoint3": "By submitting forms, you confirm the accuracy of the information provided."
   }
 }
