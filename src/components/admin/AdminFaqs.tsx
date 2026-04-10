@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,7 @@ export function AdminFaqs() {
 
   const canDelete = !isSecretary || isSuperAdmin;
 
-  const fetchFaqs = async () => {
+  const fetchFaqs = useCallback(async () => {
     const { data, error } = await supabase
       .from("site_faqs")
       .select("*")
@@ -60,11 +60,11 @@ export function AdminFaqs() {
     }
 
     setFaqs((data as FaqRow[]) || []);
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchFaqs();
-  }, []);
+  }, [fetchFaqs]);
 
   const handleSave = async () => {
     const payload = {

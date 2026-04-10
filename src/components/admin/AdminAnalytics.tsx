@@ -33,6 +33,16 @@ interface ProjectViewRow {
 
 const COLORS = ["hsl(var(--accent))", "hsl(var(--primary))", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4", "#ec4899"];
 
+interface PieLabelProps {
+  cx?: number;
+  cy?: number;
+  midAngle?: number;
+  innerRadius?: number;
+  outerRadius?: number;
+  percent?: number;
+  name?: string;
+}
+
 export function AdminAnalytics() {
   const [range, setRange] = useState("30");
   const [dailyViews, setDailyViews] = useState<DailyViews[]>([]);
@@ -40,6 +50,9 @@ export function AdminAnalytics() {
   const [projectInterest, setProjectInterest] = useState<ProjectInterest[]>([]);
   const [totals, setTotals] = useState({ views: 0, uniqueVisitors: 0, projectViews: 0, contacts: 0 });
   const [loading, setLoading] = useState(true);
+  const chartAxisColor = "hsl(var(--muted-foreground))";
+  const chartGridColor = "hsl(var(--border))";
+  const chartLabelColor = "hsl(var(--foreground))";
 
   const fetchAnalytics = useCallback(async () => {
     setLoading(true);
@@ -115,6 +128,26 @@ export function AdminAnalytics() {
     { label: "Project Detail Views", value: totals.projectViews, icon: Building2, color: "text-green-500" },
     { label: "Contact Submissions", value: totals.contacts, icon: TrendingUp, color: "text-amber-500" },
   ];
+
+  const renderPieLabel = ({
+    cx = 0,
+    cy = 0,
+    midAngle = 0,
+    innerRadius = 0,
+    outerRadius = 0,
+    percent = 0,
+    name = "",
+  }: PieLabelProps) => {
+    const radius = innerRadius + (outerRadius - innerRadius) * 0.62;
+    const x = cx + radius * Math.cos((-midAngle * Math.PI) / 180);
+    const y = cy + radius * Math.sin((-midAngle * Math.PI) / 180);
+
+    return (
+      <text x={x} y={y} fill={chartLabelColor} textAnchor={x > cx ? "start" : "end"} dominantBaseline="central" fontSize={11}>
+        {`${name} ${(percent * 100).toFixed(0)}%`}
+      </text>
+    );
+  };
 
   if (loading) {
     return (
@@ -205,11 +238,16 @@ export function AdminAnalytics() {
           ) : (
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dailyViews}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
-                <YAxis tick={{ fontSize: 12 }} className="fill-muted-foreground" />
+                <CartesianGrid stroke={chartGridColor} strokeDasharray="3 3" opacity={0.45} />
+                <XAxis dataKey="date" tick={{ fontSize: 12, fill: chartAxisColor }} />
+                <YAxis tick={{ fontSize: 12, fill: chartAxisColor }} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: 8,
+                    color: chartLabelColor,
+                  }}
                   labelStyle={{ color: "hsl(var(--foreground))" }}
                 />
                 <Line type="monotone" dataKey="count" stroke="hsl(var(--accent))" strokeWidth={2} dot={{ fill: "hsl(var(--accent))" }} />
@@ -231,11 +269,16 @@ export function AdminAnalytics() {
             ) : (
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={topPages} layout="vertical">
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis type="number" tick={{ fontSize: 12 }} className="fill-muted-foreground" />
-                  <YAxis dataKey="page" type="category" width={100} tick={{ fontSize: 11 }} className="fill-muted-foreground" />
+                  <CartesianGrid stroke={chartGridColor} strokeDasharray="3 3" opacity={0.45} />
+                  <XAxis type="number" tick={{ fontSize: 12, fill: chartAxisColor }} />
+                  <YAxis dataKey="page" type="category" width={120} tick={{ fontSize: 11, fill: chartAxisColor }} />
                   <Tooltip
-                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: 8,
+                      color: chartLabelColor,
+                    }}
                   />
                   <Bar dataKey="views" fill="hsl(var(--accent))" radius={[0, 4, 4, 0]} />
                 </BarChart>
@@ -262,14 +305,20 @@ export function AdminAnalytics() {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
-                    label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
+                    labelLine={false}
+                    label={renderPieLabel}
                   >
                     {projectInterest.map((_, i) => (
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }}
+                    contentStyle={{
+                      backgroundColor: "hsl(var(--card))",
+                      border: "1px solid hsl(var(--border))",
+                      borderRadius: 8,
+                      color: chartLabelColor,
+                    }}
                   />
                 </PieChart>
               </ResponsiveContainer>

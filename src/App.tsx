@@ -8,6 +8,8 @@ import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { usePageTracking } from "@/hooks/usePageTracking";
+import { AppErrorBoundary } from "@/components/AppErrorBoundary";
+import { hasSupabaseEnv, supabaseConfigError } from "@/integrations/supabase/client";
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
@@ -20,6 +22,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Admin = lazy(() => import("./pages/Admin"));
+const SellLand = lazy(() => import("./pages/SellLand"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const Terms = lazy(() => import("./pages/Terms"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -40,6 +43,7 @@ function AppRoutes() {
         <Route path="/news" element={<News />} />
         <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/sell-land" element={<SellLand />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute requireAdmin><Admin /></ProtectedRoute>} />
@@ -55,13 +59,30 @@ const App = () => (
   <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AuthProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </AuthProvider>
+        <AppErrorBoundary>
+          {hasSupabaseEnv ? (
+            <AuthProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </AuthProvider>
+          ) : (
+            <div className="min-h-screen bg-background px-4 py-12 text-foreground">
+              <div className="mx-auto max-w-2xl rounded-xl border border-destructive/40 bg-card p-6">
+                <h1 className="font-display text-2xl font-bold text-destructive">Configuration Required</h1>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  The app is missing Supabase runtime variables. Add VITE_SUPABASE_URL and
+                  VITE_SUPABASE_PUBLISHABLE_KEY in your deployment environment.
+                </p>
+                <pre className="mt-4 overflow-x-auto rounded-lg bg-secondary p-3 text-xs text-destructive">
+                  {supabaseConfigError}
+                </pre>
+              </div>
+            </div>
+          )}
+        </AppErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   </ThemeProvider>

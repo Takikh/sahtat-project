@@ -102,7 +102,7 @@ const Projects = () => {
     };
 
     fetchProjects();
-  }, []);
+  }, [toast]);
 
   const cities = useMemo(() => {
     const uniqueCities = Array.from(new Set(projects.map((p) => p.city).filter(Boolean)));

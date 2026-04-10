@@ -14,6 +14,7 @@ const navItems = [
   { key: "projects", path: "/projects" },
   { key: "services", path: "/services" },
   { key: "news", path: "/news" },
+  { key: "sellLand", path: "/sell-land" },
   { key: "contact", path: "/contact" },
 ];
 
@@ -24,7 +25,7 @@ export function Navbar() {
   const { user, isAdmin } = useAuth();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur-lg dark:bg-background/85">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
           <img src="/logo.svg" alt="Sahtat Promotion" className="h-20 w-auto" />
@@ -36,7 +37,7 @@ export function Navbar() {
             <Link
               key={item.key}
               to={item.path}
-              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent/10 hover:text-accent ${
+              className={`rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent/15 hover:text-accent ${
                 location.pathname === item.path ? "text-accent" : "text-muted-foreground"
               }`}
             >

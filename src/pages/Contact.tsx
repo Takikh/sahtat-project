@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,12 +19,6 @@ type ContactErrors = {
   message?: string;
 };
 
-type LandOfferErrors = {
-  fullName?: string;
-  phone?: string;
-  city?: string;
-};
-
 const Contact = () => {
   const { t } = useTranslation();
   const { toast } = useToast();
@@ -31,20 +26,6 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [errors, setErrors] = useState<ContactErrors>({});
-  const [offerSubmitted, setOfferSubmitted] = useState(false);
-  const [offerLoading, setOfferLoading] = useState(false);
-  const [offerErrors, setOfferErrors] = useState<LandOfferErrors>({});
-  const [offer, setOffer] = useState({
-    fullName: "",
-    phone: "",
-    email: "",
-    city: "",
-    district: "",
-    areaM2: "",
-    askingPrice: "",
-    ownershipType: "",
-    description: "",
-  });
 
   const trustStats = [
     { label: t("contact.trustDelivered", "Delivered projects"), value: "10+", icon: Building2 },
@@ -101,88 +82,6 @@ const Contact = () => {
     setForm({ name: "", email: "", phone: "", message: "" });
     setErrors({});
     toast({ title: t("contact.formSuccess") });
-  };
-
-  const validateOffer = () => {
-    const nextErrors: LandOfferErrors = {};
-
-    if (!offer.fullName.trim() || offer.fullName.trim().length < 2) {
-      nextErrors.fullName = t("contact.offer.errors.fullName", "Please enter a valid full name.");
-    }
-
-    if (!offer.phone.trim() || offer.phone.trim().length < 8) {
-      nextErrors.phone = t("contact.offer.errors.phone", "Please enter a valid phone number.");
-    }
-
-    if (!offer.city.trim()) {
-      nextErrors.city = t("contact.offer.errors.city", "Please provide the city.");
-    }
-
-    setOfferErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  };
-
-  const handleOfferSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateOffer()) return;
-
-    setOfferLoading(true);
-    const { error } = await supabase.from("land_offers" as never).insert({
-      full_name: offer.fullName.trim(),
-      phone: offer.phone.trim(),
-      email: offer.email.trim() || null,
-      city: offer.city.trim(),
-      district: offer.district.trim() || null,
-      area_m2: offer.areaM2 ? Number(offer.areaM2) : null,
-      asking_price: offer.askingPrice ? Number(offer.askingPrice) : null,
-      ownership_type: offer.ownershipType.trim() || null,
-      description: offer.description.trim() || null,
-    } as never);
-    setOfferLoading(false);
-
-    if (error) {
-      const fallbackMessage = [
-        "[LAND OFFER]",
-        `City: ${offer.city.trim()}`,
-        offer.district.trim() ? `District: ${offer.district.trim()}` : null,
-        offer.areaM2 ? `Area: ${offer.areaM2} m2` : null,
-        offer.askingPrice ? `Price: ${offer.askingPrice} DZD` : null,
-        offer.ownershipType.trim() ? `Ownership: ${offer.ownershipType.trim()}` : null,
-        offer.description.trim() ? `Notes: ${offer.description.trim()}` : null,
-      ]
-        .filter(Boolean)
-        .join("\n");
-
-      const { error: fallbackError } = await supabase.from("contact_submissions").insert({
-        name: offer.fullName.trim(),
-        email: offer.email.trim() || "no-email@land-offer.local",
-        phone: offer.phone.trim(),
-        message: fallbackMessage,
-      });
-
-      if (fallbackError) {
-        toast({ title: t("common.error", "Error"), description: error.message, variant: "destructive" });
-        return;
-      }
-    }
-
-    setOfferSubmitted(true);
-    setOfferErrors({});
-    setOffer({
-      fullName: "",
-      phone: "",
-      email: "",
-      city: "",
-      district: "",
-      areaM2: "",
-      askingPrice: "",
-      ownershipType: "",
-      description: "",
-    });
-    toast({
-      title: t("contact.offer.successTitle", "Offer submitted"),
-      description: t("contact.offer.successDescription", "Our team will review your offer and contact you."),
-    });
   };
 
   return (
@@ -319,7 +218,7 @@ const Contact = () => {
                 href="https://wa.me/213660840271"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700"
+                className="flex items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800"
               >
                 <MessageCircle className="h-5 w-5" />
                 WhatsApp
@@ -328,7 +227,7 @@ const Contact = () => {
                 href="https://www.facebook.com/SahtatPromotion/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700"
+                className="flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
               >
                 <Facebook className="h-5 w-5" />
                 Facebook
@@ -337,7 +236,7 @@ const Contact = () => {
                 href="https://www.instagram.com/sahtat_promotion_medea/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-pink-600 to-orange-500 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 to-orange-500 px-4 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90 dark:from-rose-700 dark:to-orange-600"
               >
                 <Instagram className="h-5 w-5" />
                 @sahtat_promotion_medea
@@ -362,77 +261,17 @@ const Contact = () => {
 
       <section className="pb-20">
         <div className="container">
-          <div className="mb-5">
-            <h2 className="font-display text-2xl font-bold">{t("contact.offer.title", "Do you have land for sale?")}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{t("contact.offer.subtitle", "Submit your land details. Our team reviews your offer and contacts you with next steps.")}</p>
-          </div>
-
-          {offerSubmitted ? (
-            <div className="rounded-xl border border-border bg-card p-6">
-              <p className="font-semibold">{t("contact.offer.thanksTitle", "Thank you, your land offer has been received.")}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{t("contact.offer.thanksSubtitle", "A business manager will review your file and contact you.")}</p>
-            </div>
-          ) : (
-            <form onSubmit={handleOfferSubmit} className="rounded-xl border border-border bg-card p-6" noValidate>
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label htmlFor="offer-full-name">{t("contact.offer.fullName", "Full name")} *</Label>
-                  <Input id="offer-full-name" className="mt-1.5" value={offer.fullName} onChange={(e) => setOffer({ ...offer, fullName: e.target.value })} aria-invalid={!!offerErrors.fullName} />
-                  {offerErrors.fullName && <p className="mt-1 text-xs text-destructive">{offerErrors.fullName}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="offer-phone">{t("contact.offer.phone", "Phone")} *</Label>
-                  <Input id="offer-phone" className="mt-1.5" value={offer.phone} onChange={(e) => setOffer({ ...offer, phone: e.target.value })} aria-invalid={!!offerErrors.phone} />
-                  {offerErrors.phone && <p className="mt-1 text-xs text-destructive">{offerErrors.phone}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="offer-email">{t("contact.offer.email", "Email")}</Label>
-                  <Input id="offer-email" type="email" className="mt-1.5" value={offer.email} onChange={(e) => setOffer({ ...offer, email: e.target.value })} />
-                </div>
-                <div>
-                  <Label htmlFor="offer-city">{t("contact.offer.city", "City")} *</Label>
-                  <Input id="offer-city" className="mt-1.5" value={offer.city} onChange={(e) => setOffer({ ...offer, city: e.target.value })} aria-invalid={!!offerErrors.city} />
-                  {offerErrors.city && <p className="mt-1 text-xs text-destructive">{offerErrors.city}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="offer-district">{t("contact.offer.district", "District / Area")}</Label>
-                  <Input id="offer-district" className="mt-1.5" value={offer.district} onChange={(e) => setOffer({ ...offer, district: e.target.value })} />
-                </div>
-                <div>
-                  <Label htmlFor="offer-area">{t("contact.offer.area", "Area (m2)")}</Label>
-                  <Input id="offer-area" type="number" min={0} className="mt-1.5" value={offer.areaM2} onChange={(e) => setOffer({ ...offer, areaM2: e.target.value })} />
-                </div>
-                <div>
-                  <Label htmlFor="offer-price">{t("contact.offer.price", "Asking price (DZD)")}</Label>
-                  <Input id="offer-price" type="number" min={0} className="mt-1.5" value={offer.askingPrice} onChange={(e) => setOffer({ ...offer, askingPrice: e.target.value })} />
-                </div>
-                <div>
-                  <Label htmlFor="offer-owner">{t("contact.offer.ownership", "Ownership type")}</Label>
-                  <Input id="offer-owner" className="mt-1.5" placeholder={t("contact.offer.ownershipPlaceholder", "Title deed, shared, etc.")} value={offer.ownershipType} onChange={(e) => setOffer({ ...offer, ownershipType: e.target.value })} />
-                </div>
+          <div className="rounded-2xl border border-border bg-card p-6 sm:p-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="font-display text-2xl font-bold">{t("contact.sellLandCtaTitle", "Do you have land for sale?")}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{t("contact.sellLandCtaSubtitle", "Submit your land details on our dedicated page and get a structured review.")}</p>
               </div>
-
-              <div className="mt-4">
-                <Label htmlFor="offer-description">{t("contact.offer.description", "Additional information")}</Label>
-                <Textarea
-                  id="offer-description"
-                  className="mt-1.5"
-                  rows={4}
-                  value={offer.description}
-                  onChange={(e) => setOffer({ ...offer, description: e.target.value })}
-                  placeholder={t("contact.offer.descriptionPlaceholder", "Access, available documents, urban constraints, etc.")}
-                />
-              </div>
-
-              <div className="mt-4 rounded-lg border border-accent/30 bg-accent/10 p-3 text-xs text-muted-foreground">
-                {t("contact.offer.microcopy", "After submission, we check legal and location potential, then contact you for follow-up.")}
-              </div>
-
-              <Button type="submit" className="mt-5" disabled={offerLoading}>
-                {offerLoading ? t("contact.sending", "Sending...") : t("contact.offer.submit", "Submit land offer")}
+              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+                <Link to="/sell-land">{t("nav.sellLand", "Sell Land")}</Link>
               </Button>
-            </form>
-          )}
+            </div>
+          </div>
         </div>
       </section>
 

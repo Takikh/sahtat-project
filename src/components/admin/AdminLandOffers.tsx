@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -27,27 +27,27 @@ export function AdminLandOffers() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  const fetchOffers = async () => {
+  const fetchOffers = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from("land_offers" as never)
+      .from("land_offers")
       .select("*")
       .order("submitted_at", { ascending: false });
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      setOffers(((data || []) as unknown) as LandOfferRow[]);
+      setOffers((data as LandOfferRow[]) || []);
     }
     setLoading(false);
-  };
+  }, [toast]);
 
   useEffect(() => {
     fetchOffers();
-  }, []);
+  }, [fetchOffers]);
 
   const updateStatus = async (id: string, status: LandOfferRow["status"]) => {
-    const { error } = await supabase.from("land_offers" as never).update({ status, is_read: true } as never).eq("id", id);
+    const { error } = await supabase.from("land_offers").update({ status, is_read: true }).eq("id", id);
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
       return;

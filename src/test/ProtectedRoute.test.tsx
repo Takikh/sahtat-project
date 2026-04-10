@@ -69,4 +69,37 @@ describe("ProtectedRoute", () => {
 
     expect(screen.getByText("Private page")).toBeInTheDocument();
   });
+
+  it("redirects non-admin users to /dashboard when admin route is required", () => {
+    mockedUseAuth.mockReturnValue({
+      user: { id: "u2" } as never,
+      session: null,
+      loading: false,
+      role: "client",
+      isAdmin: false,
+      isSecretary: false,
+      isSuperAdmin: false,
+      signUp: vi.fn(),
+      signIn: vi.fn(),
+      signOut: vi.fn(),
+    });
+
+    render(
+      <MemoryRouter initialEntries={["/admin"]}>
+        <Routes>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requireAdmin>
+                <div>Admin page</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/dashboard" element={<div>Dashboard page</div>} />
+        </Routes>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText("Dashboard page")).toBeInTheDocument();
+  });
 });

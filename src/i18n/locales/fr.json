@@ -5,6 +5,7 @@
     "projects": "Projets",
     "services": "Services",
     "news": "Actualités",
+    "sellLand": "Vendre un terrain",
     "contact": "Contact"
   },
   "hero": {
@@ -178,6 +179,8 @@
     "quickResponseText": "Notre équipe commerciale répond en général en moins d'un jour ouvré.",
     "microcopy": "Délai moyen de réponse : moins d'un jour ouvré. Vos données sont utilisées uniquement pour traiter votre demande.",
     "call": "Appeler",
+    "sellLandCtaTitle": "Vous avez un terrain à vendre ?",
+    "sellLandCtaSubtitle": "Envoyez les détails via notre page dédiée pour une évaluation structurée.",
     "faqTitle": "FAQ Contact",
     "faqSubtitle": "Délais de réponse, traitement des documents et étapes après votre envoi.",
     "placeholders": {
@@ -216,6 +219,37 @@
         "phone": "Veuillez entrer un numéro de téléphone valide.",
         "city": "Veuillez indiquer la ville."
       }
+    }
+  },
+  "sellLand": {
+    "title": "Vendre Votre Terrain",
+    "subtitle": "Partagez les détails de votre terrain et notre équipe analysera la faisabilité, le juridique et les prochaines étapes.",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "email": "Email",
+    "city": "Ville",
+    "district": "Quartier / Zone",
+    "area": "Superficie (m2)",
+    "price": "Prix demandé (DZD)",
+    "ownership": "Type de propriété",
+    "ownershipPlaceholder": "Acte, indivision, etc.",
+    "description": "Informations complémentaires",
+    "descriptionPlaceholder": "Accès, documents disponibles, contraintes urbanisme, etc.",
+    "submit": "Envoyer la proposition",
+    "microcopy": "Après envoi, nous vérifions les aspects juridiques et le potentiel du site puis nous vous contactons.",
+    "thanksTitle": "Merci, votre proposition de terrain a bien été reçue.",
+    "thanksSubtitle": "Un chargé d'affaires examinera votre dossier et vous recontactera.",
+    "successTitle": "Proposition envoyée",
+    "successDescription": "Notre équipe analysera votre offre et vous recontactera.",
+    "sideTitle": "Comment nous traitons votre proposition",
+    "step1": "1. Nous vérifions les documents juridiques et le statut du terrain.",
+    "step2": "2. Nous évaluons le potentiel de l'emplacement et la viabilité du projet.",
+    "step3": "3. Un chargé d'affaires vous contacte pour la suite.",
+    "coverage": "Zone principale: Médéa et environs",
+    "errors": {
+      "fullName": "Veuillez entrer un nom valide.",
+      "phone": "Veuillez entrer un numéro de téléphone valide.",
+      "city": "Veuillez indiquer la ville."
     }
   },
   "common": {

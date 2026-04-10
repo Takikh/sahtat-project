@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 /**
  * Setup Test Accounts for Sahtat Promotion
  * 
@@ -9,10 +11,10 @@ import "dotenv/config";
 import { createClient } from '@supabase/supabase-js';
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    throw new Error("Missing VITE_SUPABASE_URL or VITE_SUPABASE_PUBLISHABLE_KEY in environment.");
+    throw new Error("Missing VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY (or VITE_SUPABASE_ANON_KEY) in environment.");
 }
 
 const supabaseUrl = SUPABASE_URL;
@@ -30,7 +32,7 @@ interface TestAccount {
 const testAccounts: TestAccount[] = [
     {
         email: 'owner@sahtat-promotion.com',
-        password: 'Owner123!',
+        password: 'kamalkamal@2026',
         fullName: 'Owner Sahtat',
         role: 'super_admin',
     },
@@ -38,17 +40,18 @@ const testAccounts: TestAccount[] = [
         email: 'admin@sahtat-promotion.com',
         password: 'Admin123!',
         fullName: 'Admin Sahtat',
+        
         role: 'admin',
     },
     {
         email: 'secretary@sahtat-promotion.com',
-        password: 'Secretary123!',
+        password: 'yasminesahtat',
         fullName: 'Secretary Sahtat',
         role: 'secretary',
     },
     {
         email: 'client@test.com',
-        password: 'Client123!',
+        password: 'testclient',
         fullName: 'Test Client',
         role: 'client',
     },

@@ -40,10 +40,6 @@ const Dashboard = () => {
 
   const canAccessAdmin = isAdmin;
 
-  if (isAdmin) {
-    return <Navigate to="/admin" replace />;
-  }
-
   const handleSignOut = async () => {
     await signOut();
     navigate("/auth", { replace: true });
@@ -89,6 +85,10 @@ const Dashboard = () => {
 
     fetchData();
   }, [user]);
+
+  if (isAdmin) {
+    return <Navigate to="/admin" replace />;
+  }
 
   const statusColors: Record<string, string> = {
     in_progress: "bg-accent/10 text-accent",

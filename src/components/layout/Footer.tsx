@@ -6,13 +6,13 @@ export function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className="border-t border-border bg-primary text-primary-foreground">
+    <footer className="border-t border-border bg-primary text-primary-foreground dark:bg-primary/95">
       <div className="container py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div>
-            <img src="/logo.svg" alt="Sahtat Promotion" className="h-20 w-auto brightness-0 invert" />
-            <p className="mt-3 text-sm opacity-80">{t("footer.description")}</p>
+            <img src="/logo.svg" alt="Sahtat Promotion" className="h-20 w-auto" />
+            <p className="mt-3 text-sm text-primary-foreground/90">{t("footer.description")}</p>
           </div>
 
           {/* Quick Links */}
@@ -20,11 +20,12 @@ export function Footer() {
             <h4 className="mb-4 font-display text-sm font-semibold uppercase tracking-wider">
               {t("footer.quickLinks")}
             </h4>
-            <ul className="space-y-2 text-sm opacity-80">
+            <ul className="space-y-2 text-sm text-primary-foreground/90">
               <li><Link to="/" className="hover:text-accent transition-colors">{t("nav.home")}</Link></li>
               <li><Link to="/about" className="hover:text-accent transition-colors">{t("nav.about")}</Link></li>
               <li><Link to="/projects" className="hover:text-accent transition-colors">{t("nav.projects")}</Link></li>
               <li><Link to="/services" className="hover:text-accent transition-colors">{t("nav.services")}</Link></li>
+              <li><Link to="/sell-land" className="hover:text-accent transition-colors">{t("nav.sellLand")}</Link></li>
               <li><Link to="/contact" className="hover:text-accent transition-colors">{t("nav.contact")}</Link></li>
             </ul>
           </div>
@@ -34,7 +35,7 @@ export function Footer() {
             <h4 className="mb-4 font-display text-sm font-semibold uppercase tracking-wider">
               {t("footer.contactInfo")}
             </h4>
-            <ul className="space-y-3 text-sm opacity-80">
+            <ul className="space-y-3 text-sm text-primary-foreground/90">
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0 text-accent" />
                 {t("footer.address")}
@@ -78,7 +79,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/10 pt-8 text-xs opacity-60 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-primary-foreground/20 pt-8 text-xs text-primary-foreground/75 sm:flex-row">
           <p>© {new Date().getFullYear()} Sahtat Promotion. {t("footer.rights")}</p>
           <div className="flex gap-4">
             <Link to="/privacy" className="hover:text-accent transition-colors">{t("footer.privacy")}</Link>

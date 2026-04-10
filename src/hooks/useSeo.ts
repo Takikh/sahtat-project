@@ -9,7 +9,7 @@ type SeoInput = {
 };
 
 function upsertMetaByName(name: string, content: string) {
-  let el = document.head.querySelector(`meta[name=\"${name}\"]`) as HTMLMetaElement | null;
+  let el = document.head.querySelector(`meta[name="${name}"]`) as HTMLMetaElement | null;
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute("name", name);
@@ -19,7 +19,7 @@ function upsertMetaByName(name: string, content: string) {
 }
 
 function upsertMetaByProperty(property: string, content: string) {
-  let el = document.head.querySelector(`meta[property=\"${property}\"]`) as HTMLMetaElement | null;
+  let el = document.head.querySelector(`meta[property="${property}"]`) as HTMLMetaElement | null;
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute("property", property);

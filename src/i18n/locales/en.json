@@ -5,6 +5,7 @@
     "projects": "Projects",
     "services": "Services",
     "news": "News",
+    "sellLand": "Sell Land",
     "contact": "Contact"
   },
   "hero": {
@@ -178,6 +179,8 @@
     "quickResponseText": "Our commercial team usually replies in less than one business day.",
     "microcopy": "Average response time: less than one business day. Your details are used only to process your request.",
     "call": "Call",
+    "sellLandCtaTitle": "Do you have land for sale?",
+    "sellLandCtaSubtitle": "Submit your land details on our dedicated page and get a structured review.",
     "faqTitle": "Contact FAQ",
     "faqSubtitle": "Response times, document handling, and what happens after your submission.",
     "placeholders": {
@@ -216,6 +219,37 @@
         "phone": "Please enter a valid phone number.",
         "city": "Please provide the city."
       }
+    }
+  },
+  "sellLand": {
+    "title": "Sell Your Land",
+    "subtitle": "Share your land details and our team will review feasibility, legal status, and next steps.",
+    "fullName": "Full name",
+    "phone": "Phone",
+    "email": "Email",
+    "city": "City",
+    "district": "District / Area",
+    "area": "Area (m2)",
+    "price": "Asking price (DZD)",
+    "ownership": "Ownership type",
+    "ownershipPlaceholder": "Title deed, shared, etc.",
+    "description": "Additional information",
+    "descriptionPlaceholder": "Access, available documents, urban constraints, etc.",
+    "submit": "Submit land offer",
+    "microcopy": "After submission, we check legal and location potential, then contact you for follow-up.",
+    "thanksTitle": "Thank you, your land offer has been received.",
+    "thanksSubtitle": "A business manager will review your file and contact you.",
+    "successTitle": "Offer submitted",
+    "successDescription": "Our team will review your offer and contact you.",
+    "sideTitle": "How we process your offer",
+    "step1": "1. We review legal documents and land status.",
+    "step2": "2. We evaluate location potential and project viability.",
+    "step3": "3. A business manager contacts you for next steps.",
+    "coverage": "Primary coverage: Medea and nearby areas",
+    "errors": {
+      "fullName": "Please enter a valid full name.",
+      "phone": "Please enter a valid phone number.",
+      "city": "Please provide the city."
     }
   },
   "common": {

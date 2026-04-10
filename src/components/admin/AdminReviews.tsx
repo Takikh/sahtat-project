@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { Plus, Trash2, Star, MessageSquare } from "lucide-react";
 
 interface ReviewRow {
@@ -39,19 +40,32 @@ const emptyForm = {
 
 export function AdminReviews() {
   const { toast } = useToast();
+  const { isSecretary, isSuperAdmin } = useAuth();
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const cannotManageReviews = isSecretary && !isSuperAdmin;
 
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     const { data } = await supabase
       .from("reviews")
       .select("*")
       .order("created_at", { ascending: false });
     if (data) setReviews(data as ReviewRow[]);
-  };
+  }, []);
 
-  useEffect(() => { fetchReviews(); }, []);
+  useEffect(() => {
+    if (cannotManageReviews) return;
+    fetchReviews();
+  }, [cannotManageReviews, fetchReviews]);
+
+  if (cannotManageReviews) {
+    return (
+      <div className="rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">
+        Reviews management is available for admin and super admin only.
+      </div>
+    );
+  }
 
   const handleSave = async () => {
     if (!form.reviewer_name || !form.text_en) {
