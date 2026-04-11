@@ -100,7 +100,7 @@ const Dashboard = () => {
 
   return (
     <Layout>
-      <section className="bg-primary py-12 text-primary-foreground">
+      <section className="bg-primary py-12 text-primary-foreground dark:bg-slate-900 dark:text-slate-100">
         <div className="container flex items-center justify-between">
           <div>
             <motion.h1

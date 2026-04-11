@@ -22,14 +22,14 @@ export function HeroSection() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-2xl"
+          className="hero-readable max-w-2xl rounded-2xl p-6 shadow-xl sm:p-8"
         >
-          <h1 className="font-display text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="hero-outline font-display text-4xl font-bold leading-tight text-primary-foreground sm:text-5xl lg:text-6xl">
             {t("hero.title")}
             <br />
             <span className="text-accent">{t("hero.titleHighlight")}</span>
           </h1>
-          <p className="mt-6 text-base leading-relaxed text-primary-foreground/95 sm:text-lg lg:text-xl">
+          <p className="hero-outline mt-6 text-base leading-relaxed text-primary-foreground/95 sm:text-lg lg:text-xl">
             {t("hero.subtitle")}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:gap-4">

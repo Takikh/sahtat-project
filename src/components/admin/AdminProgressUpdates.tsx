@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +15,11 @@ import { Plus, Trash2, ImageIcon, ChevronDown, ChevronUp, Construction } from "l
 interface PropertyRow {
   id: string;
   user_id: string;
+  project_id: string;
   unit_number: string | null;
   progress_percent: number | null;
   status: string | null;
   projects: { name: string } | null;
-  profiles: { full_name: string | null } | null;
 }
 
 interface ProgressRow {
@@ -48,6 +48,7 @@ const progressImages = [
 export function AdminProgressUpdates() {
   const { toast } = useToast();
   const [properties, setProperties] = useState<PropertyRow[]>([]);
+  const [profileNames, setProfileNames] = useState<Record<string, string>>({});
   const [updates, setUpdates] = useState<Record<string, ProgressRow[]>>({});
   const [expandedProperty, setExpandedProperty] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -61,32 +62,73 @@ export function AdminProgressUpdates() {
   });
   const [useBuiltInImage, setUseBuiltInImage] = useState(false);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     const propRes = await supabase
       .from("purchased_properties")
-      .select("id, user_id, unit_number, progress_percent, status, projects(name), profiles(full_name)")
+      .select("id, user_id, project_id, unit_number, progress_percent, status, projects(name)")
       .order("created_at", { ascending: false });
 
-    if (propRes.data) {
-      const propertyRows = propRes.data as unknown as PropertyRow[];
-      setProperties(propertyRows);
-      // Fetch all progress updates
-      const progressMap: Record<string, ProgressRow[]> = {};
-      await Promise.all(
-        propertyRows.map(async (p) => {
-          const { data } = await supabase
-            .from("construction_progress")
-            .select("*")
-            .eq("purchased_property_id", p.id)
-            .order("update_date", { ascending: false });
-          progressMap[p.id] = (data as ProgressRow[]) || [];
-        })
-      );
-      setUpdates(progressMap);
+    if (propRes.error) {
+      toast({ title: "Error", description: propRes.error.message, variant: "destructive" });
+      setProperties([]);
+      setUpdates({});
+      return;
     }
-  };
 
-  useEffect(() => { fetchData(); }, []);
+    const propertyRows = (propRes.data as PropertyRow[]) || [];
+    setProperties(propertyRows);
+
+    const userIds = Array.from(new Set(propertyRows.map((row) => row.user_id)));
+    if (userIds.length > 0) {
+      const profileRes = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+
+      if (profileRes.error) {
+        toast({ title: "Warning", description: profileRes.error.message, variant: "destructive" });
+      } else {
+        const names = ((profileRes.data || []) as Array<{ user_id: string; full_name: string | null }>).reduce<Record<string, string>>((acc, p) => {
+          acc[p.user_id] = p.full_name || "Client";
+          return acc;
+        }, {});
+        setProfileNames(names);
+      }
+    } else {
+      setProfileNames({});
+    }
+
+    const progressMap: Record<string, ProgressRow[]> = {};
+    let progressReadError: string | null = null;
+
+    await Promise.all(
+      propertyRows.map(async (p) => {
+        const { data, error } = await supabase
+          .from("construction_progress")
+          .select("*")
+          .eq("purchased_property_id", p.id)
+          .order("update_date", { ascending: false });
+
+        if (error) {
+          progressReadError = error.message;
+          progressMap[p.id] = [];
+          return;
+        }
+
+        progressMap[p.id] = (data as ProgressRow[]) || [];
+      }),
+    );
+
+    if (progressReadError) {
+      toast({ title: "Warning", description: progressReadError, variant: "destructive" });
+    }
+
+    setUpdates(progressMap);
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleAddUpdate = async () => {
     if (!selectedPropertyId || !form.title) {
@@ -151,12 +193,17 @@ export function AdminProgressUpdates() {
                   <SelectContent>
                     {properties.map((p) => (
                       <SelectItem key={p.id} value={p.id}>
-                        {p.profiles?.full_name || "Client"} – {p.projects?.name}
+                        {profileNames[p.user_id] || "Client"} – {p.projects?.name}
                         {p.unit_number && ` (Unit ${p.unit_number})`}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                {properties.length === 0 && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    No assigned properties yet. Create a client assignment first in the Client Properties tab.
+                  </p>
+                )}
               </div>
               <div>
                 <Label>Update Title *</Label>
@@ -240,7 +287,7 @@ export function AdminProgressUpdates() {
                 )}
               </div>
 
-              <Button onClick={handleAddUpdate} className="bg-accent text-accent-foreground">
+              <Button onClick={handleAddUpdate} disabled={properties.length === 0} className="bg-accent text-accent-foreground">
                 Add Update
               </Button>
             </div>
@@ -261,7 +308,7 @@ export function AdminProgressUpdates() {
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold">{p.profiles?.full_name || "Client"}</span>
+                    <span className="font-semibold">{profileNames[p.user_id] || "Client"}</span>
                     <Badge variant="outline" className="text-xs">{p.status}</Badge>
                     {propUpdates.length > 0 && (
                       <Badge className="bg-accent/10 text-accent text-xs">{propUpdates.length} updates</Badge>

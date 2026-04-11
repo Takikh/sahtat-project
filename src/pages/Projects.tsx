@@ -148,7 +148,7 @@ const Projects = () => {
 
   return (
     <Layout>
-      <section className="bg-primary py-20 text-primary-foreground">
+      <section className="bg-primary py-20 text-primary-foreground dark:bg-slate-900 dark:text-slate-100">
         <div className="container text-center">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}

@@ -15,8 +15,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Playfair Display", "Noto Sans Arabic", "serif"],
-        body: ["DM Sans", "Noto Sans Arabic", "sans-serif"],
+        display: ["Sora", "Noto Sans Arabic", "sans-serif"],
+        body: ["Manrope", "Noto Sans Arabic", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

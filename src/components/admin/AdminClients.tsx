@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ export function AdminClients() {
   const [purchases, setPurchases] = useState<PurchasedRow[]>([]);
   const [projectOptions, setProjectOptions] = useState<ProjectOption[]>([]);
   const [profileOptions, setProfileOptions] = useState<ProfileOption[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -44,18 +45,26 @@ export function AdminClients() {
     progress_percent: "0", status: "pending",
   });
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    setLoading(true);
     const [purchRes, projRes, profRes] = await Promise.all([
       supabase.from("purchased_properties").select("*, projects(name)").order("created_at", { ascending: false }),
       supabase.from("projects").select("id, name"),
       supabase.from("profiles").select("user_id, full_name"),
     ]);
-    if (purchRes.data) setPurchases(purchRes.data as PurchasedRow[]);
-    if (projRes.data) setProjectOptions(projRes.data);
-    if (profRes.data) setProfileOptions(profRes.data);
-  };
+    if (purchRes.error) toast({ title: "Error", description: purchRes.error.message, variant: "destructive" });
+    if (projRes.error) toast({ title: "Error", description: projRes.error.message, variant: "destructive" });
+    if (profRes.error) toast({ title: "Error", description: profRes.error.message, variant: "destructive" });
 
-  useEffect(() => { fetchData(); }, []);
+    setPurchases((purchRes.data as PurchasedRow[]) || []);
+    setProjectOptions((projRes.data as ProjectOption[]) || []);
+    setProfileOptions((profRes.data as ProfileOption[]) || []);
+    setLoading(false);
+  }, [toast]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleSave = async () => {
     const payload = {
@@ -111,6 +120,9 @@ export function AdminClients() {
                     ))}
                   </SelectContent>
                 </Select>
+                {profileOptions.length === 0 && (
+                  <p className="mt-2 text-xs text-muted-foreground">No client profiles found yet. Create client accounts first.</p>
+                )}
               </div>
               <div>
                 <Label>Project</Label>
@@ -122,6 +134,9 @@ export function AdminClients() {
                     ))}
                   </SelectContent>
                 </Select>
+                {projectOptions.length === 0 && (
+                  <p className="mt-2 text-xs text-muted-foreground">No projects available. Add a project in the Projects tab first.</p>
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Unit Number</Label><Input value={form.unit_number} onChange={e => setForm({...form, unit_number: e.target.value})} /></div>
@@ -148,6 +163,7 @@ export function AdminClients() {
       </div>
 
       <div className="space-y-3">
+        {loading && <p className="text-center text-muted-foreground py-8">Loading client assignments...</p>}
         {purchases.map((p) => (
           <div key={p.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4">
             <div className="flex-1">
@@ -187,7 +203,7 @@ export function AdminClients() {
             </div>
           </div>
         ))}
-        {purchases.length === 0 && <p className="text-center text-muted-foreground py-8">No client properties assigned yet.</p>}
+        {!loading && purchases.length === 0 && <p className="text-center text-muted-foreground py-8">No client properties assigned yet.</p>}
       </div>
     </div>
   );

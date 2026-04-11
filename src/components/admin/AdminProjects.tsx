@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -168,14 +168,19 @@ export function AdminProjects() {
   const [editId, setEditId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
-  const fetchProjects = async () => {
-    const { data } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
-    if (data) setProjects(data as ProjectRow[]);
-  };
+  const fetchProjects = useCallback(async () => {
+    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      setProjects([]);
+      return;
+    }
+    setProjects((data as ProjectRow[]) || []);
+  }, [toast]);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   const handleSave = async () => {
     const payload = {

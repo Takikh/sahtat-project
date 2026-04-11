@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +39,7 @@ export function AdminUsers() {
   });
   const [createdCredentials, setCreatedCredentials] = useState<{ email: string; password: string } | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     setLoading(true);
     const [profilesRes, rolesRes] = await Promise.all([
       supabase.from("profiles").select("user_id, full_name, phone, created_at").order("created_at", { ascending: false }),
@@ -47,6 +47,13 @@ export function AdminUsers() {
     ]);
 
     const roleMap: Record<string, string> = {};
+    if (profilesRes.error) {
+      toast({ title: "Error", description: profilesRes.error.message, variant: "destructive" });
+    }
+    if (rolesRes.error) {
+      toast({ title: "Error", description: rolesRes.error.message, variant: "destructive" });
+    }
+
     if (rolesRes.data) {
       rolesRes.data.forEach((r) => {
         roleMap[r.user_id] = r.role;
@@ -58,9 +65,11 @@ export function AdminUsers() {
       setUsers(profilesRes.data as UserRow[]);
     }
     setLoading(false);
-  };
+  }, [toast]);
 
-  useEffect(() => { fetchUsers(); }, []);
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const handleCreateUser = async () => {
     if (!newUser.email || !newUser.password || !newUser.fullName) {

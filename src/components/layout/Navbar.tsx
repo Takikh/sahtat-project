@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Menu, LogIn, LayoutDashboard } from "lucide-react";
+import { Menu, LogIn, LayoutDashboard, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -21,8 +21,15 @@ const navItems = [
 export function Navbar() {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth", { replace: true });
+    setOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/70 bg-background/95 backdrop-blur-lg dark:bg-background/85">
@@ -51,9 +58,15 @@ export function Navbar() {
           <ThemeToggle />
 
           {user ? (
-            <Button asChild variant="ghost" size="icon" title={t("common.dashboard")}>
-              <Link to={isAdmin ? "/admin" : "/dashboard"}><LayoutDashboard className="h-5 w-5" /></Link>
-            </Button>
+            <>
+              <Button asChild variant="ghost" size="icon" title={t("common.dashboard")}>
+                <Link to={isAdmin ? "/admin" : "/dashboard"}><LayoutDashboard className="h-5 w-5" /></Link>
+              </Button>
+              <Button variant="ghost" size="sm" className="hidden md:inline-flex" onClick={handleSignOut}>
+                <LogOut className="me-2 h-4 w-4" />
+                {t("dashboard.signOut", "Sign out")}
+              </Button>
+            </>
           ) : (
             <Button asChild variant="ghost" size="sm" className="hidden md:inline-flex">
               <Link to="/auth"><LogIn className="me-2 h-4 w-4" />{t("common.signIn")}</Link>
@@ -89,6 +102,15 @@ export function Navbar() {
                 >
                   {user ? t("common.dashboard") : t("common.signIn")}
                 </Link>
+                {user && (
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    className="rounded-md px-4 py-3 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/10 hover:text-accent"
+                  >
+                    {t("dashboard.signOut", "Sign out")}
+                  </button>
+                )}
               </nav>
             </SheetContent>
           </Sheet>

@@ -11,32 +11,44 @@ import { AdminReviews } from "@/components/admin/AdminReviews";
 import { AdminLandOffers } from "@/components/admin/AdminLandOffers";
 import { AdminFaqs } from "@/components/admin/AdminFaqs";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
-import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp, LogOut } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 const Admin = () => {
   const { t } = useTranslation();
-  const { isSecretary, isSuperAdmin } = useAuth();
+  const navigate = useNavigate();
+  const { isSecretary, isSuperAdmin, signOut } = useAuth();
 
   const canManageContent = isSecretary || isSuperAdmin;
   const canManageCore = !isSecretary || isSuperAdmin;
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/auth", { replace: true });
+  };
+
   return (
     <Layout>
-      <section className="bg-gradient-to-r from-primary via-primary/95 to-accent/70 py-8 text-primary-foreground">
+      <section className="bg-gradient-to-r from-primary via-primary/95 to-accent/70 py-8 text-primary-foreground dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 dark:text-slate-100">
         <div className="container flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold">{t("admin.title", "Admin Dashboard")}</h1>
             <p className="mt-1 text-sm opacity-80">{t("admin.subtitle", "Manage your website content and client operations")}</p>
           </div>
-          <Button asChild className="border border-primary-foreground/30 bg-primary-foreground/10 font-semibold text-primary-foreground hover:bg-primary-foreground/20">
-            <Link to="/dashboard">
-              <ArrowLeft className="me-2 h-4 w-4" />
-              {t("admin.backToDashboard", "My Space")}
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild className="border border-primary-foreground/30 bg-primary-foreground/10 font-semibold text-primary-foreground hover:bg-primary-foreground/20 dark:border-slate-300/25 dark:text-slate-100 dark:hover:bg-slate-100/15">
+              <Link to="/dashboard">
+                <ArrowLeft className="me-2 h-4 w-4" />
+                {t("admin.backToDashboard", "My Space")}
+              </Link>
+            </Button>
+            <Button variant="outline" onClick={handleSignOut} className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/15 dark:border-slate-300/25 dark:text-slate-100 dark:hover:bg-slate-100/15">
+              <LogOut className="me-2 h-4 w-4" />
+              {t("dashboard.signOut", "Sign out")}
+            </Button>
+          </div>
         </div>
       </section>
 

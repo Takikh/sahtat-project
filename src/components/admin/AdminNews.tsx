@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,12 +47,19 @@ export function AdminNews() {
   const [editId, setEditId] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
 
-  const fetchNews = async () => {
-    const { data } = await supabase.from("news_articles").select("*").order("published_at", { ascending: false });
-    if (data) setArticles(data as NewsRow[]);
-  };
+  const fetchNews = useCallback(async () => {
+    const { data, error } = await supabase.from("news_articles").select("*").order("published_at", { ascending: false });
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      setArticles([]);
+      return;
+    }
+    setArticles((data as NewsRow[]) || []);
+  }, [toast]);
 
-  useEffect(() => { fetchNews(); }, []);
+  useEffect(() => {
+    fetchNews();
+  }, [fetchNews]);
 
   const handleSave = async () => {
     const payload = {

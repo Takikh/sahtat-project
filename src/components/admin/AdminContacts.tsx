@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Trash2, Eye } from "lucide-react";
 
@@ -17,19 +18,27 @@ interface ContactRow {
 }
 
 export function AdminContacts() {
+  const { toast } = useToast();
   const [contacts, setContacts] = useState<ContactRow[]>([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "unread" | "read">("all");
 
-  const fetchContacts = async () => {
-    const { data } = await supabase
+  const fetchContacts = useCallback(async () => {
+    const { data, error } = await supabase
       .from("contact_submissions")
       .select("*")
       .order("submitted_at", { ascending: false });
-    if (data) setContacts(data as ContactRow[]);
-  };
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+      setContacts([]);
+      return;
+    }
+    setContacts((data as ContactRow[]) || []);
+  }, [toast]);
 
-  useEffect(() => { fetchContacts(); }, []);
+  useEffect(() => {
+    fetchContacts();
+  }, [fetchContacts]);
 
   const markRead = async (id: string) => {
     await supabase.from("contact_submissions").update({ is_read: true }).eq("id", id);
