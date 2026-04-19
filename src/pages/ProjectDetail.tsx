@@ -69,6 +69,19 @@ interface ProjectRow {
   seo_description_ar: string | null;
 }
 
+interface ProjectUnitTypeRow {
+  id: string;
+  type_code: string;
+  label_en: string | null;
+  label_fr: string | null;
+  label_ar: string | null;
+  area_min_m2: number | null;
+  area_max_m2: number | null;
+  starting_price_dzd: number | null;
+  status: "available" | "limited" | "sold_out";
+  plan_url: string | null;
+}
+
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 const ProjectDetail = () => {
@@ -77,6 +90,7 @@ const ProjectDetail = () => {
   const lang = (i18n.language as "en" | "fr" | "ar") || "en";
   const locale = lang === "fr" ? "fr-DZ" : lang === "ar" ? "ar-DZ" : "en-US";
   const [project, setProject] = useState<ProjectRow | null>(null);
+  const [unitTypes, setUnitTypes] = useState<ProjectUnitTypeRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -118,6 +132,30 @@ const ProjectDetail = () => {
 
     fetchProject();
   }, [id]);
+
+  useEffect(() => {
+    if (!project?.id) {
+      setUnitTypes([]);
+      return;
+    }
+
+    const fetchUnitTypes = async () => {
+      const { data, error } = await supabase
+        .from("project_unit_types")
+        .select("id, type_code, label_en, label_fr, label_ar, area_min_m2, area_max_m2, starting_price_dzd, status, plan_url")
+        .eq("project_id", project.id)
+        .order("sort_order", { ascending: true });
+
+      if (error) {
+        setUnitTypes([]);
+        return;
+      }
+
+      setUnitTypes((data as ProjectUnitTypeRow[]) || []);
+    };
+
+    fetchUnitTypes();
+  }, [project?.id]);
 
   const mediaSlides = useMemo(() => {
     if (!project) return [];
@@ -173,6 +211,22 @@ const ProjectDetail = () => {
   const includedText = pickLocalized(lang, project.included_en, project.included_fr, project.included_ar);
   const paymentPlanText = pickLocalized(lang, project.payment_plan_en, project.payment_plan_fr, project.payment_plan_ar);
   const guaranteeText = pickLocalized(lang, project.guarantee_en, project.guarantee_fr, project.guarantee_ar);
+  const sectionLinks = [
+    { id: "overview", label: t("projects.overview", "Overview"), enabled: true },
+    { id: "types", label: t("projects.unitTypes", "Apartment types"), enabled: unitTypes.length > 0 },
+    { id: "plans", label: t("projects.floorPlans", "Floor plans"), enabled: floorPlans.length > 0 },
+    { id: "progress", label: t("projects.timeline", "Construction timeline"), enabled: timeline.length > 0 },
+    { id: "guarantees", label: t("projects.deliveryGuarantee", "Delivery guarantee"), enabled: Boolean(guaranteeText) },
+    { id: "quote", label: t("projects.requestQuote", "Request a quote"), enabled: true },
+  ].filter((item) => item.enabled);
+
+  const pickUnitTypeLabel = (unit: ProjectUnitTypeRow) => pickLocalized(lang, unit.label_en, unit.label_fr, unit.label_ar) || unit.type_code;
+
+  const unitStatusBadgeClass: Record<ProjectUnitTypeRow["status"], string> = {
+    available: "bg-green-500/10 text-green-600",
+    limited: "bg-amber-500/10 text-amber-600",
+    sold_out: "bg-destructive/10 text-destructive",
+  };
 
   return (
     <Layout>
@@ -184,6 +238,20 @@ const ProjectDetail = () => {
               {t("projects.title")}
             </Link>
           </Button>
+
+          <nav className="sticky top-20 z-20 mb-6 overflow-x-auto rounded-xl border border-border bg-background/95 p-2 backdrop-blur">
+            <div className="flex min-w-max items-center gap-2">
+              {sectionLinks.map((item) => (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:border-accent hover:text-accent"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </nav>
 
           <div className="grid gap-8 xl:grid-cols-[1.45fr_1fr]">
             <div className="space-y-8">
@@ -207,7 +275,7 @@ const ProjectDetail = () => {
                 </Carousel>
               </motion.div>
 
-              <section className="rounded-xl border border-border bg-card p-6">
+              <section id="overview" className="rounded-xl border border-border bg-card p-6 scroll-mt-28">
                 <h2 className="font-display text-2xl font-semibold">{t("projects.description")}</h2>
                 <p className="mt-3 leading-relaxed text-muted-foreground">{localizedDescription}</p>
 
@@ -258,8 +326,40 @@ const ProjectDetail = () => {
                 </section>
               )}
 
+              {unitTypes.length > 0 && (
+                <section id="types" className="rounded-xl border border-border bg-card p-6 scroll-mt-28">
+                  <h2 className="font-display text-2xl font-semibold">{t("projects.unitTypes", "Apartment types")}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{t("projects.unitTypesSubtitle", "Live inventory and base pricing by typology.")}</p>
+                  <div className="mt-4 grid gap-3 md:grid-cols-2">
+                    {unitTypes.map((unit) => (
+                      <article key={unit.id} className="rounded-lg border border-border bg-background p-4">
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="font-semibold">{pickUnitTypeLabel(unit)}</p>
+                          <Badge className={unitStatusBadgeClass[unit.status]}>{unit.status}</Badge>
+                        </div>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                          {unit.area_min_m2 !== null || unit.area_max_m2 !== null
+                            ? `${unit.area_min_m2 || "?"} - ${unit.area_max_m2 || "?"} m2`
+                            : t("projects.areaUnavailable", "Area not available")}
+                        </p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          {unit.starting_price_dzd !== null
+                            ? `${t("projects.startingFrom", "Starting from")} ${unit.starting_price_dzd.toLocaleString(locale)} DZD`
+                            : t("projects.priceOnRequest", "Price on request")}
+                        </p>
+                        {unit.plan_url && (
+                          <a href={unit.plan_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex text-sm font-medium text-accent hover:underline">
+                            {t("projects.viewPlan", "View plan")}
+                          </a>
+                        )}
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {floorPlans.length > 0 && (
-                <section className="rounded-xl border border-border bg-card p-6">
+                <section id="plans" className="rounded-xl border border-border bg-card p-6 scroll-mt-28">
                   <h2 className="font-display text-2xl font-semibold">{t("projects.floorPlans", "Floor plans")}</h2>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     {floorPlans.map((url, index) => {
@@ -287,7 +387,7 @@ const ProjectDetail = () => {
               )}
 
               {timeline.length > 0 && (
-                <section className="rounded-xl border border-border bg-card p-6">
+                <section id="progress" className="rounded-xl border border-border bg-card p-6 scroll-mt-28">
                   <h2 className="font-display text-2xl font-semibold">{t("projects.timeline", "Construction timeline")}</h2>
                   <div className="mt-5 space-y-4">
                     {timeline.map((entry, index) => (
@@ -324,6 +424,21 @@ const ProjectDetail = () => {
                   </a>
                 </section>
               )}
+
+              <section id="quote" className="rounded-xl border border-border bg-card p-6 scroll-mt-28">
+                <h2 className="font-display text-2xl font-semibold">{t("projects.requestQuote", "Request a quote")}</h2>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {t("projects.quoteSubtitle", "Share your profile and preferences to receive a tailored financial offer.")}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    <Link to={`/projects/${project.slug || project.id}/quote`}>{t("projects.requestQuote", "Request a quote")}</Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link to={`/contact?project=${project.slug}`}>{t("projects.contactSales", "Contact sales")}</Link>
+                  </Button>
+                </div>
+              </section>
             </div>
 
             <motion.aside initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 xl:sticky xl:top-24 xl:self-start">
@@ -352,7 +467,7 @@ const ProjectDetail = () => {
                 )}
 
                 {guaranteeText && (
-                  <div className="mt-3 rounded-lg border border-border p-3">
+                  <div id="guarantees" className="mt-3 rounded-lg border border-border p-3 scroll-mt-28">
                     <p className="text-xs font-semibold uppercase tracking-wide text-accent">{t("projects.deliveryGuarantee", "Delivery guarantee")}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{guaranteeText}</p>
                   </div>
@@ -360,6 +475,9 @@ const ProjectDetail = () => {
 
                 <div className="mt-5 grid gap-2">
                   <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+                    <Link to={`/projects/${project.slug || project.id}/quote`}>{t("projects.requestQuote", "Request a quote")}</Link>
+                  </Button>
+                  <Button asChild size="lg" variant="outline">
                     <Link to={`/contact?project=${project.slug}`}>{t("projects.bookVisit", "Book a visit")}</Link>
                   </Button>
                   <a href="https://wa.me/213660840271" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:border-accent">
@@ -378,9 +496,9 @@ const ProjectDetail = () => {
             <PhoneCall className="h-4 w-4" />
             Call
           </a>
-          <Link to={`/contact?project=${project.slug}`} className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-3 py-2.5 text-sm font-medium text-accent-foreground">
+          <Link to={`/projects/${project.slug || project.id}/quote`} className="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-3 py-2.5 text-sm font-medium text-accent-foreground">
             <CalendarDays className="h-4 w-4" />
-            Visit
+            Quote
           </Link>
         </div>
       </div>

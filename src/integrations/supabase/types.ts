@@ -294,6 +294,136 @@ export type Database = {
           },
         ]
       }
+      project_quote_requests: {
+        Row: {
+          budget_max_dzd: number | null
+          budget_min_dzd: number | null
+          created_at: string
+          desired_apartment_type: string | null
+          email: string
+          financing_type: string | null
+          full_name: string
+          id: string
+          is_read: boolean
+          message: string | null
+          parking_needed: boolean | null
+          phone: string
+          preferred_contact_method: string | null
+          profession: string | null
+          project_id: string
+          status: string
+          updated_at: string
+          wilaya: string | null
+        }
+        Insert: {
+          budget_max_dzd?: number | null
+          budget_min_dzd?: number | null
+          created_at?: string
+          desired_apartment_type?: string | null
+          email: string
+          financing_type?: string | null
+          full_name: string
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          parking_needed?: boolean | null
+          phone: string
+          preferred_contact_method?: string | null
+          profession?: string | null
+          project_id: string
+          status?: string
+          updated_at?: string
+          wilaya?: string | null
+        }
+        Update: {
+          budget_max_dzd?: number | null
+          budget_min_dzd?: number | null
+          created_at?: string
+          desired_apartment_type?: string | null
+          email?: string
+          financing_type?: string | null
+          full_name?: string
+          id?: string
+          is_read?: boolean
+          message?: string | null
+          parking_needed?: boolean | null
+          phone?: string
+          preferred_contact_method?: string | null
+          profession?: string | null
+          project_id?: string
+          status?: string
+          updated_at?: string
+          wilaya?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_quote_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_unit_types: {
+        Row: {
+          area_max_m2: number | null
+          area_min_m2: number | null
+          created_at: string
+          id: string
+          label_ar: string | null
+          label_en: string | null
+          label_fr: string | null
+          plan_url: string | null
+          project_id: string
+          sort_order: number
+          starting_price_dzd: number | null
+          status: string
+          type_code: string
+          updated_at: string
+        }
+        Insert: {
+          area_max_m2?: number | null
+          area_min_m2?: number | null
+          created_at?: string
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          label_fr?: string | null
+          plan_url?: string | null
+          project_id: string
+          sort_order?: number
+          starting_price_dzd?: number | null
+          status?: string
+          type_code: string
+          updated_at?: string
+        }
+        Update: {
+          area_max_m2?: number | null
+          area_min_m2?: number | null
+          created_at?: string
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          label_fr?: string | null
+          plan_url?: string | null
+          project_id?: string
+          sort_order?: number
+          starting_price_dzd?: number | null
+          status?: string
+          type_code?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_unit_types_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           area_max_m2: number | null

@@ -65,6 +65,41 @@ Do not place `SUPABASE_SERVICE_ROLE_KEY` or `sb_secret_...` in `.env` for fronte
 - Avoid hardcoding Supabase URL/keys in source files.
 - If rotating keys, update `.env` and deployment environment variables.
 
+### New quote + apartment modules (SQL activation)
+
+This repository now includes:
+
+- `supabase/migrations/20260419190000_project_quotes_and_unit_types.sql`
+- `supabase/migrations/20260419191000_seed_project_unit_types.sql`
+
+Apply both migrations before testing the new UI routes:
+
+1. `supabase db push`
+2. (Alternative) paste migration SQL files in Supabase SQL Editor and run in order.
+
+Quick verification SQL:
+
+```sql
+SELECT slug, name FROM public.projects ORDER BY name;
+
+SELECT p.slug, put.type_code, put.status, put.starting_price_dzd
+FROM public.project_unit_types put
+JOIN public.projects p ON p.id = put.project_id
+ORDER BY p.slug, put.sort_order;
+
+SELECT count(*) AS quote_requests
+FROM public.project_quote_requests;
+```
+
+Public route to test after migration:
+
+- `/projects/:slug-or-id/quote`
+
+Admin tabs to test after migration:
+
+- `Apartment Types`
+- `Quotes`
+
 ### Admin user creation (secure)
 
 Admin account creation from the dashboard now uses a Supabase Edge Function:

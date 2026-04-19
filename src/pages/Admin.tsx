@@ -10,19 +10,21 @@ import { AdminProgressUpdates } from "@/components/admin/AdminProgressUpdates";
 import { AdminReviews } from "@/components/admin/AdminReviews";
 import { AdminLandOffers } from "@/components/admin/AdminLandOffers";
 import { AdminFaqs } from "@/components/admin/AdminFaqs";
+import { AdminQuotes } from "@/components/admin/AdminQuotes";
+import { AdminUnitTypes } from "@/components/admin/AdminUnitTypes";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp, LogOut } from "lucide-react";
+import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp, LogOut, LayoutGrid, ClipboardList } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 const Admin = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { isSecretary, isSuperAdmin, signOut } = useAuth();
+  const { isAdmin, isSuperAdmin, signOut } = useAuth();
 
-  const canManageContent = isSecretary || isSuperAdmin;
-  const canManageCore = !isSecretary || isSuperAdmin;
+  const canManageContent = isAdmin;
+  const canManageCore = isAdmin;
 
   const handleSignOut = async () => {
     await signOut();
@@ -66,9 +68,19 @@ const Admin = () => {
                   <Building2 className="h-4 w-4" /> {t("admin.tabs.projects", "Projects")}
                 </TabsTrigger>
               )}
+              {canManageCore && (
+                <TabsTrigger value="unit-types" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                  <LayoutGrid className="h-4 w-4" /> {t("admin.tabs.unitTypes", "Apartment Types")}
+                </TabsTrigger>
+              )}
               <TabsTrigger value="progress" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                 <Construction className="h-4 w-4" /> {t("admin.tabs.progress", "Progress")}
               </TabsTrigger>
+              {canManageCore && (
+                <TabsTrigger value="quotes" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                  <ClipboardList className="h-4 w-4" /> {t("admin.tabs.quotes", "Quotes")}
+                </TabsTrigger>
+              )}
               {canManageCore && (
                 <TabsTrigger value="clients" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                   <Users className="h-4 w-4" /> {t("admin.tabs.clients", "Client Properties")}
@@ -104,7 +116,9 @@ const Admin = () => {
 
             {canManageCore && <TabsContent value="analytics"><AdminAnalytics /></TabsContent>}
             {canManageCore && <TabsContent value="projects"><AdminProjects /></TabsContent>}
+            {canManageCore && <TabsContent value="unit-types"><AdminUnitTypes /></TabsContent>}
             <TabsContent value="progress"><AdminProgressUpdates /></TabsContent>
+            {canManageCore && <TabsContent value="quotes"><AdminQuotes /></TabsContent>}
             {canManageCore && <TabsContent value="clients"><AdminClients /></TabsContent>}
             {isSuperAdmin && <TabsContent value="users"><AdminUsers /></TabsContent>}
             <TabsContent value="news"><AdminNews /></TabsContent>
