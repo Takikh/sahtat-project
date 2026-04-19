@@ -5,8 +5,9 @@ import { ArrowLeft, Calendar } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useNewsArticle } from "@/hooks/useNews";
+import { useNewsArticle, useNewsList } from "@/hooks/useNews";
 import { useSeo } from "@/hooks/useSeo";
+import { PageBreadcrumbs } from "@/components/shared/PageBreadcrumbs";
 
 const NewsDetail = () => {
   const { id } = useParams();
@@ -14,6 +15,7 @@ const NewsDetail = () => {
   const lang = (i18n.language as "en" | "fr" | "ar") || "en";
   const locale = lang === "fr" ? "fr-DZ" : lang === "ar" ? "ar-DZ" : "en-US";
   const { article, loading, error } = useNewsArticle(id);
+  const { articles: latestArticles } = useNewsList(8);
 
   const title = article
     ? lang === "fr"
@@ -50,6 +52,10 @@ const NewsDetail = () => {
   const localizedDate = article
     ? new Intl.DateTimeFormat(locale, { year: "numeric", month: "long", day: "numeric" }).format(new Date(article.published_at))
     : "";
+
+  const relatedArticles = latestArticles
+    .filter((item) => item.id !== article?.id)
+    .slice(0, 3);
 
   useSeo({
     title: article ? `${seoTitle} | Sahtat Promotion` : "Sahtat Promotion",
@@ -102,6 +108,15 @@ const NewsDetail = () => {
     <Layout>
       <article className="py-8">
         <div className="container max-w-4xl">
+          <PageBreadcrumbs
+            className="mb-4"
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("news.title"), href: "/news" },
+              { label: title || t("news.article", "Article") },
+            ]}
+          />
+
           <Button asChild variant="ghost" size="sm" className="mb-6">
             <Link to="/news">
               <ArrowLeft className="me-2 h-4 w-4" />
@@ -126,6 +141,48 @@ const NewsDetail = () => {
 
             <div className="mt-8 text-lg leading-relaxed text-muted-foreground">{content}</div>
           </motion.div>
+
+          {relatedArticles.length > 0 && (
+            <section className="mt-12 rounded-xl border border-border bg-card p-6">
+              <h2 className="font-display text-2xl font-semibold">{t("news.relatedTitle", "Related news")}</h2>
+              <div className="mt-4 grid gap-4 md:grid-cols-3">
+                {relatedArticles.map((item) => {
+                  const relatedTitle = lang === "fr"
+                    ? item.title_fr || item.title_en
+                    : lang === "ar"
+                      ? item.title_ar || item.title_en
+                      : item.title_en;
+
+                  const relatedExcerpt = lang === "fr"
+                    ? item.excerpt_fr || item.excerpt_en || ""
+                    : lang === "ar"
+                      ? item.excerpt_ar || item.excerpt_en || ""
+                      : item.excerpt_en || "";
+
+                  return (
+                    <Link
+                      key={item.id}
+                      to={`/news/${item.slug || item.id}`}
+                      className="group overflow-hidden rounded-lg border border-border bg-background transition hover:border-accent"
+                    >
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={item.image_url || "/placeholder.svg"}
+                          alt={relatedTitle}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="space-y-2 p-4">
+                        <h3 className="line-clamp-2 text-sm font-semibold">{relatedTitle}</h3>
+                        <p className="line-clamp-2 text-xs text-muted-foreground">{relatedExcerpt}</p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          )}
         </div>
       </article>
     </Layout>

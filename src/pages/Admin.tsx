@@ -12,9 +12,10 @@ import { AdminLandOffers } from "@/components/admin/AdminLandOffers";
 import { AdminFaqs } from "@/components/admin/AdminFaqs";
 import { AdminQuotes } from "@/components/admin/AdminQuotes";
 import { AdminUnitTypes } from "@/components/admin/AdminUnitTypes";
+import { AdminReporting } from "@/components/admin/AdminReporting";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp, LogOut, LayoutGrid, ClipboardList } from "lucide-react";
+import { ArrowLeft, Building2, Newspaper, Mail, Users, BarChart3, UserCog, Construction, MessageSquare, MapPinned, CircleHelp, LogOut, LayoutGrid, ClipboardList, LineChart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
@@ -82,6 +83,11 @@ const Admin = () => {
                 </TabsTrigger>
               )}
               {canManageCore && (
+                <TabsTrigger value="reporting" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
+                  <LineChart className="h-4 w-4" /> {t("admin.tabs.reporting", "Lead Reporting")}
+                </TabsTrigger>
+              )}
+              {canManageCore && (
                 <TabsTrigger value="clients" className="gap-2 font-semibold text-foreground/80 hover:bg-muted/70 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground">
                   <Users className="h-4 w-4" /> {t("admin.tabs.clients", "Client Properties")}
                 </TabsTrigger>
@@ -119,6 +125,7 @@ const Admin = () => {
             {canManageCore && <TabsContent value="unit-types"><AdminUnitTypes /></TabsContent>}
             <TabsContent value="progress"><AdminProgressUpdates /></TabsContent>
             {canManageCore && <TabsContent value="quotes"><AdminQuotes /></TabsContent>}
+            {canManageCore && <TabsContent value="reporting"><AdminReporting /></TabsContent>}
             {canManageCore && <TabsContent value="clients"><AdminClients /></TabsContent>}
             {isSuperAdmin && <TabsContent value="users"><AdminUsers /></TabsContent>}
             <TabsContent value="news"><AdminNews /></TabsContent>

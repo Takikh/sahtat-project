@@ -7,6 +7,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { PageBreadcrumbs } from "@/components/shared/PageBreadcrumbs";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
 import { trackProjectView } from "@/hooks/usePageTracking";
@@ -82,6 +83,15 @@ interface ProjectUnitTypeRow {
   plan_url: string | null;
 }
 
+interface RelatedProjectRow {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+  status: string;
+  image_url: string | null;
+}
+
 const normalizeStatus = (status: string) => (status === "in_progress" ? "inProgress" : status);
 
 const ProjectDetail = () => {
@@ -91,6 +101,7 @@ const ProjectDetail = () => {
   const locale = lang === "fr" ? "fr-DZ" : lang === "ar" ? "ar-DZ" : "en-US";
   const [project, setProject] = useState<ProjectRow | null>(null);
   const [unitTypes, setUnitTypes] = useState<ProjectUnitTypeRow[]>([]);
+  const [relatedProjects, setRelatedProjects] = useState<RelatedProjectRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -156,6 +167,40 @@ const ProjectDetail = () => {
 
     fetchUnitTypes();
   }, [project?.id]);
+
+  useEffect(() => {
+    if (!project?.id) {
+      setRelatedProjects([]);
+      return;
+    }
+
+    const fetchRelatedProjects = async () => {
+      const baseSelect = "id, slug, name, city, status, image_url";
+      const byCity = await supabase
+        .from("projects")
+        .select(baseSelect)
+        .eq("city", project.city)
+        .neq("id", project.id)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (byCity.data && byCity.data.length > 0) {
+        setRelatedProjects((byCity.data as RelatedProjectRow[]) || []);
+        return;
+      }
+
+      const fallback = await supabase
+        .from("projects")
+        .select(baseSelect)
+        .neq("id", project.id)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      setRelatedProjects((fallback.data as RelatedProjectRow[]) || []);
+    };
+
+    fetchRelatedProjects();
+  }, [project?.id, project?.city]);
 
   const mediaSlides = useMemo(() => {
     if (!project) return [];
@@ -232,6 +277,15 @@ const ProjectDetail = () => {
     <Layout>
       <section className="py-8">
         <div className="container">
+          <PageBreadcrumbs
+            className="mb-4"
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("projects.title"), href: "/projects" },
+              { label: project.name },
+            ]}
+          />
+
           <Button asChild variant="ghost" size="sm" className="mb-6">
             <Link to="/projects">
               <ArrowLeft className="me-2 h-4 w-4" />
@@ -439,6 +493,40 @@ const ProjectDetail = () => {
                   </Button>
                 </div>
               </section>
+
+              {relatedProjects.length > 0 && (
+                <section className="rounded-xl border border-border bg-card p-6">
+                  <h2 className="font-display text-2xl font-semibold">{t("projects.relatedTitle", "Related projects")}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{t("projects.relatedSubtitle", "Explore similar opportunities from our portfolio.")}</p>
+                  <div className="mt-4 grid gap-4 md:grid-cols-3">
+                    {relatedProjects.map((item) => (
+                      <Link
+                        key={item.id}
+                        to={`/projects/${item.slug || item.id}`}
+                        className="group overflow-hidden rounded-lg border border-border bg-background transition hover:border-accent"
+                      >
+                        <div className="aspect-[4/3] overflow-hidden">
+                          <img
+                            src={item.image_url || "/placeholder.svg"}
+                            alt={item.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="space-y-2 p-4">
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="line-clamp-2 text-sm font-semibold">{item.name}</h3>
+                            <Badge className={statusColors[item.status] || statusColors.inProgress}>
+                              {t(`featured.status.${normalizeStatus(item.status)}`)}
+                            </Badge>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{item.city}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
 
             <motion.aside initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4 xl:sticky xl:top-24 xl:self-start">

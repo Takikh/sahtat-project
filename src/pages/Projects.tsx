@@ -2,22 +2,26 @@ import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Check, MapPin, Scale, Wallet, CalendarDays, Layers } from "lucide-react";
+import { Check, MapPin, Scale, Wallet, CalendarDays, Layers, Search } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
+import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { supabase } from "@/integrations/supabase/client";
 import { resolveProjectImage } from "@/lib/projectImage";
 import { useToast } from "@/hooks/use-toast";
 import { ProjectCityMap } from "@/components/projects/ProjectCityMap";
 import { ProjectCompareDialog } from "@/components/projects/ProjectCompareDialog";
 import { FaqSection } from "@/components/shared/FaqSection";
+import { PageBreadcrumbs } from "@/components/shared/PageBreadcrumbs";
 import { formatAreaRange, formatPriceRange, pickLocalized, toStringArray } from "@/lib/projectContent";
 import { useSeo } from "@/hooks/useSeo";
 
 const types = ["All", "apartment", "villa", "commercial"];
 const statuses = ["All", "upcoming", "inProgress", "delivered"];
+const PROJECTS_PER_PAGE = 6;
 
 const statusColors: Record<string, string> = {
   upcoming: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
@@ -62,6 +66,8 @@ const Projects = () => {
   const [cityFilter, setCityFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
   const [compareIds, setCompareIds] = useState<string[]>([]);
 
   useSeo({
@@ -109,12 +115,33 @@ const Projects = () => {
     return ["All", ...uniqueCities];
   }, [projects]);
 
-  const filtered = projects.filter((project) => {
-    if (cityFilter !== "All" && project.city !== cityFilter) return false;
-    if (typeFilter !== "All" && project.type !== typeFilter) return false;
-    if (statusFilter !== "All" && normalizeStatus(project.status) !== statusFilter) return false;
-    return true;
-  });
+  const filtered = useMemo(() => {
+    const needle = searchQuery.trim().toLowerCase();
+    return projects.filter((project) => {
+      if (cityFilter !== "All" && project.city !== cityFilter) return false;
+      if (typeFilter !== "All" && project.type !== typeFilter) return false;
+      if (statusFilter !== "All" && normalizeStatus(project.status) !== statusFilter) return false;
+
+      if (!needle) return true;
+
+      const description = pickLocalized(lang, project.description_en, project.description_fr, project.description_ar) || "";
+      return [project.name, project.city, project.location || "", description]
+        .join(" ")
+        .toLowerCase()
+        .includes(needle);
+    });
+  }, [projects, cityFilter, typeFilter, statusFilter, searchQuery, lang]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [cityFilter, typeFilter, statusFilter, searchQuery]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PROJECTS_PER_PAGE));
+  const page = Math.min(currentPage, totalPages);
+  const paginated = useMemo(() => {
+    const start = (page - 1) * PROJECTS_PER_PAGE;
+    return filtered.slice(start, start + PROJECTS_PER_PAGE);
+  }, [filtered, page]);
 
   const compareSelection = projects
     .filter((project) => compareIds.includes(project.id))
@@ -150,6 +177,13 @@ const Projects = () => {
     <Layout>
       <section className="bg-primary py-20 text-primary-foreground dark:bg-slate-900 dark:text-slate-100">
         <div className="container text-center">
+          <PageBreadcrumbs
+            className="mb-6 justify-center [&_ol]:justify-center [&_span[aria-current='page']]:text-primary-foreground [&_a]:text-primary-foreground/80 [&_li[role='presentation']]:text-primary-foreground/70"
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("projects.title") },
+            ]}
+          />
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -182,6 +216,17 @@ const Projects = () => {
           </div>
 
           <div className="flex flex-wrap gap-3 rounded-xl bg-secondary p-4">
+            <div className="w-full md:max-w-sm">
+              <div className="relative">
+                <Search className="pointer-events-none absolute start-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={t("projects.searchPlaceholder", "Search by project name, city, or location")}
+                  className="ps-9"
+                />
+              </div>
+            </div>
             <div className="flex flex-wrap gap-2">
               {cities.map((city) => (
                 <Button
@@ -226,7 +271,10 @@ const Projects = () => {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-sm text-muted-foreground">{filtered.length} {t("projects.results", "projects found")}</p>
+            <p className="text-sm text-muted-foreground">
+              {filtered.length} {t("projects.results", "projects found")} - {t("projects.pageIndicator", "Page")}
+              {` ${page}/${totalPages}`}
+            </p>
             <ProjectCompareDialog selected={compareSelection} locale={locale} onClear={() => setCompareIds([])} />
           </div>
 
@@ -247,9 +295,9 @@ const Projects = () => {
           ) : filtered.length === 0 ? (
             <div className="rounded-xl border border-border bg-card p-8 text-center">
               <p className="font-semibold">{t("projects.emptyTitle", "No projects match your filters")}</p>
-              <p className="mt-2 text-sm text-muted-foreground">{t("projects.emptySubtitle", "Try adjusting your city, type, or status filters to see available projects.")}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{t("projects.emptySubtitle", "Try adjusting your city, type, status, or search terms to see available projects.")}</p>
               <div className="mt-5 flex flex-wrap justify-center gap-2">
-                <Button variant="outline" onClick={() => { setCityFilter("All"); setTypeFilter("All"); setStatusFilter("All"); }}>
+                <Button variant="outline" onClick={() => { setCityFilter("All"); setTypeFilter("All"); setStatusFilter("All"); setSearchQuery(""); }}>
                   {t("projects.resetFilters", "Reset filters")}
                 </Button>
                 <Button variant="outline" onClick={() => setStatusFilter("delivered")}>{t("projects.showDelivered", "Show delivered")}</Button>
@@ -258,7 +306,7 @@ const Projects = () => {
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered.map((project, i) => {
+              {paginated.map((project, i) => {
                 const selected = compareIds.includes(project.id);
                 const description = pickLocalized(lang, project.description_en, project.description_fr, project.description_ar);
 
@@ -325,6 +373,38 @@ const Projects = () => {
                 );
               })}
             </div>
+          )}
+
+          {!loading && filtered.length > 0 && totalPages > 1 && (
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      if (page > 1) setCurrentPage(page - 1);
+                    }}
+                    className={page <= 1 ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+                <PaginationItem>
+                  <span className="px-3 text-sm text-muted-foreground">
+                    {t("projects.pageIndicator", "Page")} {page} / {totalPages}
+                  </span>
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      if (page < totalPages) setCurrentPage(page + 1);
+                    }}
+                    className={page >= totalPages ? "pointer-events-none opacity-50" : ""}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
           )}
         </div>
       </section>

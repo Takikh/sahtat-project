@@ -87,6 +87,7 @@ export type Database = {
       }
       land_offers: {
         Row: {
+          assigned_to_user_id: string | null
           area_m2: number | null
           asking_price: number | null
           city: string
@@ -95,7 +96,9 @@ export type Database = {
           email: string | null
           full_name: string
           id: string
+          internal_notes: string | null
           is_read: boolean
+          last_contacted_at: string | null
           ownership_type: string | null
           phone: string
           status: string
@@ -103,6 +106,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          assigned_to_user_id?: string | null
           area_m2?: number | null
           asking_price?: number | null
           city: string
@@ -111,7 +115,9 @@ export type Database = {
           email?: string | null
           full_name: string
           id?: string
+          internal_notes?: string | null
           is_read?: boolean
+          last_contacted_at?: string | null
           ownership_type?: string | null
           phone: string
           status?: string
@@ -119,6 +125,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          assigned_to_user_id?: string | null
           area_m2?: number | null
           asking_price?: number | null
           city?: string
@@ -127,7 +134,9 @@ export type Database = {
           email?: string | null
           full_name?: string
           id?: string
+          internal_notes?: string | null
           is_read?: boolean
+          last_contacted_at?: string | null
           ownership_type?: string | null
           phone?: string
           status?: string
@@ -296,6 +305,7 @@ export type Database = {
       }
       project_quote_requests: {
         Row: {
+          assigned_to_user_id: string | null
           budget_max_dzd: number | null
           budget_min_dzd: number | null
           created_at: string
@@ -304,7 +314,9 @@ export type Database = {
           financing_type: string | null
           full_name: string
           id: string
+          internal_notes: string | null
           is_read: boolean
+          last_contacted_at: string | null
           message: string | null
           parking_needed: boolean | null
           phone: string
@@ -316,6 +328,7 @@ export type Database = {
           wilaya: string | null
         }
         Insert: {
+          assigned_to_user_id?: string | null
           budget_max_dzd?: number | null
           budget_min_dzd?: number | null
           created_at?: string
@@ -324,7 +337,9 @@ export type Database = {
           financing_type?: string | null
           full_name: string
           id?: string
+          internal_notes?: string | null
           is_read?: boolean
+          last_contacted_at?: string | null
           message?: string | null
           parking_needed?: boolean | null
           phone: string
@@ -336,6 +351,7 @@ export type Database = {
           wilaya?: string | null
         }
         Update: {
+          assigned_to_user_id?: string | null
           budget_max_dzd?: number | null
           budget_min_dzd?: number | null
           created_at?: string
@@ -344,7 +360,9 @@ export type Database = {
           financing_type?: string | null
           full_name?: string
           id?: string
+          internal_notes?: string | null
           is_read?: boolean
+          last_contacted_at?: string | null
           message?: string | null
           parking_needed?: boolean | null
           phone?: string

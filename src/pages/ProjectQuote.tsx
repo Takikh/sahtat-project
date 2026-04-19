@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowLeft } from "lucide-react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useSeo } from "@/hooks/useSeo";
 import { supabase } from "@/integrations/supabase/client";
+import { PageBreadcrumbs } from "@/components/shared/PageBreadcrumbs";
 
 type ProjectLite = {
   id: string;
@@ -213,8 +215,21 @@ const ProjectQuote = () => {
     <Layout>
       <section className="py-12">
         <div className="container max-w-3xl">
+          <PageBreadcrumbs
+            className="mb-4"
+            items={[
+              { label: t("nav.home", "Home"), href: "/" },
+              { label: t("projects.title"), href: "/projects" },
+              { label: project.name, href: `/projects/${project.slug || project.id}` },
+              { label: t("projects.requestQuote", "Request a Quote") },
+            ]}
+          />
+
           <Button asChild variant="ghost" size="sm">
-            <Link to={`/projects/${project.slug || project.id}`}>{t("projects.backToProject", "Back to project")}</Link>
+            <Link to={`/projects/${project.slug || project.id}`}>
+              <ArrowLeft className="me-2 h-4 w-4" />
+              {t("projects.backToProject", "Back to project")}
+            </Link>
           </Button>
 
           <div className="mt-6 rounded-2xl border border-border bg-card p-6 sm:p-8">
