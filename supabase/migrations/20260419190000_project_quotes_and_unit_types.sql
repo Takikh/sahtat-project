@@ -36,7 +36,7 @@ USING (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app
 DROP POLICY IF EXISTS "Staff can update project quotes" ON public.project_quote_requests;
 CREATE POLICY "Staff can update project quotes"
 ON public.project_quote_requests FOR UPDATE
-USING (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role))
+USING (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role]))
 WITH CHECK (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role]));
 
 DROP POLICY IF EXISTS "Staff can delete project quotes" ON public.project_quote_requests;
@@ -85,7 +85,7 @@ WITH CHECK (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'
 DROP POLICY IF EXISTS "Staff can update project unit types" ON public.project_unit_types;
 CREATE POLICY "Staff can update project unit types"
 ON public.project_unit_types FOR UPDATE
-USING (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role))
+USING (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role]))
 WITH CHECK (public.has_any_role(auth.uid(), ARRAY['secretary'::app_role, 'admin'::app_role, 'super_admin'::app_role]));
 
 DROP POLICY IF EXISTS "Staff can delete project unit types" ON public.project_unit_types;
